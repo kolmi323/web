@@ -10,12 +10,14 @@ create table account (
     user_id INT REFERENCES users(id) NOT NULL,
     name VARCHAR(255) NOT NULL,
     balance DECIMAL(20, 2) NOT NULL,
-    UNIQUE (id, name)
+    UNIQUE (user_id, name)
 );
 
 create table type (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    user_id INT REFERENCES users(id) NOT NULL ,
+    name VARCHAR(255) NOT NULL,
+    UNIQUE (user_id, name)
 );
 
 create table transaction (
@@ -23,7 +25,7 @@ create table transaction (
     from_account_id INT REFERENCES account(id),
     to_account_id INT REFERENCES account(id),
     amount DECIMAL(20,2) NOT NULL,
-    date_transaction DATE NOT NULL
+    date DATE NOT NULL
 );
 
 create table type_transaction (
