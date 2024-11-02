@@ -33,7 +33,8 @@ public class ActionControlPanel {
     public void addAccount() {
         String nameAccount = this.userDataReceiver.enterNameAccount();
         double balance = this.userDataReceiver.enterBalanceAccount();
-        if (isDataNull(nameAccount) || isDataNull(balance)) {
+        if (nameAccount.isEmpty() || balance <= 0) {
+            System.out.println("Incorrect data entered");
             return;
         }
         try {
@@ -81,14 +82,6 @@ public class ActionControlPanel {
             if (rs.getString("name").equals(name) && rs.getInt("user_id") == this.userId) {
                 return true;
             }
-        }
-        return false;
-    }
-
-    private boolean isDataNull(Object object) {
-        if (object == null) {
-            System.out.println("Data cannot be empty");
-            return true;
         }
         return false;
     }
