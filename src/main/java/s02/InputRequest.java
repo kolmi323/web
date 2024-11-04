@@ -3,21 +3,20 @@ package s02;
 import java.util.Scanner;
 
 public class InputRequest {
+    private Scanner scanner = new Scanner(System.in);
+
     public String requestStr(String text) {
-        Scanner scanner = new Scanner(System.in);
         System.out.println(text);
-        return scanner.nextLine();
+        return this.scanner.nextLine();
     }
 
     public int requestInt(String text) {
-        Scanner scanner = new Scanner(System.in);
         System.out.println(text);
-        return scanner.nextInt();
+        return this.scanner.nextInt();
     }
 
     public double requestDouble(String text) {
-        Scanner scanner = new Scanner(System.in);
         System.out.println(text);
-        return scanner.nextDouble();
+        return this.scanner.nextDouble();
     }
 }
