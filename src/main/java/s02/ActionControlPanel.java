@@ -51,14 +51,13 @@ public class ActionControlPanel {
         try {
             UserDataReceiver userDataReceiver = new UserDataReceiver(con);
             String answer = userDataReceiver.enterName();
-            if (isAccountContains(answer)) {
-                PreparedStatement ps = con.prepareStatement("delete from account where name = ? and user_id = ?");
-                ps.setString(1, answer);
-                ps.setInt(2, userId);
-                ps.execute();
-                System.out.println("Account Deleted");
+            PreparedStatement ps = con.prepareStatement("delete from account where name = ? and user_id = ?");
+            ps.setString(1, answer);
+            ps.setInt(2, userId);
+            if (ps.executeUpdate() == 0) {
+                System.out.println("Nothing deleted");
             } else {
-                System.out.println("Account not found");
+                System.out.println("Deleted successfully");
             }
         } catch (ActionUserExitException e) {
             System.out.println(e.getMessage());
@@ -71,15 +70,5 @@ public class ActionControlPanel {
     private ResultSet getListAccount() throws SQLException {
         Statement st = this.con.createStatement();
         return st.executeQuery("select * from account where user_id = " + userId);
-    }
-
-    private boolean isAccountContains(String name) throws SQLException {
-        ResultSet rs = getListAccount();
-        while (rs.next()) {
-            if (rs.getString("name").equals(name) && rs.getInt("user_id") == this.userId) {
-                return true;
-            }
-        }
-        return false;
     }
 }
