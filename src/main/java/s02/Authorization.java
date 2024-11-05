@@ -1,6 +1,7 @@
 package s02;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import sun.security.provider.MD5;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -19,7 +20,8 @@ public class Authorization {
         UserDataReceiver userDataReceiver = new UserDataReceiver(this.con);
         try {
             String name = userDataReceiver.enterName();
-            String password = DigestUtils.md2Hex(userDataReceiver.enterPassword());
+            MD5DigestUtils md5 = new MD5DigestUtils();
+            String password = md5.hashPassword(userDataReceiver.enterPassword());
             Statement st = this.con.createStatement();
             ResultSet rs = st.executeQuery("select u.id, u.name, u.password from users as u");
             while (rs.next()) {

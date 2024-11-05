@@ -1,0 +1,9 @@
+package s02;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
+public class MD5DigestUtils extends DigestUtils {
+    public String hashPassword(String password) {
+        return DigestUtils.md5Hex(password);
+    }
+}

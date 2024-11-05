@@ -19,11 +19,12 @@ public class Registration {
         try {
             String name = userDataReceiver.enterName();
             String email = userDataReceiver.enterEmail();
-            String password = userDataReceiver.enterPassword();
+            MD5DigestUtils md5 = new MD5DigestUtils();
+            String password = md5.hashPassword(userDataReceiver.enterPassword());
             PreparedStatement ps = this.con.prepareStatement("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
             ps.setString(1, name);
             ps.setString(2, email);
-            ps.setString(3, DigestUtils.md2Hex(password));
+            ps.setString(3, password);
             ps.execute();
             System.out.println("Registration Successful");
         } catch (ActionUserExitException e) {

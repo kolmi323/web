@@ -9,14 +9,4 @@ public class InputRequest {
         System.out.println(text);
         return this.scanner.nextLine();
     }
-
-    public int requestInt(String text) {
-        System.out.println(text);
-        return this.scanner.nextInt();
-    }
-
-    public double requestDouble(String text) {
-        System.out.println(text);
-        return this.scanner.nextDouble();
-    }
 }
