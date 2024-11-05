@@ -1,6 +1,7 @@
 package s02.pages;
 
 import s02.ActionControlPanel;
+import s02.ActionUserExitException;
 import s02.InputRequest;
 
 import java.sql.Connection;
@@ -18,7 +19,7 @@ public class PersonalOfficePage {
         this.userId = userId;
     }
 
-    public void startPersonalOffice() {
+    public void startPersonalOffice() throws ActionUserExitException {
         String answer;
         try {
             Statement st = this.con.createStatement();
@@ -41,7 +42,7 @@ public class PersonalOfficePage {
                 } else if (answer.equals("3")) {
                     actionControlPanel.deleteAccount();
                 } else if (answer.equals("0")) {
-                    break;
+                    throw new ActionUserExitException("You exit from person office!");
                 } else {
                     System.out.println("Invalid input");
                 }

@@ -2,6 +2,7 @@ package s02;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -15,36 +16,20 @@ public class Registration {
 
     public void register() {
         UserDataReceiver userDataReceiver = new UserDataReceiver(this.con);
-        String name = userDataReceiver.enterName();
-        String email = userDataReceiver.enterEmail();
-        String password = userDataReceiver.enterPassword();
         try {
-            if (containsNullInUserData(name, email, password)) {
-                return;
-            }
+            String name = userDataReceiver.enterName();
+            String email = userDataReceiver.enterEmail();
+            String password = userDataReceiver.enterPassword();
             PreparedStatement ps = this.con.prepareStatement("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
             ps.setString(1, name);
             ps.setString(2, email);
             ps.setString(3, DigestUtils.md2Hex(password));
             ps.execute();
             System.out.println("Registration Successful");
+        } catch (ActionUserExitException e) {
+            System.out.println(e.getMessage());
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        }
-    }
-
-    private boolean containsNullInUserData(String name, String email, String password) {
-        if (name == null) {
-            System.out.println("Name cannot be null");
-            return true;
-        } else if (email == null) {
-            System.out.println("Email cannot be null");
-            return true;
-        } else if (password == null) {
-            System.out.println("Password cannot be null");
-            return true;
-        } else {
-            return false;
         }
     }
 }

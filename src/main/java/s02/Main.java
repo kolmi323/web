@@ -8,27 +8,20 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
-        Connection con = null;
         LoginPage loginPage;
-        try {
-            con = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/postgres",
-                    "postgres",
-                    "postgres"
-            );
+        try (
+                Connection con = DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/postgres",
+                "postgres",
+                "postgres"
+                )
+        ) {
             loginPage = new LoginPage(con);
             loginPage.startPage();
+        } catch (ActionUserExitException e) {
+            System.out.println(e.getMessage());
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        }
-        finally {
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    System.out.println(e.getMessage());
-                }
-            }
         }
     }
 }

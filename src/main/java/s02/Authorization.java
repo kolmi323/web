@@ -17,9 +17,9 @@ public class Authorization {
 
     public void logIn() {
         UserDataReceiver userDataReceiver = new UserDataReceiver(this.con);
-        String name = userDataReceiver.enterName();
-        String password = DigestUtils.md2Hex(userDataReceiver.enterPassword());
         try {
+            String name = userDataReceiver.enterName();
+            String password = DigestUtils.md2Hex(userDataReceiver.enterPassword());
             Statement st = this.con.createStatement();
             ResultSet rs = st.executeQuery("select u.id, u.name, u.password from users as u");
             while (rs.next()) {
@@ -33,7 +33,10 @@ public class Authorization {
                 }
             }
             System.out.println("You are not logged in");
-        } catch (SQLException e) {
+        } catch (ActionUserExitException e) {
+            System.out.println(e.getMessage());
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }

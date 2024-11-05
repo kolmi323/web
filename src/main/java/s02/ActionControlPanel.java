@@ -1,12 +1,12 @@
 package s02;
 
+import java.math.BigDecimal;
 import java.sql.*;
 
 public class ActionControlPanel {
     private Connection con;
     private UserDataReceiver userDataReceiver;
     private int userId;
-
 
     public ActionControlPanel(Connection con, int userId) {
         this.con = con;
@@ -19,10 +19,9 @@ public class ActionControlPanel {
             ResultSet rs = getListAccount();
             while (rs.next()) {
                 System.out.printf(
-                        "\nНомер счёта: %d" +
                         "\nНазвание счёта: %s" +
                         "\nБаланс на счету: %f\n",
-                        rs.getInt("id"), rs.getString("name"), rs.getDouble("balance")
+                        rs.getString("name"), rs.getDouble("balance")
                         );
             }
         } catch (SQLException e) {
@@ -31,32 +30,27 @@ public class ActionControlPanel {
     }
 
     public void addAccount() {
-        String nameAccount = this.userDataReceiver.enterNameAccount();
-        double balance = this.userDataReceiver.enterBalanceAccount();
-        if (nameAccount.isEmpty() || balance <= 0) {
-            System.out.println("Incorrect data entered");
-            return;
-        }
         try {
+            String nameAccount = this.userDataReceiver.enterNameAccount(userId);
+            BigDecimal balance = this.userDataReceiver.enterBalanceAccount();
             PreparedStatement ps = con.prepareStatement("insert into account (user_id, name, balance) values(?, ?, ?)");
             ps.setInt(1, this.userId);
             ps.setString(2, nameAccount);
-            ps.setDouble(3, balance);
+            ps.setBigDecimal(3, balance);
             ps.execute();
             System.out.println("Account Added");
-        } catch (SQLException e) {
+        } catch (ActionUserExitException e) {
+            System.out.println(e.getMessage());
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
     public void deleteAccount() {
         try {
-            InputRequest inputRequest = new InputRequest();
-            String answer = inputRequest.requestStr("The account name to delete: ").toLowerCase();
-            if (answer.isEmpty()) {
-                System.out.println("Answer cannot be empty");
-                return;
-            }
+            UserDataReceiver userDataReceiver = new UserDataReceiver(con);
+            String answer = userDataReceiver.enterName();
             if (isAccountContains(answer)) {
                 PreparedStatement ps = con.prepareStatement("delete from account where name = ? and user_id = ?");
                 ps.setString(1, answer);
@@ -66,7 +60,10 @@ public class ActionControlPanel {
             } else {
                 System.out.println("Account not found");
             }
-        } catch (SQLException e) {
+        } catch (ActionUserExitException e) {
+            System.out.println(e.getMessage());
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }

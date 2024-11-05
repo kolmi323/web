@@ -1,5 +1,6 @@
 package s02.pages;
 
+import s02.ActionUserExitException;
 import s02.Authorization;
 import s02.InputRequest;
 import s02.Registration;
@@ -14,7 +15,7 @@ public class LoginPage {
         this.con = con;
     }
 
-    public void startPage() {
+    public void startPage() throws ActionUserExitException {
         System.out.println("Welcome to the Login Page");
         String answer;
         while (true) {
@@ -22,22 +23,26 @@ public class LoginPage {
                     "Do you want to register or log in? " +
                     "\nIf you want exit, enter \"exit\""
             );
-            answer = this.inputRequest.requestStr("R/L/exit: ").toLowerCase();
-            if (answer.equals("r")) {
+            answer = this.inputRequest.requestStr("R/L/exit: ");
+            if (answer.equals("R")) {
                 Registration registration = new Registration(con);
                 registration.register();
-            } else if (answer.equals("l")) {
+            } else if (answer.equals("L")) {
                 Authorization authorization = new Authorization(con);
                 authorization.logIn();
                 int userId = authorization.getUserId();
                 if (userId != 0) {
-                    PersonalOfficePage personalOfficePage = new PersonalOfficePage(con, userId);
-                    personalOfficePage.startPersonalOffice();
+                    try {
+                        PersonalOfficePage personalOfficePage = new PersonalOfficePage(con, userId);
+                        personalOfficePage.startPersonalOffice();
+                    } catch (ActionUserExitException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
             } else if (answer.equals("exit")) {
-                break;
+                throw new ActionUserExitException("You exit from site. Good luck!");
             } else {
-                System.out.println("Wrong answer, try again");
+                System.out.println(answer + " - is a wrong answer, try again");
             }
         }
     }
