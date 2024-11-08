@@ -1,11 +1,11 @@
 package s02;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 public class UserDataReceiver {
@@ -19,94 +19,36 @@ public class UserDataReceiver {
     }
 
     public String enterName() {
-        String name;
-        while (true) {
-            name = this.inputRequest.requestStr("Enter your Name or enter \"exit\" to exit: ");
-            if (name.equals("exit")) {
-                System.out.println(("You canceled the name entry"));
-                return ("exit");
-            } else if (name.isEmpty()) {
-                System.out.println("Name cannot be empty");
-            } else {
-                return name;
-            }
-        }
+        return this.inputRequest.requestNotBlunkString("Enter your Name or enter \"exit\" to exit: ");
     }
 
     public String enterPassword() {
-        String password;
-        while (true) {
-            password = this.inputRequest.requestStr("Enter your Password or enter \"exit\" to exit: ");
-            if (password.equals("exit")) {
-                System.out.println("You canceled the password entry");
-                return ("exit");
-            } else if (password.isEmpty()) {
-                System.out.println("Password cannot be empty");
-            }
-            else if (password.length() > 10) {
-                System.out.println("Password too long");
-            } else {
-                return password;
-            }
-        }
+        Predicate<String> predicate = str -> str.length() <= 10;
+        return this.inputRequest.requestNotBlunkString("Enter your Password or enter \"exit\" to exit: ", predicate);
     }
 
     public String enterEmail() {
-        String email;
-        while (true) {
-            email = this.inputRequest.requestStr("Enter your Email or enter \"exit\" to exit: ").toLowerCase();
-            if (email.equals("exit")) {
-                System.out.println("You canceled the email entry");
-                return ("exit");
-            } else if (email.isEmpty()) {
-                System.out.println("Email cannot be empty");
-            }
-            else if (isEmailCorrect(email)) {
-                return email;
-            }
-        }
+        Predicate<String> predicate = str -> isEmailCorrect(str);
+        return this.inputRequest.requestNotBlunkString("Enter your Email or enter \"exit\" to exit: ", predicate);
     }
 
     public String enterNameAccount(int userId) {
-        String name;
-        while (true) {
-            name = this.inputRequest.requestStr("Enter name for your account or enter \"exit\" to exit: ");
-            if (name.equals("exit")) {
-                System.out.println(("You canceled the email entry"));
-                return ("exit");
-            } else if (name.isEmpty()) {
-                System.out.println("Name cannot be empty");
-            } else if (!containsNameAccount(name, userId)) {
-                return name;
-            }
-        }
+        Predicate<String> predicate = str -> !containsNameAccount(str, userId);
+        return this.inputRequest.requestNotBlunkString("Enter your name for your account " +
+                "or enter \"exit\" to exit: ", predicate);
     }
 
     public BigDecimal enterBalanceAccount() {
-        String answer;
-        while (true) {
-            answer = this.inputRequest.requestStr("Enter balance for your account or enter \"exit\" to exit: ");
-            if (answer.equals("exit")) {
-                System.out.println(("You canceled the balance entry"));
-                return BigDecimal.ZERO;
-            } else if (answer.isEmpty()) {
-                System.out.println("Balance cannot be empty");
-            } else if (Pattern.matches("^[0-9]+\\.[0-9]+$", answer)) {
-                return  new BigDecimal(answer).setScale(2, RoundingMode.HALF_UP);
-            } else {
-                System.out.println(
-                        "Balance in not valid" +
-                                "\nBalance example: 12345.12345"
-                );
-            }
-        }
+        Predicate<String> predicate = str -> isBalanceAccountCorrect(str);
+        return inputRequest.requestNotBlunkBigDecimal("Enter balance for your account " +
+                "or enter \"exit\" to exit: ", predicate);
     }
 
     private boolean containsNameAccount(String name, int id) {
         try (Statement st = con.createStatement()){
-            rs = st.executeQuery("SELECT a.id, a.name from account as a");
+            rs = st.executeQuery("SELECT a.name from account as a where a.user_id = " + id);
             while (rs.next()) {
-                if (rs.getString("name").equals(name) && rs.getInt("id") == id) {
+                if (rs.getString("name").equals(name)) {
                     System.out.println("Name already exists");
                     return true;
                 }
@@ -135,12 +77,20 @@ public class UserDataReceiver {
     private boolean isEmailCorrect(String email) {
         Pattern pattern = Pattern.compile("^([a-z0-9_.-]+)@([a-z0-9_.-]+)\\.([a-z.]{2,6})$", Pattern.CASE_INSENSITIVE);
         if (!pattern.matcher(email).matches()) {
-            System.out.println(
-                    "Email is not valid" +
-                            "\nEmail example: vasnecov@yandex.ru"
-                    );
+            System.out.println("Email is not valid" +
+                            "\nEmail example: vasnecov@yandex.ru");
             return false;
         }
         return !containsEmail(email);
+    }
+
+    private boolean isBalanceAccountCorrect(String balance) {
+        Pattern pattern = Pattern.compile("^[0-9]+\\.[0-9]+$", Pattern.CASE_INSENSITIVE);
+        if (!pattern.matcher(balance).matches()) {
+            System.out.println("Balance in not valid" +
+                    "\nBalance example: 12345.12345");
+            return false;
+        }
+        return true;
     }
 }

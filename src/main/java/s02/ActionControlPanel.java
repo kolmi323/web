@@ -34,7 +34,7 @@ public class ActionControlPanel {
         try (PreparedStatement ps = con.prepareStatement(
                 "insert into account (user_id, name, balance) values(?, ?, ?)"
         )) {
-            String nameAccount = this.userDataReceiver.enterNameAccount(userId);
+            String nameAccount = this.userDataReceiver.enterNameAccount(this.userId);
             if (controlExit.isExit(nameAccount)) return;
             BigDecimal balance = this.userDataReceiver.enterBalanceAccount();
             if (controlExit.isExit(balance)) return;

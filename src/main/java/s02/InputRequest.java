@@ -1,6 +1,10 @@
 package s02;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Scanner;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 public class InputRequest {
     private final Scanner scanner;
@@ -12,5 +16,47 @@ public class InputRequest {
     public String requestStr(String text) {
         System.out.println(text);
         return this.scanner.nextLine();
+    }
+
+    public String requestNotBlunkString(String text) {
+        while (true) {
+            String answer = this.requestStr(text);
+            if (answer.equalsIgnoreCase("exit")) {
+                System.out.println(("You canceled the Answer entry"));
+                return ("exit");
+            } else if (answer.isEmpty()) {
+                System.out.println("Answer cannot be empty");
+            } else {
+                return answer;
+            }
+        }
+    }
+
+    public String requestNotBlunkString(String text, Predicate<String> predicate) {
+        while (true) {
+            String answer = this.requestStr(text);
+            if (answer.equalsIgnoreCase("exit")) {
+                System.out.println(("You canceled the Answer entry"));
+                return ("exit");
+            } else if (answer.isEmpty()) {
+                System.out.println("Answer cannot be empty");
+            } else if (predicate.test(answer)) {
+                return answer;
+            }
+        }
+    }
+
+    public BigDecimal requestNotBlunkBigDecimal(String text, Predicate<String> predicate) {
+        while (true) {
+            String answer = this.requestStr(text);
+            if (answer.equals("exit")) {
+                System.out.println(("You canceled the Answer entry"));
+                return BigDecimal.ZERO;
+            } else if (answer.isEmpty()) {
+                System.out.println("Answer cannot be empty");
+            } else if (predicate.test(answer)) {
+                return new BigDecimal(answer).setScale(2, RoundingMode.HALF_UP);
+            }
+        }
     }
 }
