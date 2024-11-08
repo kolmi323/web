@@ -7,10 +7,12 @@ import java.sql.SQLException;
 public class Registration {
     private Connection con;
     private DigestService digestService;
+    private ControlExit controlExit;
 
     public Registration(Connection con) {
         this.con = con;
         this.digestService = new MD5DigestUtils();
+        this.controlExit = new ControlExit();
     }
 
     public void register() {
@@ -19,15 +21,16 @@ public class Registration {
                 "INSERT INTO users (name, email, password) VALUES (?, ?, ?)"
         )) {
             String name = userDataReceiver.enterName();
+            if (controlExit.isExit(name)) return;
             String email = userDataReceiver.enterEmail();
-            String password = this.digestService.hashPassword(userDataReceiver.enterPassword());
+            if (controlExit.isExit(email)) return;
+            String password = userDataReceiver.enterPassword();
+            if (controlExit.isExit(password)) return;
             ps.setString(1, name);
             ps.setString(2, email);
-            ps.setString(3, password);
+            ps.setString(3, this.digestService.hashPassword(password));
             ps.execute();
             System.out.println("Registration Successful");
-        } catch (ActionUserExitException e) {
-            System.out.println(e.getMessage());
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

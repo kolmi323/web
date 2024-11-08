@@ -15,8 +15,6 @@ public class Main {
              "postgres")) {
             loginPage = new LoginPage(con);
             loginPage.startPage();
-        } catch (ActionUserExitException e) {
-            System.out.println(e.getMessage());
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

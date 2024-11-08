@@ -9,10 +9,12 @@ public class Authorization {
     private Connection con;
     private int userId;
     private DigestService digestService;
+    private ControlExit controlExit;
 
     public Authorization(Connection con) {
         this.con = con;
         this.digestService = new MD5DigestUtils();
+        this.controlExit = new ControlExit();
     }
 
     public void logIn() {
@@ -21,9 +23,11 @@ public class Authorization {
                 "select u.id, u.name, u.password from users as u where u.name = ? and u.password = ?"
         )) {
             String name = userDataReceiver.enterName();
-            String password = this.digestService.hashPassword(userDataReceiver.enterPassword());
+            if (controlExit.isExit(name)) return;
+            String password = userDataReceiver.enterPassword();
+            if (controlExit.isExit(password)) return;
             st.setString(1, name);
-            st.setString(2, password);
+            st.setString(2, this.digestService.hashPassword(password));
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 userId = rs.getInt("id");
@@ -31,10 +35,7 @@ public class Authorization {
             } else {
                 System.out.println("You are not logged in");
             }
-        } catch (ActionUserExitException e) {
-            System.out.println(e.getMessage());
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }

@@ -7,11 +7,13 @@ public class ActionControlPanel {
     private Connection con;
     private UserDataReceiver userDataReceiver;
     private int userId;
+    private ControlExit controlExit;
 
     public ActionControlPanel(Connection con, int userId) {
         this.con = con;
         this.userId = userId;
         this.userDataReceiver = new UserDataReceiver(con);
+        this.controlExit = new ControlExit();
     }
 
     public void showListAccounts() {
@@ -33,16 +35,15 @@ public class ActionControlPanel {
                 "insert into account (user_id, name, balance) values(?, ?, ?)"
         )) {
             String nameAccount = this.userDataReceiver.enterNameAccount(userId);
+            if (controlExit.isExit(nameAccount)) return;
             BigDecimal balance = this.userDataReceiver.enterBalanceAccount();
+            if (controlExit.isExit(balance)) return;
             ps.setInt(1, this.userId);
             ps.setString(2, nameAccount);
             ps.setBigDecimal(3, balance);
             ps.execute();
             System.out.println("Account Added");
-        } catch (ActionUserExitException e) {
-            System.out.println(e.getMessage());
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -53,6 +54,7 @@ public class ActionControlPanel {
         )) {
             UserDataReceiver userDataReceiver = new UserDataReceiver(con);
             String answer = userDataReceiver.enterName();
+            if (controlExit.isExit(answer)) return;
             ps.setString(1, answer);
             ps.setInt(2, userId);
             if (ps.executeUpdate() == 0) {
@@ -60,10 +62,7 @@ public class ActionControlPanel {
             } else {
                 System.out.println("Deleted successfully");
             }
-        } catch (ActionUserExitException e) {
-            System.out.println(e.getMessage());
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }

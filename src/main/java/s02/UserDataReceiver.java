@@ -18,12 +18,13 @@ public class UserDataReceiver {
         this.inputRequest = new InputRequest();
     }
 
-    public String enterName() throws ActionUserExitException {
+    public String enterName() {
         String name;
         while (true) {
             name = this.inputRequest.requestStr("Enter your Name or enter \"exit\" to exit: ");
             if (name.equals("exit")) {
-                throw new ActionUserExitException("You canceled the name entry");
+                System.out.println(("You canceled the name entry"));
+                return ("exit");
             } else if (name.isEmpty()) {
                 System.out.println("Name cannot be empty");
             } else {
@@ -32,12 +33,13 @@ public class UserDataReceiver {
         }
     }
 
-    public String enterPassword() throws ActionUserExitException {
+    public String enterPassword() {
         String password;
         while (true) {
             password = this.inputRequest.requestStr("Enter your Password or enter \"exit\" to exit: ");
             if (password.equals("exit")) {
-                throw new ActionUserExitException("You canceled the password entry");
+                System.out.println("You canceled the password entry");
+                return ("exit");
             } else if (password.isEmpty()) {
                 System.out.println("Password cannot be empty");
             }
@@ -49,12 +51,13 @@ public class UserDataReceiver {
         }
     }
 
-    public String enterEmail() throws ActionUserExitException {
+    public String enterEmail() {
         String email;
         while (true) {
             email = this.inputRequest.requestStr("Enter your Email or enter \"exit\" to exit: ").toLowerCase();
             if (email.equals("exit")) {
-                throw new ActionUserExitException("You canceled the email entry");
+                System.out.println("You canceled the email entry");
+                return ("exit");
             } else if (email.isEmpty()) {
                 System.out.println("Email cannot be empty");
             }
@@ -64,12 +67,13 @@ public class UserDataReceiver {
         }
     }
 
-    public String enterNameAccount(int userId) throws ActionUserExitException {
+    public String enterNameAccount(int userId) {
         String name;
         while (true) {
             name = this.inputRequest.requestStr("Enter name for your account or enter \"exit\" to exit: ");
             if (name.equals("exit")) {
-                throw new ActionUserExitException("You canceled the email entry");
+                System.out.println(("You canceled the email entry"));
+                return ("exit");
             } else if (name.isEmpty()) {
                 System.out.println("Name cannot be empty");
             } else if (!containsNameAccount(name, userId)) {
@@ -78,12 +82,13 @@ public class UserDataReceiver {
         }
     }
 
-    public BigDecimal enterBalanceAccount() throws ActionUserExitException{
+    public BigDecimal enterBalanceAccount() {
         String answer;
         while (true) {
             answer = this.inputRequest.requestStr("Enter balance for your account or enter \"exit\" to exit: ");
             if (answer.equals("exit")) {
-                throw new ActionUserExitException("You canceled the balance entry");
+                System.out.println(("You canceled the balance entry"));
+                return BigDecimal.ZERO;
             } else if (answer.isEmpty()) {
                 System.out.println("Balance cannot be empty");
             } else if (Pattern.matches("^[0-9]+\\.[0-9]+$", answer)) {

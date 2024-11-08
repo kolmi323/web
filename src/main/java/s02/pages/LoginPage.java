@@ -1,7 +1,7 @@
 package s02.pages;
 
-import s02.ActionUserExitException;
 import s02.Authorization;
+import s02.ControlExit;
 import s02.InputRequest;
 import s02.Registration;
 
@@ -10,13 +10,15 @@ import java.sql.Connection;
 public class LoginPage {
     private Connection con;
     private InputRequest inputRequest;
+    private ControlExit controlExit;
 
     public LoginPage(Connection con) {
         this.con = con;
         inputRequest = new InputRequest();
+        this.controlExit = new ControlExit();
     }
 
-    public void startPage() throws ActionUserExitException {
+    public void startPage() {
         System.out.println("Welcome to the Login Page");
         String answer;
         while (true) {
@@ -33,15 +35,12 @@ public class LoginPage {
                 authorization.logIn();
                 int userId = authorization.getUserId();
                 if (userId != 0) {
-                    try {
-                        PersonalOfficePage personalOfficePage = new PersonalOfficePage(con, userId);
-                        personalOfficePage.startPersonalOffice();
-                    } catch (ActionUserExitException e) {
-                        System.out.println(e.getMessage());
-                    }
+                    PersonalOfficePage personalOfficePage = new PersonalOfficePage(con, userId);
+                    personalOfficePage.startPersonalOffice();
                 }
-            } else if (answer.equalsIgnoreCase("exit")) {
-                throw new ActionUserExitException("You exit from site. Good luck!");
+            } else if (controlExit.isExit(answer)) {
+                System.out.println(("You exit from site. Good luck!"));
+                return;
             } else {
                 System.out.println(answer + " - is a wrong answer, try again");
             }

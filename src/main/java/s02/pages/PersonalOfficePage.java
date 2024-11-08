@@ -1,7 +1,7 @@
 package s02.pages;
 
 import s02.ActionControlPanel;
-import s02.ActionUserExitException;
+import s02.ControlExit;
 import s02.InputRequest;
 
 import java.sql.Connection;
@@ -13,14 +13,16 @@ public class PersonalOfficePage {
     private Connection con;
     private int userId;
     private InputRequest inputRequest;
+    ControlExit controlExit;
 
     public PersonalOfficePage(Connection con, int userId) {
         this.con = con;
         this.userId = userId;
         this.inputRequest = new InputRequest();
+        this.controlExit = new ControlExit();
     }
 
-    public void startPersonalOffice() throws ActionUserExitException {
+    public void startPersonalOffice() {
         String answer;
         try (Statement st = this.con.createStatement()) {
             ResultSet rs = st.executeQuery("select * from users where id = " + this.userId);
@@ -32,7 +34,7 @@ public class PersonalOfficePage {
                         "\n1. Display a list of accounts" +
                         "\n2. Create account" +
                         "\n3. Delete account" +
-                        "\n0. Exit"
+                        "\nexit. Exit"
                 );
                 ActionControlPanel actionControlPanel = new ActionControlPanel(this.con, this.userId);
                 if (answer.equals("1")) {
@@ -41,8 +43,9 @@ public class PersonalOfficePage {
                     actionControlPanel.addAccount();
                 } else if (answer.equals("3")) {
                     actionControlPanel.deleteAccount();
-                } else if (answer.equals("0")) {
-                    throw new ActionUserExitException("You exit from person office!");
+                } else if (controlExit.isExit(answer)) {
+                    System.out.println("You exit from person office!");
+                    return;
                 } else {
                     System.out.println("Invalid input");
                 }
