@@ -9,10 +9,11 @@ import java.sql.Connection;
 
 public class LoginPage {
     private Connection con;
-    private InputRequest inputRequest = new InputRequest();
+    private InputRequest inputRequest;
 
     public LoginPage(Connection con) {
         this.con = con;
+        inputRequest = new InputRequest();
     }
 
     public void startPage() throws ActionUserExitException {
@@ -24,10 +25,10 @@ public class LoginPage {
                     "\nIf you want exit, enter \"exit\""
             );
             answer = this.inputRequest.requestStr("R/L/exit: ");
-            if (answer.equals("R")) {
+            if (answer.equalsIgnoreCase("r")) {
                 Registration registration = new Registration(con);
                 registration.register();
-            } else if (answer.equals("L")) {
+            } else if (answer.equalsIgnoreCase("l")) {
                 Authorization authorization = new Authorization(con);
                 authorization.logIn();
                 int userId = authorization.getUserId();
@@ -39,7 +40,7 @@ public class LoginPage {
                         System.out.println(e.getMessage());
                     }
                 }
-            } else if (answer.equals("exit")) {
+            } else if (answer.equalsIgnoreCase("exit")) {
                 throw new ActionUserExitException("You exit from site. Good luck!");
             } else {
                 System.out.println(answer + " - is a wrong answer, try again");

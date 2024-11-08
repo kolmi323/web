@@ -15,8 +15,7 @@ public class ActionControlPanel {
     }
 
     public void showListAccounts() {
-        try {
-            ResultSet rs = getListAccount();
+        try (ResultSet rs = getListAccount()) {
             while (rs.next()) {
                 System.out.printf(
                         "\nНазвание счёта: %s" +
@@ -30,10 +29,11 @@ public class ActionControlPanel {
     }
 
     public void addAccount() {
-        try {
+        try (PreparedStatement ps = con.prepareStatement(
+                "insert into account (user_id, name, balance) values(?, ?, ?)"
+        )) {
             String nameAccount = this.userDataReceiver.enterNameAccount(userId);
             BigDecimal balance = this.userDataReceiver.enterBalanceAccount();
-            PreparedStatement ps = con.prepareStatement("insert into account (user_id, name, balance) values(?, ?, ?)");
             ps.setInt(1, this.userId);
             ps.setString(2, nameAccount);
             ps.setBigDecimal(3, balance);
@@ -48,10 +48,11 @@ public class ActionControlPanel {
     }
 
     public void deleteAccount() {
-        try {
+        try (PreparedStatement ps = con.prepareStatement(
+                "delete from account where name = ? and user_id = ?"
+        )) {
             UserDataReceiver userDataReceiver = new UserDataReceiver(con);
             String answer = userDataReceiver.enterName();
-            PreparedStatement ps = con.prepareStatement("delete from account where name = ? and user_id = ?");
             ps.setString(1, answer);
             ps.setInt(2, userId);
             if (ps.executeUpdate() == 0) {

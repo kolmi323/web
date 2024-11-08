@@ -3,38 +3,34 @@ package s02;
 import org.apache.commons.codec.digest.DigestUtils;
 import sun.security.provider.MD5;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Authorization {
     private Connection con;
-    int userId;
+    private int userId;
+    private DigestService digestService;
 
     public Authorization(Connection con) {
         this.con = con;
+        this.digestService = new MD5DigestUtils();
     }
 
     public void logIn() {
         UserDataReceiver userDataReceiver = new UserDataReceiver(this.con);
-        try {
+        try (PreparedStatement st = this.con.prepareStatement(
+                "select u.id, u.name, u.password from users as u where u.name = ? and u.password = ?"
+        )) {
             String name = userDataReceiver.enterName();
-            MD5DigestUtils md5 = new MD5DigestUtils();
-            String password = md5.hashPassword(userDataReceiver.enterPassword());
-            Statement st = this.con.createStatement();
-            ResultSet rs = st.executeQuery("select u.id, u.name, u.password from users as u");
-            while (rs.next()) {
-                if (
-                        name.equals(rs.getString("name")) &&
-                        password.equals(rs.getString("password"))
-                ) {
-                    System.out.println("Logged in");
-                    this.userId = rs.getInt("id");
-                    return;
-                }
+            String password = this.digestService.hashPassword(userDataReceiver.enterPassword());
+            st.setString(1, name);
+            st.setString(2, password);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                userId = rs.getInt("id");
+                System.out.println("Logged in");
+            } else {
+                System.out.println("You are not logged in");
             }
-            System.out.println("You are not logged in");
         } catch (ActionUserExitException e) {
             System.out.println(e.getMessage());
         }

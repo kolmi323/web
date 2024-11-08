@@ -12,17 +12,17 @@ import java.sql.Statement;
 public class PersonalOfficePage {
     private Connection con;
     private int userId;
-    private InputRequest inputRequest = new InputRequest();
+    private InputRequest inputRequest;
 
     public PersonalOfficePage(Connection con, int userId) {
         this.con = con;
         this.userId = userId;
+        this.inputRequest = new InputRequest();
     }
 
     public void startPersonalOffice() throws ActionUserExitException {
         String answer;
-        try {
-            Statement st = this.con.createStatement();
+        try (Statement st = this.con.createStatement()) {
             ResultSet rs = st.executeQuery("select * from users where id = " + this.userId);
             rs.next();
             System.out.println("Welcome to personal office " + rs.getString("name") + "!");

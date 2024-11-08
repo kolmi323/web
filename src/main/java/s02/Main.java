@@ -9,13 +9,10 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) {
         LoginPage loginPage;
-        try (
-                Connection con = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/postgres",
-                "postgres",
-                "postgres"
-                )
-        ) {
+        try (Connection con = DriverManager.getConnection(
+             "jdbc:postgresql://localhost:5432/postgres",
+             "postgres",
+             "postgres")) {
             loginPage = new LoginPage(con);
             loginPage.startPage();
         } catch (ActionUserExitException e) {

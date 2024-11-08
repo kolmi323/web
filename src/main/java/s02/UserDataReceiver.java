@@ -11,11 +11,11 @@ import java.util.regex.Pattern;
 public class UserDataReceiver {
     private Connection con;
     private ResultSet rs;
-    private Statement stmt;
-    private InputRequest inputRequest = new InputRequest();
+    private InputRequest inputRequest;
 
     public UserDataReceiver(Connection con) {
         this.con = con;
+        this.inputRequest = new InputRequest();
     }
 
     public String enterName() throws ActionUserExitException {
@@ -98,9 +98,8 @@ public class UserDataReceiver {
     }
 
     private boolean containsNameAccount(String name, int id) {
-        try {
-            stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT a.id, a.name from account as a");
+        try (Statement st = con.createStatement()){
+            rs = st.executeQuery("SELECT a.id, a.name from account as a");
             while (rs.next()) {
                 if (rs.getString("name").equals(name) && rs.getInt("id") == id) {
                     System.out.println("Name already exists");
@@ -114,9 +113,8 @@ public class UserDataReceiver {
     }
 
     private boolean containsEmail(String email) {
-        try {
-            stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT u.email from users as u");
+        try (Statement st = con.createStatement()){
+            rs = st.executeQuery("SELECT u.email from users as u");
             while (rs.next()) {
                 if (rs.getString("email").equals(email)) {
                     System.out.println("Email already exists");
