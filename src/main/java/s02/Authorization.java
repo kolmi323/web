@@ -20,14 +20,23 @@ public class Authorization {
     public void logIn() {
         UserDataReceiver userDataReceiver = new UserDataReceiver(this.con);
         try (PreparedStatement st = this.con.prepareStatement(
-                "select u.id, u.name, u.password from users as u where u.name = ? and u.password = ?"
+                "select u.id, u.name, u.password from users as u where u.name = ? and u.email = ? and u.password = ?"
         )) {
             String name = userDataReceiver.enterName();
-            if (controlExit.isExit(name)) return;
+            if (controlExit.isExit(name)) {
+                return;
+            }
+            String email = userDataReceiver.enterEmail(false);
+            if (controlExit.isExit(email)) {
+                return;
+            }
             String password = userDataReceiver.enterPassword();
-            if (controlExit.isExit(password)) return;
+            if (controlExit.isExit(password)) {
+                return;
+            }
             st.setString(1, name);
-            st.setString(2, this.digestService.hashPassword(password));
+            st.setString(2, email);
+            st.setString(3, this.digestService.hashPassword(password));
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 userId = rs.getInt("id");

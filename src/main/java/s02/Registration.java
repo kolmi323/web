@@ -21,16 +21,25 @@ public class Registration {
                 "INSERT INTO users (name, email, password) VALUES (?, ?, ?)"
         )) {
             String name = userDataReceiver.enterName();
-            if (controlExit.isExit(name)) return;
-            String email = userDataReceiver.enterEmail();
-            if (controlExit.isExit(email)) return;
+            if (controlExit.isExit(name)) {
+                return;
+            }
+            String email = userDataReceiver.enterEmail(true);
+            if (controlExit.isExit(email)) {
+                return;
+            }
             String password = userDataReceiver.enterPassword();
-            if (controlExit.isExit(password)) return;
+            if (controlExit.isExit(password)) {
+                return;
+            }
             ps.setString(1, name);
             ps.setString(2, email);
             ps.setString(3, this.digestService.hashPassword(password));
-            ps.execute();
-            System.out.println("Registration Successful");
+            if (ps.executeUpdate() > 0) {
+                System.out.println("Registration Successful");
+            } else {
+                throw new SQLException("Registration Failed");
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

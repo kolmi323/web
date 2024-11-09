@@ -1,6 +1,7 @@
 package s02;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.*;
 
 public class ActionControlPanel {
@@ -19,11 +20,10 @@ public class ActionControlPanel {
     public void showListAccounts() {
         try (ResultSet rs = getListAccount()) {
             while (rs.next()) {
-                System.out.printf(
-                        "\nНазвание счёта: %s" +
-                        "\nБаланс на счету: %f\n",
-                        rs.getString("name"), rs.getDouble("balance")
-                        );
+                System.out.printf("\nНазвание счёта: %s" +
+                                "\nБаланс на счету: %f\n",
+                                rs.getString("name"),
+                                rs.getDouble("balance"));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -35,9 +35,17 @@ public class ActionControlPanel {
                 "insert into account (user_id, name, balance) values(?, ?, ?)"
         )) {
             String nameAccount = this.userDataReceiver.enterNameAccount(this.userId);
-            if (controlExit.isExit(nameAccount)) return;
-            BigDecimal balance = this.userDataReceiver.enterBalanceAccount();
-            if (controlExit.isExit(balance)) return;
+            if (controlExit.isExit(nameAccount)) {
+                return;
+            }
+            String answer;
+            BigDecimal balance;
+            answer = this.userDataReceiver.enterBalanceAccount();
+            if (controlExit.isExit(answer)) {
+                return;
+            } else {
+                balance = new BigDecimal(answer).setScale(2, RoundingMode.HALF_UP);
+            }
             ps.setInt(1, this.userId);
             ps.setString(2, nameAccount);
             ps.setBigDecimal(3, balance);
@@ -54,7 +62,9 @@ public class ActionControlPanel {
         )) {
             UserDataReceiver userDataReceiver = new UserDataReceiver(con);
             String answer = userDataReceiver.enterName();
-            if (controlExit.isExit(answer)) return;
+            if (controlExit.isExit(answer)) {
+                return;
+            }
             ps.setString(1, answer);
             ps.setInt(2, userId);
             if (ps.executeUpdate() == 0) {

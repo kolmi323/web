@@ -19,28 +19,33 @@ public class UserDataReceiver {
     }
 
     public String enterName() {
-        return this.inputRequest.requestNotBlunkString("Enter your Name or enter \"exit\" to exit: ");
+        return this.inputRequest.requestNotBluncString("Enter your Name or enter \"exit\" to exit: ");
     }
 
     public String enterPassword() {
         Predicate<String> predicate = str -> str.length() <= 10;
-        return this.inputRequest.requestNotBlunkString("Enter your Password or enter \"exit\" to exit: ", predicate);
+        return this.inputRequest.requestNotBluncString("Enter your Password or enter \"exit\" to exit: ", predicate);
     }
 
-    public String enterEmail() {
-        Predicate<String> predicate = str -> isEmailCorrect(str);
-        return this.inputRequest.requestNotBlunkString("Enter your Email or enter \"exit\" to exit: ", predicate);
+    public String enterEmail(boolean isEmailForRegistration) {
+        Predicate<String> predicate;
+        if (isEmailForRegistration) {
+            predicate = str -> isEmailCorrect(str) && !containsEmail(str);
+        } else {
+            predicate = str -> isEmailCorrect(str);
+        }
+        return this.inputRequest.requestNotBluncString("Enter your Email or enter \"exit\" to exit: ", predicate);
     }
 
     public String enterNameAccount(int userId) {
         Predicate<String> predicate = str -> !containsNameAccount(str, userId);
-        return this.inputRequest.requestNotBlunkString("Enter your name for your account " +
+        return this.inputRequest.requestNotBluncString("Enter your name for your account " +
                 "or enter \"exit\" to exit: ", predicate);
     }
 
-    public BigDecimal enterBalanceAccount() {
+    public String enterBalanceAccount() {
         Predicate<String> predicate = str -> isBalanceAccountCorrect(str);
-        return inputRequest.requestNotBlunkBigDecimal("Enter balance for your account " +
+        return this.inputRequest.requestNotBluncString("Enter balance for your account " +
                 "or enter \"exit\" to exit: ", predicate);
     }
 
@@ -81,7 +86,7 @@ public class UserDataReceiver {
                             "\nEmail example: vasnecov@yandex.ru");
             return false;
         }
-        return !containsEmail(email);
+        return true;
     }
 
     private boolean isBalanceAccountCorrect(String balance) {
