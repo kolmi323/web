@@ -15,7 +15,7 @@ public class InputRequest {
         return this.scanner.nextLine();
     }
 
-    public String requestNotBluncString(String text) {
+    public String requestNotBlancString(String text) {
         while (true) {
             String answer = this.requestStr(text);
             if (answer.equalsIgnoreCase("exit")) {
@@ -29,7 +29,7 @@ public class InputRequest {
         }
     }
 
-    public String requestNotBluncString(String text, Predicate<String> predicate) {
+    public String requestNotBlancString(String text, Predicate<String> predicate) {
         while (true) {
             String answer = this.requestStr(text);
             if (answer.equalsIgnoreCase("exit")) {

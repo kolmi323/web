@@ -1,7 +1,7 @@
 package s02.pages;
 
 import s02.ActionControlPanel;
-import s02.BadCredentialsException;
+import s02.CustomException.BadCredentialsException;
 import s02.ControlExit;
 import s02.InputRequest;
 

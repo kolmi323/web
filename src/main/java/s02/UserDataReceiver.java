@@ -1,6 +1,5 @@
 package s02;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,12 +18,12 @@ public class UserDataReceiver {
     }
 
     public String enterName() {
-        return this.inputRequest.requestNotBluncString("Enter your Name or enter \"exit\" to exit: ");
+        return this.inputRequest.requestNotBlancString("Enter your Name or enter \"exit\" to exit: ");
     }
 
     public String enterPassword() {
         Predicate<String> predicate = str -> str.length() <= 10;
-        return this.inputRequest.requestNotBluncString("Enter your Password or enter \"exit\" to exit: ", predicate);
+        return this.inputRequest.requestNotBlancString("Enter your Password or enter \"exit\" to exit: ", predicate);
     }
 
     public String enterEmail(boolean isEmailForRegistration) {
@@ -34,18 +33,18 @@ public class UserDataReceiver {
         } else {
             predicate = str -> isEmailCorrect(str);
         }
-        return this.inputRequest.requestNotBluncString("Enter your Email or enter \"exit\" to exit: ", predicate);
+        return this.inputRequest.requestNotBlancString("Enter your Email or enter \"exit\" to exit: ", predicate);
     }
 
     public String enterNameAccount(int userId) {
         Predicate<String> predicate = str -> !containsNameAccount(str, userId);
-        return this.inputRequest.requestNotBluncString("Enter your name for your account " +
+        return this.inputRequest.requestNotBlancString("Enter your name for your account " +
                 "or enter \"exit\" to exit: ", predicate);
     }
 
     public String enterBalanceAccount() {
         Predicate<String> predicate = str -> isBalanceAccountCorrect(str);
-        return this.inputRequest.requestNotBluncString("Enter balance for your account " +
+        return this.inputRequest.requestNotBlancString("Enter balance for your account " +
                 "or enter \"exit\" to exit: ", predicate);
     }
 

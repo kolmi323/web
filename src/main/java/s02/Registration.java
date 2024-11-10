@@ -1,5 +1,7 @@
 package s02;
 
+import s02.CustomException.DAOException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -15,7 +17,7 @@ public class Registration {
         this.controlExit = new ControlExit();
     }
 
-    public void register() {
+    public void register() throws DAOException {
         UserDataReceiver userDataReceiver = new UserDataReceiver(this.con);
         try (PreparedStatement ps = this.con.prepareStatement(
                 "INSERT INTO users (name, email, password) VALUES (?, ?, ?)"
@@ -38,7 +40,7 @@ public class Registration {
             if (ps.executeUpdate() > 0) {
                 System.out.println("Registration Successful");
             } else {
-                throw new SQLException("Registration Failed");
+                throw new DAOException();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

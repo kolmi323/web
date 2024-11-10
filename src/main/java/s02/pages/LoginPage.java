@@ -1,6 +1,8 @@
 package s02.pages;
 
 import s02.*;
+import s02.CustomException.BadCredentialsException;
+import s02.CustomException.DAOException;
 
 import java.sql.Connection;
 
@@ -24,26 +26,28 @@ public class LoginPage {
                     "\nIf you want exit, enter \"exit\""
             );
             answer = this.inputRequest.requestStr("R/L/exit: ");
-            if (answer.equalsIgnoreCase("r")) {
-                Registration registration = new Registration(con);
-                registration.register();
-            } else if (answer.equalsIgnoreCase("l")) {
-                Authorization authorization = new Authorization(con);
-                authorization.logIn();
-                int userId = authorization.getUserId();
-                try {
+            try {
+                if (answer.equalsIgnoreCase("r")) {
+                    Registration registration = new Registration(con);
+                    registration.register();
+                } else if (answer.equalsIgnoreCase("l")) {
+                    Authorization authorization = new Authorization(con);
+                    authorization.logIn();
+                    int userId = authorization.getUserId();
                     if (userId != 0) {
                         PersonalOfficePage personalOfficePage = new PersonalOfficePage(con, userId);
                         personalOfficePage.startPersonalOffice();
                     }
-                } catch (BadCredentialsException bce) {
-                    System.out.println(bce.getMessage());
+                } else if (controlExit.isExit(answer)) {
+                    System.out.println(("You exit from site. Good luck!"));
+                    return;
+                } else {
+                    System.out.println(answer + " - is a wrong answer, try again");
                 }
-            } else if (controlExit.isExit(answer)) {
-                System.out.println(("You exit from site. Good luck!"));
-                return;
-            } else {
-                System.out.println(answer + " - is a wrong answer, try again");
+            } catch (BadCredentialsException bce) {
+                System.out.println(bce.getMessage());
+            } catch (DAOException daoe) {
+                System.out.println(daoe.getMessage());
             }
         }
     }
