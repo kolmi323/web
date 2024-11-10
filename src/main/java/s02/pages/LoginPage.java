@@ -1,9 +1,6 @@
 package s02.pages;
 
-import s02.Authorization;
-import s02.ControlExit;
-import s02.InputRequest;
-import s02.Registration;
+import s02.*;
 
 import java.sql.Connection;
 
@@ -34,9 +31,13 @@ public class LoginPage {
                 Authorization authorization = new Authorization(con);
                 authorization.logIn();
                 int userId = authorization.getUserId();
-                if (userId != 0) {
-                    PersonalOfficePage personalOfficePage = new PersonalOfficePage(con, userId);
-                    personalOfficePage.startPersonalOffice();
+                try {
+                    if (userId != 0) {
+                        PersonalOfficePage personalOfficePage = new PersonalOfficePage(con, userId);
+                        personalOfficePage.startPersonalOffice();
+                    }
+                } catch (BadCredentialsException bce) {
+                    System.out.println(bce.getMessage());
                 }
             } else if (controlExit.isExit(answer)) {
                 System.out.println(("You exit from site. Good luck!"));

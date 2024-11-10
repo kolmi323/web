@@ -1,6 +1,7 @@
 package s02.pages;
 
 import s02.ActionControlPanel;
+import s02.BadCredentialsException;
 import s02.ControlExit;
 import s02.InputRequest;
 
@@ -19,7 +20,7 @@ public class PersonalOfficePage {
         this.controlExit = new ControlExit();
     }
 
-    public void startPersonalOffice() {
+    public void startPersonalOffice() throws BadCredentialsException {
         String answer;
         try (PreparedStatement ps = con.prepareStatement("select * from users where id = ?")) {
             ps.setInt(1, userId);
@@ -49,7 +50,7 @@ public class PersonalOfficePage {
                     }
                 }
             } else {
-                throw new SQLException("No records found");
+                throw new BadCredentialsException();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
