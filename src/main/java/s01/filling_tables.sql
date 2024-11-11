@@ -1,9 +1,9 @@
 INSERT INTO users (name, email, password)
-VALUES ('John Doe', 'john.doe@example.com', 'pass1234'),
-       ('Jane Smith', 'jane.smith@example.com', 'pass5678'),
-       ('Mike Johnson', 'mike.johnson@example.com', 'pass9101'),
-       ('Alice Williams', 'alice.williams@example.com', 'pass1121'),
-       ('Bob Brown', 'bob.brown@example.com', 'pass1314');
+VALUES ('John Doe', 'john.doe@example.com', MD5('pass1234')),
+       ('Jane Smith', 'jane.smith@example.com', MD5('pass5678')),
+       ('Mike Johnson', 'mike.johnson@example.com', MD5('pass9101')),
+       ('Alice Williams', 'alice.williams@example.com', MD5('pass1121')),
+       ('Bob Brown', 'bob.brown@example.com', MD5('pass1314'));
 
 INSERT INTO account (user_id, name, balance)
 VALUES (1, 'John Savings Account', 5000.00),
