@@ -1,6 +1,7 @@
 package s03.service;
 
 import s03.dao.UserModel;
+import s03.service.CustomInterface.DigestService;
 
 public class RegisterService extends Service {
     private DigestService digestUtils;

@@ -1,24 +1,26 @@
 package s03.view.PersonalPage;
 
 import s03.CustomException.ActionControlException;
-import s03.service.PersonOfficeActionService;
+import s03.dao.AccountModel;
+import s03.service.AccountActionControlService;
 import s03.service.Service;
 import s03.service.UserDTO;
+import s03.view.CustomInterface.ActionControlPanel;
 import s03.view.EnterUserData.UserDataReceiver;
 import s03.view.UserDataControl.ControlExit;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class ActionControlPanel {
-    private final PersonOfficeActionService service;
+public class AccountActionControlPanel implements ActionControlPanel {
+    private final AccountActionControlService service;
     private final UserDataReceiver userDataReceiver;
     private final ControlExit controlExit;
-    private final UserDTO currentUser;
+    private final UserDTO selectedUser;
 
-    public ActionControlPanel(UserDTO currentUser, Service service) {
-        this.currentUser = currentUser;
-        this.service = new PersonOfficeActionService(service, currentUser);
+    public AccountActionControlPanel(UserDTO selectedUser, Service service) {
+        this.selectedUser = selectedUser;
+        this.service = new AccountActionControlService(service, selectedUser);
         this.userDataReceiver = new UserDataReceiver(service);
         this.controlExit = new ControlExit();
     }
@@ -27,8 +29,9 @@ public class ActionControlPanel {
         this.service.returnListAccount().stream().forEach(System.out::println);
     }
 
-    public void addAccount() throws ActionControlException {
-        String name = this.userDataReceiver.enterNameAccount(this.currentUser.getId(), true);
+    @Override
+    public void add() throws ActionControlException {
+        String name = this.userDataReceiver.enterNameAccount(this.selectedUser.getId(), true);
         if (this.controlExit.isExitAction(name)) {
             return;
         }
@@ -37,19 +40,23 @@ public class ActionControlPanel {
             return;
         }
         BigDecimal balance = new BigDecimal(answer).setScale(2, RoundingMode.HALF_UP);
-        if (this.service.createAccount(name, balance)) {
+        AccountModel accountModel = new AccountModel(name, balance);
+        if (this.service.create(accountModel)) {
             System.out.println("Account: " + name + " - created");
         } else {
             throw new ActionControlException();
         }
     }
 
-    public void deleteAccount() {
-        String name = this.userDataReceiver.enterNameAccount(this.currentUser.getId(), false);
+    @Override
+    public void remove() {
+        String name = this.userDataReceiver.enterNameAccount(this.selectedUser.getId(), false);
         if (this.controlExit.isExitAction(name)) {
             return;
         }
-        if (this.service.deleteAccount(currentUser.getId(), name)) {
+        AccountModel account = new AccountModel();
+        account.setName(name);
+        if (this.service.delete(account)) {
             System.out.println("Account: " + name + " - deleted");
         } else {
             System.out.println("Account: " + name + " - error");

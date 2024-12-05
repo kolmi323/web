@@ -2,6 +2,7 @@ package s03.service;
 
 import s03.converter.ConverterUserModelToUserDTO;
 import s03.dao.UserModel;
+import s03.service.CustomInterface.DigestService;
 
 public class AuthService extends Service {
     private UserDTO userDTO;

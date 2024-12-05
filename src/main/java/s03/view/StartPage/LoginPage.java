@@ -2,11 +2,12 @@ package s03.view.StartPage;
 
 import s03.CustomException.RegisterDataException;
 import s03.service.Service;
-import s03.view.PersonalPage.PersonalOffice;
+import s03.view.CustomInterface.Page;
+import s03.view.PersonalPage.PersonalOfficePage;
 import s03.view.UserDataControl.ControlExit;
 import s03.view.EnterUserData.InputRequest;
 
-public class LoginPage {
+public class LoginPage implements Page {
     private final InputRequest inputRequest;
     Service service;
 
@@ -15,6 +16,7 @@ public class LoginPage {
         this.service = service;
     }
 
+    @Override
     public void startPage () {
         ControlExit controlExit = new ControlExit();
         String answer;
@@ -32,8 +34,8 @@ public class LoginPage {
                     LoginWindow loginWindow = new LoginWindow(this.service);
                     loginWindow.login();
                     if (loginWindow.getUserDTO().getId() != 0) {
-                        PersonalOffice personalOffice = new PersonalOffice(service, loginWindow.getUserDTO());
-                        personalOffice.startPersonalOffice();
+                        PersonalOfficePage personalOffice = new PersonalOfficePage(service, loginWindow.getUserDTO());
+                        personalOffice.startPage();
                     }
                 } else if (controlExit.isExitAction(answer)) {
                     return;

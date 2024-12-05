@@ -1,14 +1,15 @@
 package s03.service;
 
 import s03.dao.AccountModel;
+import s03.service.CustomInterface.ActionControlService;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public class PersonOfficeActionService extends Service {
+public class AccountActionControlService extends Service implements ActionControlService<AccountModel> {
     private final UserDTO currentUser;
 
-    public PersonOfficeActionService(Service service, UserDTO currentUser) {
+    public AccountActionControlService(Service service, UserDTO currentUser) {
         this.userDao = service.getUserDao();
         this.currentUser = currentUser;
     }
@@ -17,8 +18,8 @@ public class PersonOfficeActionService extends Service {
         return userDao.getListAccount(currentUser.getId());
     }
 
-    public boolean createAccount(String name, BigDecimal balance) {
-        AccountModel account = new AccountModel(name, balance);
+    @Override
+    public boolean create(AccountModel account) {
         if (userDao.insertAccount(currentUser.getId(), account)) {
             return true;
         } else {
@@ -26,10 +27,9 @@ public class PersonOfficeActionService extends Service {
         }
     }
 
-    public boolean deleteAccount(int user_id, String name) {
-        AccountModel account = new AccountModel();
-        account.setName(name);
-        if (userDao.deletedAccount(user_id, account)) {
+    @Override
+    public boolean delete(AccountModel account) {
+        if (userDao.deletedAccount(currentUser.getId(), account)) {
             return true;
         } else {
             return false;
