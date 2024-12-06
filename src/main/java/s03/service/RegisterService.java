@@ -3,10 +3,10 @@ package s03.service;
 import s03.dao.UserModel;
 import s03.service.CustomInterface.DigestService;
 
-public class RegisterService extends Service {
+public class RegisterService extends ServiceDTO {
     private DigestService digestUtils;
 
-    public RegisterService(Service service) {
+    public RegisterService(ServiceDTO service) {
         this.digestUtils = new MD5DigestUtils();
         this.userDao = service.getUserDao();
     }

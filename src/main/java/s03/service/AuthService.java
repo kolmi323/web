@@ -4,12 +4,12 @@ import s03.converter.ConverterUserModelToUserDTO;
 import s03.dao.UserModel;
 import s03.service.CustomInterface.DigestService;
 
-public class AuthService extends Service {
+public class AuthService extends ServiceDTO {
     private UserDTO userDTO;
     private final DigestService digestService;
     private final ConverterUserModelToUserDTO converterUserModelToUserDTO;
 
-    public AuthService(Service service) {
+    public AuthService(ServiceDTO service) {
         this.userDao = service.getUserDao();
         digestService = new MD5DigestUtils();
         converterUserModelToUserDTO = new ConverterUserModelToUserDTO();

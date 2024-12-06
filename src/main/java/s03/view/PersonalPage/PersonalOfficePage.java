@@ -3,7 +3,7 @@ package s03.view.PersonalPage;
 import s03.view.CustomInterface.Page;
 import s03.view.EnterUserData.InputRequest;
 import s03.view.UserDataControl.ControlExit;
-import s03.service.Service;
+import s03.service.ServiceDTO;
 import s03.service.UserDTO;
 
 public class PersonalOfficePage implements Page {
@@ -12,7 +12,7 @@ public class PersonalOfficePage implements Page {
     private final UserDTO selectedUser;
     private final AccountActionMenu accountActionMenu;
 
-    public PersonalOfficePage(Service service, UserDTO userDTO) {
+    public PersonalOfficePage(ServiceDTO service, UserDTO userDTO) {
         this.selectedUser = userDTO;
         this.inputRequest = new InputRequest();
         this.controlExit = new ControlExit();

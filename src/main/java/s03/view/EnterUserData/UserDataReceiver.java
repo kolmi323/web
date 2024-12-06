@@ -1,16 +1,16 @@
 package s03.view.EnterUserData;
 
-import s03.service.Service;
+import s03.service.ServiceDTO;
 import s03.view.UserDataControl.UserDataChecker;
 
 import java.util.function.Predicate;
 
 public class UserDataReceiver {
-    private final Service service;
+    private final ServiceDTO service;
     private final InputRequest inputRequest;
     private final UserDataChecker userDataChecker;
 
-    public UserDataReceiver(Service service) {
+    public UserDataReceiver(ServiceDTO service) {
         this.service = service;
         this.inputRequest = new InputRequest();
         this.userDataChecker = new UserDataChecker(service);

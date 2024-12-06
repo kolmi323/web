@@ -1,12 +1,13 @@
 package s03.service;
 
 import s03.dao.AccountModel;
+import s03.service.AbstractClass.Service;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class DataCheckerService extends Service {
-    public DataCheckerService(Service service) {
+    public DataCheckerService(ServiceDTO service) {
         this.userDao = service.getUserDao();
     }
 

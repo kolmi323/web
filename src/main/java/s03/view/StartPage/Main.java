@@ -1,10 +1,10 @@
 package s03.view.StartPage;
 
-import s03.service.Service;
+import s03.service.ServiceDTO;
 
 public class Main {
     public static void main(String[] args) {
-        Service service = new Service();
+        ServiceDTO service = new ServiceDTO();
         LoginPage loginPage = new LoginPage(service);
         System.out.println("Welcome to the Login Page");
         loginPage.startPage();

@@ -2,7 +2,7 @@ package s03.view.StartPage;
 
 import s02.ControlExit;
 import s03.service.AuthService;
-import s03.service.Service;
+import s03.service.ServiceDTO;
 import s03.service.UserDTO;
 import s03.view.EnterUserData.UserDataReceiver;
 
@@ -12,7 +12,7 @@ public class LoginWindow {
     private final ControlExit controlExit;
     private UserDTO userDTO;
 
-    public LoginWindow(Service service) {
+    public LoginWindow(ServiceDTO service) {
         this.service = new AuthService(service);
         this.userDataReceiver = new UserDataReceiver(this.service);
         this.controlExit = new ControlExit();

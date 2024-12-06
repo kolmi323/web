@@ -1,10 +1,8 @@
-package s03.service;
+package s03.service.AbstractClass;
 
 import s03.dao.UserDao;
 
-import java.util.List;
-
-public class Service {
+public abstract class Service {
     protected UserDao userDao;
 
     public Service() {

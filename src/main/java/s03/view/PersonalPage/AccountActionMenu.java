@@ -1,23 +1,18 @@
 package s03.view.PersonalPage;
 
 import s03.CustomException.ActionControlException;
-import s03.service.Service;
+import s03.service.ServiceDTO;
 import s03.service.UserDTO;
-import s03.view.CustomInterface.ActionMenu;
-import s03.view.EnterUserData.InputRequest;
-import s03.view.UserDataControl.ControlExit;
+import s03.view.AbstractClass.ActionMenu;
 
-public class AccountActionMenu implements ActionMenu {
-    private final InputRequest inputRequest;
-    private final ControlExit controlExit;
-    private final AccountActionControlPanel accountActionControlPanel;
-    private final UserDTO selectedUser;
+public class AccountActionMenu extends ActionMenu<AccountActionControlPanel> {
+    public AccountActionMenu(ServiceDTO service, UserDTO selectedUser) {
+        super(service, selectedUser);
+    }
 
-    public AccountActionMenu(Service service, UserDTO selectedUser) {
-        this.selectedUser = selectedUser;
-        this.accountActionControlPanel = new AccountActionControlPanel(selectedUser, service);
-        this.inputRequest = new InputRequest();
-        this.controlExit = new ControlExit();
+    @Override
+    protected AccountActionControlPanel createActionControlPanel(ServiceDTO service, UserDTO selectedUser) {
+        return new AccountActionControlPanel(service, selectedUser);
     }
 
     @Override
@@ -34,11 +29,11 @@ public class AccountActionMenu implements ActionMenu {
             );
             try {
                 if (answer.equals("1")) {
-                    accountActionControlPanel.showListAccount();
+                    actionControlPanel.showListAccount();
                 } else if (answer.equals("2")) {
-                    accountActionControlPanel.add();
+                    actionControlPanel.add();
                 } else if (answer.equals("3")) {
-                    accountActionControlPanel.remove();
+                    actionControlPanel.remove();
                 } else if (controlExit.isExitAction(answer)) {
                     System.out.println("You exit from account action menu!");
                     return;

@@ -1,17 +1,14 @@
 package s03.service;
 
 import s03.dao.AccountModel;
-import s03.service.CustomInterface.ActionControlService;
+import s03.service.AbstractClass.ActionControlService;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-public class AccountActionControlService extends Service implements ActionControlService<AccountModel> {
-    private final UserDTO currentUser;
+public class AccountActionControlService extends ActionControlService<AccountModel> {
 
-    public AccountActionControlService(Service service, UserDTO currentUser) {
-        this.userDao = service.getUserDao();
-        this.currentUser = currentUser;
+    public AccountActionControlService(ServiceDTO service, UserDTO currentUser) {
+        super(service, currentUser);
     }
 
     public List<AccountModel> returnListAccount() {

@@ -2,27 +2,16 @@ package s03.view.PersonalPage;
 
 import s03.CustomException.ActionControlException;
 import s03.dao.AccountModel;
-import s03.service.AccountActionControlService;
-import s03.service.Service;
+import s03.service.ServiceDTO;
 import s03.service.UserDTO;
-import s03.view.CustomInterface.ActionControlPanel;
-import s03.view.EnterUserData.UserDataReceiver;
-import s03.view.UserDataControl.ControlExit;
+import s03.view.AbstractClass.ActionControlPanel;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class AccountActionControlPanel implements ActionControlPanel {
-    private final AccountActionControlService service;
-    private final UserDataReceiver userDataReceiver;
-    private final ControlExit controlExit;
-    private final UserDTO selectedUser;
-
-    public AccountActionControlPanel(UserDTO selectedUser, Service service) {
-        this.selectedUser = selectedUser;
-        this.service = new AccountActionControlService(service, selectedUser);
-        this.userDataReceiver = new UserDataReceiver(service);
-        this.controlExit = new ControlExit();
+public class AccountActionControlPanel extends ActionControlPanel {
+    public AccountActionControlPanel(ServiceDTO service, UserDTO selectedUser) {
+        super(service, selectedUser);
     }
 
     public void showListAccount() {

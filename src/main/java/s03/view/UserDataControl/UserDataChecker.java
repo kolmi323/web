@@ -1,12 +1,12 @@
 package s03.view.UserDataControl;
 
 import s03.service.DataCheckerService;
-import s03.service.Service;
+import s03.service.ServiceDTO;
 
 public class UserDataChecker {
     private final DataCheckerService service;
 
-    public UserDataChecker(Service service) {
+    public UserDataChecker(ServiceDTO service) {
         this.service = new DataCheckerService(service);
     }
 
@@ -40,7 +40,7 @@ public class UserDataChecker {
             return true;
         }
         System.out.println("Balance in not valid" +
-                "\nBalance example: 12345.12345");
+                "\nBalance example: 12345.12");
         return false;
     }
 

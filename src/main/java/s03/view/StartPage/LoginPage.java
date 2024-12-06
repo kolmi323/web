@@ -1,7 +1,7 @@
 package s03.view.StartPage;
 
 import s03.CustomException.RegisterDataException;
-import s03.service.Service;
+import s03.service.ServiceDTO;
 import s03.view.CustomInterface.Page;
 import s03.view.PersonalPage.PersonalOfficePage;
 import s03.view.UserDataControl.ControlExit;
@@ -9,16 +9,17 @@ import s03.view.EnterUserData.InputRequest;
 
 public class LoginPage implements Page {
     private final InputRequest inputRequest;
-    Service service;
+    private final ControlExit controlExit;
+    ServiceDTO service;
 
-    public LoginPage(Service service) {
+    public LoginPage(ServiceDTO service) {
         this.inputRequest = new InputRequest();
+        controlExit = new ControlExit();
         this.service = service;
     }
 
     @Override
     public void startPage () {
-        ControlExit controlExit = new ControlExit();
         String answer;
         while (true) {
             System.out.println(
