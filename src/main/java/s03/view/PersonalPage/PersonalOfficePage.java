@@ -3,8 +3,8 @@ package s03.view.PersonalPage;
 import s03.view.CustomInterface.Page;
 import s03.view.EnterUserData.InputRequest;
 import s03.view.UserDataControl.ControlExit;
-import s03.service.ServiceDTO;
-import s03.service.UserDTO;
+import s03.service.DTO.ServiceDTO;
+import s03.service.DTO.UserDTO;
 
 public class PersonalOfficePage implements Page {
     private final InputRequest inputRequest;

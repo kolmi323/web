@@ -1,8 +1,8 @@
 package s03.view.StartPage;
 
 import s03.CustomException.RegisterDataException;
-import s03.service.RegisterService;
-import s03.service.ServiceDTO;
+import s03.service.StartPage.RegisterService;
+import s03.service.DTO.ServiceDTO;
 import s03.view.EnterUserData.UserDataReceiver;
 import s03.view.UserDataControl.ControlExit;
 
@@ -13,7 +13,7 @@ public class RegisterWindow {
 
     public RegisterWindow(ServiceDTO service) {
         this.service = new RegisterService(service);
-        this.userDataReceiver = new UserDataReceiver(this.service);
+        this.userDataReceiver = new UserDataReceiver(service);
         this.controlExit = new ControlExit();
     }
 

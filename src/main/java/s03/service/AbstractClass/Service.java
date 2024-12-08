@@ -1,15 +1,17 @@
 package s03.service.AbstractClass;
 
-import s03.dao.UserDao;
+import s03.dao.ManagmentDAO;
 
 public abstract class Service {
-    protected UserDao userDao;
+    protected ManagmentDAO managmentDAO;
 
-    public Service() {
-        userDao = new UserDao();
+    protected Service() {}
+
+    public Service(Service service) {
+        this.managmentDAO = service.getManagmentDAO();
     }
 
-    protected UserDao getUserDao() {
-        return userDao;
+    protected ManagmentDAO getManagmentDAO() {
+        return managmentDAO;
     }
 }

@@ -1,9 +1,9 @@
 package s03.view.AbstractClass;
 
 import s03.CustomException.ActionControlException;
-import s03.service.AccountActionControlService;
-import s03.service.ServiceDTO;
-import s03.service.UserDTO;
+import s03.service.PersonalPage.AccountActionControlService;
+import s03.service.DTO.ServiceDTO;
+import s03.service.DTO.UserDTO;
 import s03.view.EnterUserData.UserDataReceiver;
 import s03.view.UserDataControl.ControlExit;
 

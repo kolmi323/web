@@ -1,13 +1,13 @@
 package s03.service.AbstractClass;
 
-import s03.service.ServiceDTO;
-import s03.service.UserDTO;
+import s03.service.DTO.ServiceDTO;
+import s03.service.DTO.UserDTO;
 
 public abstract class ActionControlService <M> extends Service {
     protected final UserDTO currentUser;
 
     public ActionControlService(ServiceDTO service, UserDTO currentUser) {
-        this.userDao = service.getUserDao();
+        super(service);
         this.currentUser = currentUser;
     }
 

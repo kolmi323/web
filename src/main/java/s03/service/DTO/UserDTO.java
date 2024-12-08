@@ -1,18 +1,17 @@
-package s03.dao;
+package s03.service.DTO;
 
-public class UserModel {
+public class UserDTO {
     private int id;
     private String name;
     private String email;
-    private String password;
 
-    public UserModel() {
+    public UserDTO() {
     }
 
-    public UserModel(String name, String email, String password) {
+    public UserDTO(int id, String name, String email) {
+        this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
     }
 
     public int getId() {
@@ -27,10 +26,6 @@ public class UserModel {
         return this.email;
     }
 
-    public String getPassword() {
-        return this.password;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -41,9 +36,5 @@ public class UserModel {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

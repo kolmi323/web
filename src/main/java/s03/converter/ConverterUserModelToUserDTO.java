@@ -1,7 +1,7 @@
 package s03.converter;
 
-import s03.dao.UserModel;
-import s03.service.UserDTO;
+import s03.dao.Model.UserModel;
+import s03.service.DTO.UserDTO;
 
 public class ConverterUserModelToUserDTO implements Converter<UserModel, UserDTO> {
     @Override

@@ -1,8 +1,8 @@
 package s03.view.PersonalPage;
 
 import s03.CustomException.ActionControlException;
-import s03.service.ServiceDTO;
-import s03.service.UserDTO;
+import s03.service.DTO.ServiceDTO;
+import s03.service.DTO.UserDTO;
 import s03.view.AbstractClass.ActionMenu;
 
 public class AccountActionMenu extends ActionMenu<AccountActionControlPanel> {

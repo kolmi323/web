@@ -1,7 +1,9 @@
-package s03.service;
+package s03.service.PersonalPage;
 
-import s03.dao.AccountModel;
+import s03.dao.Model.AccountModel;
 import s03.service.AbstractClass.ActionControlService;
+import s03.service.DTO.ServiceDTO;
+import s03.service.DTO.UserDTO;
 
 import java.util.List;
 
@@ -12,12 +14,12 @@ public class AccountActionControlService extends ActionControlService<AccountMod
     }
 
     public List<AccountModel> returnListAccount() {
-        return userDao.getListAccount(currentUser.getId());
+        return managmentDAO.getterDAO.getListAccount(currentUser.getId());
     }
 
     @Override
     public boolean create(AccountModel account) {
-        if (userDao.insertAccount(currentUser.getId(), account)) {
+        if (managmentDAO.accountDAO.insertAccount(currentUser.getId(), account)) {
             return true;
         } else {
             return false;
@@ -26,7 +28,7 @@ public class AccountActionControlService extends ActionControlService<AccountMod
 
     @Override
     public boolean delete(AccountModel account) {
-        if (userDao.deletedAccount(currentUser.getId(), account)) {
+        if (managmentDAO.accountDAO.deletedAccount(currentUser.getId(), account)) {
             return true;
         } else {
             return false;

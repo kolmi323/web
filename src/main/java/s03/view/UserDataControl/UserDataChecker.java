@@ -1,7 +1,7 @@
 package s03.view.UserDataControl;
 
 import s03.service.DataCheckerService;
-import s03.service.ServiceDTO;
+import s03.service.DTO.ServiceDTO;
 
 public class UserDataChecker {
     private final DataCheckerService service;

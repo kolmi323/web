@@ -1,9 +1,9 @@
 package s03.view.StartPage;
 
 import s02.ControlExit;
-import s03.service.AuthService;
-import s03.service.ServiceDTO;
-import s03.service.UserDTO;
+import s03.service.StartPage.AuthService;
+import s03.service.DTO.ServiceDTO;
+import s03.service.DTO.UserDTO;
 import s03.view.EnterUserData.UserDataReceiver;
 
 public class LoginWindow {
@@ -14,7 +14,7 @@ public class LoginWindow {
 
     public LoginWindow(ServiceDTO service) {
         this.service = new AuthService(service);
-        this.userDataReceiver = new UserDataReceiver(this.service);
+        this.userDataReceiver = new UserDataReceiver(service);
         this.controlExit = new ControlExit();
         userDTO = new UserDTO();
     }

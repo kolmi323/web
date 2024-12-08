@@ -1,9 +1,9 @@
 package s03.view.PersonalPage;
 
 import s03.CustomException.ActionControlException;
-import s03.dao.AccountModel;
-import s03.service.ServiceDTO;
-import s03.service.UserDTO;
+import s03.dao.Model.AccountModel;
+import s03.service.DTO.ServiceDTO;
+import s03.service.DTO.UserDTO;
 import s03.view.AbstractClass.ActionControlPanel;
 
 import java.math.BigDecimal;
@@ -48,7 +48,7 @@ public class AccountActionControlPanel extends ActionControlPanel {
         if (this.service.delete(account)) {
             System.out.println("Account: " + name + " - deleted");
         } else {
-            System.out.println("Account: " + name + " - error");
+            System.out.println("Account: " + name + " - not found");
         }
     }
 }

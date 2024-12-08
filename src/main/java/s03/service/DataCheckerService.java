@@ -1,14 +1,15 @@
 package s03.service;
 
-import s03.dao.AccountModel;
+import s03.dao.Model.AccountModel;
 import s03.service.AbstractClass.Service;
+import s03.service.DTO.ServiceDTO;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class DataCheckerService extends Service {
     public DataCheckerService(ServiceDTO service) {
-        this.userDao = service.getUserDao();
+        super(service);
     }
 
     public boolean checkEmailPattern(String email) {
@@ -18,7 +19,7 @@ public class DataCheckerService extends Service {
     }
 
     public boolean checkEmailUnique(String email) {
-        List<String> emails = this.userDao.getEmails();
+        List<String> emails = this.managmentDAO.getterDAO.getEmails();
         return emails.stream().anyMatch(e -> e.equals(email));
     }
 
@@ -32,7 +33,7 @@ public class DataCheckerService extends Service {
     }
 
     public boolean checkNameAccountUnique(int userId, String name) {
-        List<AccountModel> accounts = userDao.getListAccount(userId);
+        List<AccountModel> accounts = managmentDAO.getterDAO.getListAccount(userId);
         return accounts.stream().anyMatch(account -> account.getName().equals(name));
     }
 }

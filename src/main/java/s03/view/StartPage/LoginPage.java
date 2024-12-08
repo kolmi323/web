@@ -1,7 +1,7 @@
 package s03.view.StartPage;
 
 import s03.CustomException.RegisterDataException;
-import s03.service.ServiceDTO;
+import s03.service.DTO.ServiceDTO;
 import s03.view.CustomInterface.Page;
 import s03.view.PersonalPage.PersonalOfficePage;
 import s03.view.UserDataControl.ControlExit;

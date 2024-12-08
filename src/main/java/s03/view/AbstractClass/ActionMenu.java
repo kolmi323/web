@@ -1,7 +1,7 @@
 package s03.view.AbstractClass;
 
-import s03.service.ServiceDTO;
-import s03.service.UserDTO;
+import s03.service.DTO.ServiceDTO;
+import s03.service.DTO.UserDTO;
 import s03.view.EnterUserData.InputRequest;
 import s03.view.UserDataControl.ControlExit;
 

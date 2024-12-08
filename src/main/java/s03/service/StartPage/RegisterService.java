@@ -1,18 +1,21 @@
-package s03.service;
+package s03.service.StartPage;
 
-import s03.dao.UserModel;
+import s03.dao.Model.UserModel;
+import s03.service.AbstractClass.Service;
 import s03.service.CustomInterface.DigestService;
+import s03.service.DTO.ServiceDTO;
+import s03.service.MD5DigestUtils;
 
-public class RegisterService extends ServiceDTO {
+public class RegisterService extends Service {
     private DigestService digestUtils;
 
     public RegisterService(ServiceDTO service) {
+        super(service);
         this.digestUtils = new MD5DigestUtils();
-        this.userDao = service.getUserDao();
     }
 
     public boolean createNewUser (String name, String email, String password) {
         UserModel userModel = new UserModel(name, email, digestUtils.hashPassword(password));
-        return this.userDao.insertUser(userModel);
+        return this.managmentDAO.userDAO.insertUser(userModel);
     }
 }
