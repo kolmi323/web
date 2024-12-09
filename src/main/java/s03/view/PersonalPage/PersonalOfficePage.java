@@ -11,12 +11,14 @@ public class PersonalOfficePage implements Page {
     private final ControlExit controlExit;
     private final UserDTO selectedUser;
     private final AccountActionMenu accountActionMenu;
+    private final TypeTransactionActionMenu typeTransactionActionMenu;
 
     public PersonalOfficePage(ServiceDTO service, UserDTO userDTO) {
         this.selectedUser = userDTO;
         this.inputRequest = new InputRequest();
         this.controlExit = new ControlExit();
         this.accountActionMenu = new AccountActionMenu(service, userDTO);
+        this.typeTransactionActionMenu = new TypeTransactionActionMenu(service, userDTO);
     }
 
     @Override
@@ -34,7 +36,7 @@ public class PersonalOfficePage implements Page {
             if (answer.equals("1")) {
                 accountActionMenu.startActionMenu();
             } else if (answer.equals("2")) {
-
+                typeTransactionActionMenu.startActionMenu();
             } else if (answer.equals("3")) {
 
             } else if (controlExit.isExitAction(answer)) {

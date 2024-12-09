@@ -1,7 +1,8 @@
 package s03.dao.Model;
 
-public class UserModel {
-    private int id;
+import s03.dao.AbstractClass.Model;
+
+public class UserModel extends Model {
     private String name;
     private String email;
     private String password;
@@ -15,10 +16,6 @@ public class UserModel {
         this.password = password;
     }
 
-    public int getId() {
-        return this.id;
-    }
-
     public String getName() {
         return this.name;
     }
@@ -29,10 +26,6 @@ public class UserModel {
 
     public String getPassword() {
         return this.password;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setName(String name) {

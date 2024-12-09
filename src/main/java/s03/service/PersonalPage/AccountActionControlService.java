@@ -6,32 +6,24 @@ import s03.service.DTO.ServiceDTO;
 import s03.service.DTO.UserDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AccountActionControlService extends ActionControlService<AccountModel> {
-
     public AccountActionControlService(ServiceDTO service, UserDTO currentUser) {
         super(service, currentUser);
     }
 
-    public List<AccountModel> returnListAccount() {
+    public Optional<List<AccountModel>> returnListAccount() {
         return managmentDAO.getterDAO.getListAccount(currentUser.getId());
     }
 
     @Override
     public boolean create(AccountModel account) {
-        if (managmentDAO.accountDAO.insertAccount(currentUser.getId(), account)) {
-            return true;
-        } else {
-            return false;
-        }
+        return managmentDAO.accountDAO.insertAccount(account);
     }
 
     @Override
     public boolean delete(AccountModel account) {
-        if (managmentDAO.accountDAO.deletedAccount(currentUser.getId(), account)) {
-            return true;
-        } else {
-            return false;
-        }
+        return managmentDAO.accountDAO.deleteAccount(account);
     }
 }

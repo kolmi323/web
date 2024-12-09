@@ -51,4 +51,12 @@ public class UserDataChecker {
         }
         return true;
     }
+
+    public boolean isNameTypeUnique(int userId, String name) {
+        if (service.checkNameTypeUnique(userId, name)) {
+            System.out.println("Name already exists.");
+            return false;
+        }
+        return true;
+    }
 }

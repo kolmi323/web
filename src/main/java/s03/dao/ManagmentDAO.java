@@ -1,20 +1,18 @@
 package s03.dao;
 
-import s03.CustomException.DAOException;
 import s03.dao.AbstractClass.DAO;
-import s03.dao.Model.AccountModel;
-
-import java.sql.*;
 
 public class ManagmentDAO extends DAO {
     public final UserDAO userDAO;
     public final GetterDAO getterDAO;
     public final AccountDAO accountDAO;
+    public final TypeTransactionDAO typeTransactionDAO;
 
     public ManagmentDAO() {
         super();
-        userDAO = new UserDAO(getDataSource());
-        getterDAO = new GetterDAO(getDataSource());
-        accountDAO = new AccountDAO(getDataSource());
+        this.userDAO= new UserDAO(getDataSource());
+        this.getterDAO = new GetterDAO(getDataSource());
+        this.accountDAO = new AccountDAO(getDataSource());
+        this.typeTransactionDAO = new TypeTransactionDAO(getDataSource());
     }
 }

@@ -15,11 +15,11 @@ public class AccountDAO extends DAO {
         super(ds);
     }
 
-    public boolean insertAccount(int userId, AccountModel accountModel) {
+    public boolean insertAccount(AccountModel accountModel) {
         try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
                 ("INSERT INTO account (user_id, name, balance) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS))
         {
-            psst.setInt(1, userId);
+            psst.setInt(1, accountModel.getUserId());
             psst.setString(2, accountModel.getName());
             psst.setBigDecimal(3, accountModel.getBalance());
             psst.executeUpdate();
@@ -38,12 +38,12 @@ public class AccountDAO extends DAO {
         return false;
     }
 
-    public boolean deletedAccount(int userId, AccountModel accountModel) {
+    public boolean deleteAccount(AccountModel accountModel) {
         try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
                 ("DELETE FROM account WHERE name = ? and user_id = ?"))
         {
             psst.setString(1, accountModel.getName());
-            psst.setInt(2, userId);
+            psst.setInt(2, accountModel.getUserId());
             if (psst.executeUpdate() == 1) {
                 return true;
             } else {

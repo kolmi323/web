@@ -1,10 +1,12 @@
 package s03.service;
 
 import s03.dao.Model.AccountModel;
+import s03.dao.Model.TypeTransactionModel;
 import s03.service.AbstractClass.Service;
 import s03.service.DTO.ServiceDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class DataCheckerService extends Service {
@@ -33,7 +35,20 @@ public class DataCheckerService extends Service {
     }
 
     public boolean checkNameAccountUnique(int userId, String name) {
-        List<AccountModel> accounts = managmentDAO.getterDAO.getListAccount(userId);
-        return accounts.stream().anyMatch(account -> account.getName().equals(name));
+        Optional<List<AccountModel>> accounts = managmentDAO.getterDAO.getListAccount(userId);
+        if (accounts.isPresent()) {
+            return accounts.get().stream().anyMatch(account -> account.getName().equals(name));
+        } else {
+            return false;
+        }
+    }
+
+    public boolean checkNameTypeUnique(int userId, String name) {
+        Optional<List<TypeTransactionModel>> types = managmentDAO.getterDAO.getListTypeTransaction(userId);
+        if (types.isPresent()) {
+            return types.get().stream().anyMatch(type -> type.getName().equals(name));
+        } else {
+            return false;
+        }
     }
 }

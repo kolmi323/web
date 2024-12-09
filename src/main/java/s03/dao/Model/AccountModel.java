@@ -1,9 +1,11 @@
 package s03.dao.Model;
 
+import s03.dao.AbstractClass.Model;
+
 import java.math.BigDecimal;
 
-public class AccountModel {
-    private int id;
+public class AccountModel extends Model {
+    private int userId;
     private String name;
     private BigDecimal balance;
 
@@ -15,6 +17,10 @@ public class AccountModel {
         this.balance = balance;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
     public String getName() {
         return name;
     }
@@ -23,8 +29,8 @@ public class AccountModel {
         return balance;
     }
 
-    public int getId() {
-        return this.id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public void setName(String name) {
@@ -35,15 +41,9 @@ public class AccountModel {
         this.balance = balance;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     @Override
     public String toString() {
-        return "{" +
-                "Название счета:" + name +
-                ", Баланс на счету=" + balance +
-                "}\n";
+        return "Название счета: " + name +
+                ", баланс на счету = " + balance;
     }
 }

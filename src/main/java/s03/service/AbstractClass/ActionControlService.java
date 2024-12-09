@@ -2,8 +2,9 @@ package s03.service.AbstractClass;
 
 import s03.service.DTO.ServiceDTO;
 import s03.service.DTO.UserDTO;
+import s03.dao.AbstractClass.Model;
 
-public abstract class ActionControlService <M> extends Service {
+public abstract class ActionControlService <M extends Model> extends Service {
     protected final UserDTO currentUser;
 
     public ActionControlService(ServiceDTO service, UserDTO currentUser) {
