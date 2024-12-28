@@ -5,7 +5,6 @@ import web.service.DTO.TypeTransactionDTO;
 import web.service.ServiceFactory;
 import web.view.UIUtils;
 import web.view.ViewFactory;
-import web.view.EnterUserData.FlagEnterNameType;
 
 import java.util.List;
 

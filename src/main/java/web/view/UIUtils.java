@@ -1,7 +1,5 @@
 package web.view;
 
-import web.view.EnterUserData.FlagEnterNameType;
-
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
