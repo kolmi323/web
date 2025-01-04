@@ -55,7 +55,7 @@ public class TypeTransactionDAO extends DAO {
 
     public boolean delete(int id, int userId) {
         try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
-                ("DELETE FROM type WHERE id = ? and id = ?"))
+                ("DELETE FROM type WHERE id = ? and user_id = ?"))
         {
             psst.setInt(1, id);
             psst.setInt(2, userId);

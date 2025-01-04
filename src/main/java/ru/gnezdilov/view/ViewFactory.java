@@ -6,7 +6,6 @@ import ru.gnezdilov.view.auth.RegisterWindow;
 import ru.gnezdilov.view.personal.*;
 import ru.gnezdilov.service.ServiceFactory;
 import ru.gnezdilov.service.dto.UserDTO;
-import web.view.personal.*;
 
 public final class ViewFactory {
     private static ViewFactory instance;
