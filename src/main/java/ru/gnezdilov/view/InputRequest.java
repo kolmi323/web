@@ -1,4 +1,4 @@
-package s02;
+package ru.gnezdilov.view;
 
 import java.util.Scanner;
 import java.util.function.Predicate;

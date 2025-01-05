@@ -1,6 +1,7 @@
-package s02;
+package ru.gnezdilov.service;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import ru.gnezdilov.service.custominterface.DigestService;
 
 public class MD5DigestUtils implements DigestService {
     @Override
