@@ -1,19 +1,20 @@
 package ru.gnezdilov.view.auth;
 
+import ru.gnezdilov.service.AuthService;
 import ru.gnezdilov.view.personal.PersonalOfficePage;
-import ru.gnezdilov.service.auth.Authorization;
 import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.view.ViewFactory;
+import ru.gnezdilov.dao.exception.*;
 
 public class LoginWindow {
     private final UIUtils utils;
-    private final Authorization authorization;
+    private final AuthService authService;
     private final PersonalOfficePage personalOfficePage;
 
-    public LoginWindow(UIUtils utils, Authorization authorization, PersonalOfficePage personalOfficePage) {
+    public LoginWindow(UIUtils utils, AuthService authService, PersonalOfficePage personalOfficePage) {
         this.utils = utils;
-        this.authorization = authorization;
+        this.authService = authService;
         this.personalOfficePage = personalOfficePage;
     }
 
@@ -27,11 +28,13 @@ public class LoginWindow {
             return;
         }
         try {
-            UserDTO user = authorization.authorization(email, password);
+            UserDTO user = authService.authorization(email, password);
             System.out.println("Logged in successfully");
             ViewFactory.setCurrentUser(user);
             personalOfficePage.start();
-        } catch (RuntimeException e) {
+        } catch (NotFoundException | AlreadyExistsException | DAOException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }

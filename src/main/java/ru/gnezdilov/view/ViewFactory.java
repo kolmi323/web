@@ -68,14 +68,14 @@ public final class ViewFactory {
 
     public RegisterWindow getRegisterWindow() {
         if (registerWindow == null) {
-            registerWindow = new RegisterWindow(getUtils(), getPersonalOfficePage(), serviceFactory.getRegistration());
+            registerWindow = new RegisterWindow(getUtils(), getPersonalOfficePage(), serviceFactory.getAuthService());
         }
         return registerWindow;
     }
 
     public LoginWindow getLoginWindow() {
         if (loginWindow == null) {
-            loginWindow = new LoginWindow(getUtils(), serviceFactory.getAuthorization(), getPersonalOfficePage());
+            loginWindow = new LoginWindow(getUtils(), serviceFactory.getAuthService(), getPersonalOfficePage());
         }
         return loginWindow;
     }

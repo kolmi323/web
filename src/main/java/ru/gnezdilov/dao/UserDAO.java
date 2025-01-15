@@ -1,6 +1,7 @@
 package ru.gnezdilov.dao;
 
-import ru.gnezdilov.dao.customexception.DAOException;
+import ru.gnezdilov.dao.exception.AlreadyExistsException;
+import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.model.UserModel;
 
@@ -12,6 +13,8 @@ import java.sql.Statement;
 import java.util.Optional;
 
 public class UserDAO extends DAO {
+    private static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
+
     public UserDAO(DataSource ds) {
         super(ds);
     }
@@ -31,11 +34,15 @@ public class UserDAO extends DAO {
                 throw new DAOException("Insert user failed");
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            if (UNIQUE_CONSTRAINT_VIOLATION.equals(e.getSQLState())) {
+                throw new AlreadyExistsException("Email already exists");
+            } else {
+                throw new DAOException(e.getMessage(), e);
+            }
         }
     }
 
-    public Optional<UserModel> entry(String email, String password) {
+    public Optional<UserModel> findByEmailAndPassword(String email, String password) {
         try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
                 ("SELECT * FROM users WHERE email = ? AND password = ?")) {
             psst.setString(1, email);

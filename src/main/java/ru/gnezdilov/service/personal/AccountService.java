@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AccountService {
-    AccountDAO accountDAO;
+    private AccountDAO accountDAO;
     private final ConverterAccountModelToAccountDTO converter;
 
     public AccountService(AccountDAO dao, ConverterAccountModelToAccountDTO converter) {

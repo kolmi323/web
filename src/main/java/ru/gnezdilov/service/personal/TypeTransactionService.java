@@ -22,9 +22,9 @@ public class TypeTransactionService {
                 .collect(Collectors.toList());
     }
 
-    public TypeTransactionDTO edit(int userId, String oldName, String newName) {
+    public TypeTransactionDTO edit(int id, int userId, String newName) {
         return this.converter
-                .convert(this.typeTransactionDAO.update(userId, oldName, newName));
+                .convert(this.typeTransactionDAO.update(id, userId, newName));
     }
 
     public TypeTransactionDTO create(int userId, String name) {

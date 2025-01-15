@@ -3,6 +3,7 @@ package ru.gnezdilov.view.personal;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.view.ViewFactory;
+import ru.gnezdilov.dao.exception.*;
 
 public class AccountMenu {
     private final UIUtils utils;
@@ -39,7 +40,9 @@ public class AccountMenu {
                 } else {
                     System.out.println("Invalid input");
                 }
-            } catch (RuntimeException e) {
+            } catch (NotFoundException | AlreadyExistsException | DAOException e) {
+                System.out.println(e.getMessage());
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
