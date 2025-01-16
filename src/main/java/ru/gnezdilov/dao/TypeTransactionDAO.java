@@ -1,6 +1,7 @@
 package ru.gnezdilov.dao;
 
-import ru.gnezdilov.dao.customexception.DAOException;
+import ru.gnezdilov.dao.exception.AlreadyExistsException;
+import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.model.TypeTransactionModel;
 
@@ -13,15 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TypeTransactionDAO extends DAO {
+    private static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
+
     public TypeTransactionDAO(DataSource ds) {
         super(ds);
     }
 
-    public TypeTransactionModel update(int userId, String oldName, String newName) {
+    public TypeTransactionModel update(int id, int userId, String newName) {
         try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
-                ("UPDATE type SET name = ? WHERE name = ? AND user_id = ?", Statement.RETURN_GENERATED_KEYS)) {
+                ("UPDATE type SET name = ? WHERE id = ? AND user_id = ?", Statement.RETURN_GENERATED_KEYS)) {
             psst.setString(1, newName);
-            psst.setString(2, oldName);
+            psst.setInt(2, id);
             psst.setInt(3, userId);
             psst.executeUpdate();
             ResultSet rs = psst.getGeneratedKeys();
@@ -49,7 +52,11 @@ public class TypeTransactionDAO extends DAO {
                 throw new DAOException("Insert Type Error");
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            if (UNIQUE_CONSTRAINT_VIOLATION.equals(e.getSQLState())) {
+                throw new AlreadyExistsException("Type already exists");
+            } else {
+                throw new DAOException(e.getMessage(), e);
+            }
         }
     }
 
@@ -59,11 +66,7 @@ public class TypeTransactionDAO extends DAO {
         {
             psst.setInt(1, id);
             psst.setInt(2, userId);
-            if (psst.executeUpdate() == 1) {
-                return true;
-            } else {
-                return false;
-            }
+            return psst.executeUpdate() == 1;
         } catch (SQLException e) {
             throw new DAOException(e.getMessage(), e);
         }

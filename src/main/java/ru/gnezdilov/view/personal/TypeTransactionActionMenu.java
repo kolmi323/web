@@ -28,8 +28,8 @@ public class TypeTransactionActionMenu {
     }
 
     public void updateTypeTransaction() {
-        String oldName = this.utils.enterNameType(false);
-        if (utils.isExitAction(oldName)) {
+        String typeId = this.utils.enterId();
+        if (utils.isExitAction(typeId)) {
             return;
         }
         String newName = this.utils.enterNameType(true);
@@ -37,8 +37,8 @@ public class TypeTransactionActionMenu {
             return;
         }
         TypeTransactionDTO newType = typeTransactionService
-                .edit(ViewFactory.getCurrentUser().getId(), oldName, newName);
-        System.out.println("Old name: " + oldName + " New name: " + newType.getName());
+                .edit(Integer.parseInt(typeId), ViewFactory.getCurrentUser().getId(), newName);
+        System.out.println("New name: " + newType.getName());
     }
 
 

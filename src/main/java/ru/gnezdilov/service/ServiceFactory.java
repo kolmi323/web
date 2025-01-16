@@ -4,8 +4,6 @@ import ru.gnezdilov.service.converter.ConverterAccountModelToAccountDTO;
 import ru.gnezdilov.service.converter.ConverterTypeTransactionModelToTypeTransactionDTO;
 import ru.gnezdilov.service.converter.ConverterUserModelToUserDTO;
 import ru.gnezdilov.dao.DaoFactory;
-import ru.gnezdilov.service.auth.Authorization;
-import ru.gnezdilov.service.auth.Registration;
 import ru.gnezdilov.service.custominterface.DigestService;
 import ru.gnezdilov.service.personal.AccountService;
 import ru.gnezdilov.service.personal.TypeTransactionService;
@@ -15,14 +13,13 @@ public final class ServiceFactory {
 
     private final DaoFactory daoFactory;
 
-    private Authorization authorization;
-    private Registration registration;
+    private AuthService authService;
     private AccountService accountService;
     private TypeTransactionService typeTransactionService;
 
-    private ConverterAccountModelToAccountDTO converterAccountModelToAccountDTO;
-    private ConverterUserModelToUserDTO converterUserModelToUserDTO;
-    private ConverterTypeTransactionModelToTypeTransactionDTO converterTypeTransactionModelToTypeTransactionDTO;
+    private ConverterAccountModelToAccountDTO converterToAccountDTO;
+    private ConverterUserModelToUserDTO converterToUserDTO;
+    private ConverterTypeTransactionModelToTypeTransactionDTO converterToTypeTransactionDTO;
     private DigestService digestService;
 
     private ServiceFactory(DaoFactory daoFactory) {
@@ -43,47 +40,38 @@ public final class ServiceFactory {
         return digestService;
     }
 
-    private ConverterUserModelToUserDTO getConverterUserModelToUserDTO() {
-        if (converterUserModelToUserDTO == null) {
-            converterUserModelToUserDTO = new ConverterUserModelToUserDTO();
+    private ConverterUserModelToUserDTO getConverterToUserDTO() {
+        if (converterToUserDTO == null) {
+            converterToUserDTO = new ConverterUserModelToUserDTO();
         }
-        return converterUserModelToUserDTO;
+        return converterToUserDTO;
     }
 
-    private ConverterAccountModelToAccountDTO getConverterAccountModelToAccountDTO() {
-        if (converterAccountModelToAccountDTO == null) {
-            converterAccountModelToAccountDTO = new ConverterAccountModelToAccountDTO();
+    private ConverterAccountModelToAccountDTO getConverterToAccountDTO() {
+        if (converterToAccountDTO == null) {
+            converterToAccountDTO = new ConverterAccountModelToAccountDTO();
         }
-        return converterAccountModelToAccountDTO;
+        return converterToAccountDTO;
     }
 
-    private ConverterTypeTransactionModelToTypeTransactionDTO getConverterTypeTransactionModelToTypeTransactionDTO() {
-        if (converterTypeTransactionModelToTypeTransactionDTO == null) {
-            converterTypeTransactionModelToTypeTransactionDTO = new ConverterTypeTransactionModelToTypeTransactionDTO();
+    private ConverterTypeTransactionModelToTypeTransactionDTO getConverterToTypeTransactionDTO() {
+        if (converterToTypeTransactionDTO == null) {
+            converterToTypeTransactionDTO = new ConverterTypeTransactionModelToTypeTransactionDTO();
         }
-        return converterTypeTransactionModelToTypeTransactionDTO;
+        return converterToTypeTransactionDTO;
     }
 
-    public Authorization getAuthorization() {
-        if (authorization == null) {
-            authorization = new Authorization(this.daoFactory.getUserDAO(), getDigestService(),
-                    getConverterUserModelToUserDTO());
+    public AuthService getAuthService() {
+        if (authService == null) {
+            authService = new AuthService(this.daoFactory.getUserDAO(), getDigestService(), getConverterToUserDTO());
         }
-        return authorization;
-    }
-
-    public Registration getRegistration() {
-        if (registration == null) {
-            registration = new Registration(this.daoFactory.getUserDAO(), getDigestService(),
-                    getConverterUserModelToUserDTO());
-        }
-        return registration;
+        return authService;
     }
 
     public AccountService getAccountService() {
         if (accountService == null) {
             accountService = new AccountService(this.daoFactory.getAccountDao(),
-                    getConverterAccountModelToAccountDTO());
+                    getConverterToAccountDTO());
         }
         return accountService;
     }
@@ -91,7 +79,7 @@ public final class ServiceFactory {
     public TypeTransactionService getTypeTransactionService() {
         if (typeTransactionService == null) {
             typeTransactionService = new TypeTransactionService(this.daoFactory.getTypeTransactionDao(),
-                    getConverterTypeTransactionModelToTypeTransactionDTO());
+                    getConverterToTypeTransactionDTO());
         }
         return typeTransactionService;
     }

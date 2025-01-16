@@ -1,6 +1,7 @@
 package ru.gnezdilov.dao;
 
-import ru.gnezdilov.dao.customexception.DAOException;
+import ru.gnezdilov.dao.exception.AlreadyExistsException;
+import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.model.AccountModel;
 
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountDAO extends DAO {
+    private static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
+
     public AccountDAO(DataSource ds) {
         super(ds);
     }
@@ -51,15 +54,18 @@ public class AccountDAO extends DAO {
             }
         }
         catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            if (UNIQUE_CONSTRAINT_VIOLATION.equals(e.getSQLState())) {
+                throw new AlreadyExistsException("Account already exists");
+            } else {
+                throw new DAOException(e.getMessage(), e);
+            }
         }
     }
 
 
     public boolean delete(int id, int userId) {
         try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
-                ("DELETE FROM account WHERE id = ? and user_id = ?"))
-        {
+                ("DELETE FROM account WHERE id = ? and user_id = ?")) {
             psst.setInt(1, id);
             psst.setInt(2, userId);
             return psst.executeUpdate() == 1;
