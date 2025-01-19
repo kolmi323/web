@@ -1,5 +1,7 @@
 package ru.gnezdilov.service.dto;
 
+import java.util.Objects;
+
 public class TypeTransactionDTO {
     private int id;
     private int userId;
@@ -33,5 +35,18 @@ public class TypeTransactionDTO {
     @Override
     public String toString() {
         return this.id + ". Название типа транзакции: " + this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TypeTransactionDTO that = (TypeTransactionDTO) o;
+        return id == that.id && userId == that.userId && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userId, name);
     }
 }

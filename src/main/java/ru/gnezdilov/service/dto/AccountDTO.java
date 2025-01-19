@@ -1,6 +1,7 @@
 package ru.gnezdilov.service.dto;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class AccountDTO {
     private int id;
@@ -46,5 +47,18 @@ public class AccountDTO {
     public String toString() {
         return this.id + ". Название счета: " + this.name +
                 ", баланс на счету = " + this.balance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AccountDTO that = (AccountDTO) o;
+        return id == that.id && userId == that.userId && Objects.equals(name, that.name) && Objects.equals(balance, that.balance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userId, name, balance);
     }
 }

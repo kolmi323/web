@@ -62,7 +62,6 @@ public class AccountDAO extends DAO {
         }
     }
 
-
     public boolean delete(int id, int userId) {
         try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
                 ("DELETE FROM account WHERE id = ? and user_id = ?")) {

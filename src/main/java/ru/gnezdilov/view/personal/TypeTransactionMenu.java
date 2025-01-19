@@ -44,7 +44,7 @@ public class TypeTransactionMenu {
                 } else {
                     System.out.println("Invalid input");
                 }
-            } catch (NotFoundException | AlreadyExistsException | DAOException e) {
+            } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());

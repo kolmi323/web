@@ -2,6 +2,8 @@ package ru.gnezdilov.dao.model;
 
 import ru.gnezdilov.dao.abstractclass.Model;
 
+import java.util.Objects;
+
 public class UserModel extends Model {
     private String name;
     private String email;
@@ -39,5 +41,18 @@ public class UserModel extends Model {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserModel userModel = (UserModel) o;
+        return Objects.equals(name, userModel.name) && Objects.equals(email, userModel.email) && Objects.equals(password, userModel.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, email, password);
     }
 }

@@ -1,5 +1,7 @@
 package ru.gnezdilov.service.dto;
 
+import java.util.Objects;
+
 public class UserDTO {
     private int id;
     private String name;
@@ -33,5 +35,18 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return id == userDTO.id && Objects.equals(name, userDTO.name) && Objects.equals(email, userDTO.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email);
     }
 }

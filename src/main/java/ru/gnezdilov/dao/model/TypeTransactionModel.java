@@ -2,6 +2,8 @@ package ru.gnezdilov.dao.model;
 
 import ru.gnezdilov.dao.abstractclass.Model;
 
+import java.util.Objects;
+
 public class TypeTransactionModel extends Model {
     private int userId;
     private String name;
@@ -34,5 +36,18 @@ public class TypeTransactionModel extends Model {
     @Override
     public String toString() {
         return "Название типа транзакции: " + this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TypeTransactionModel that = (TypeTransactionModel) o;
+        return userId == that.userId && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, name);
     }
 }
