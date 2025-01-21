@@ -57,7 +57,7 @@ public class TransactionDTO extends DTO {
 
     @Override
     public String toString() {
-        return id + ". " + date;
+        return id + ". " + date + ": " + amount + "\n from " + senderAccountId + " to " + receiverAccountId;
     }
 
     @Override

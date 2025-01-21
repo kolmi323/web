@@ -55,9 +55,9 @@ public class ConverterTest {
     public void converter_ReturnTransactionDTO() {
         ConverterTransactionModelToTransactionDTO converter = new ConverterTransactionModelToTransactionDTO();
         TransactionModel transactionModel = new TransactionModel(1, 1, 2,
-                new BigDecimal("1000.10"), new Date(System.currentTimeMillis()));
+                new BigDecimal("1000.10"), Date.valueOf("2025-01-21"));
         TransactionDTO transactionDTO = new TransactionDTO(1, 1, 2,
-                new BigDecimal("1000.10"), new Date(System.currentTimeMillis()));
+                new BigDecimal("1000.10"), Date.valueOf("2025-01-21"));
         convert_ReturnDTO(converter, transactionModel, transactionDTO);
     }
 
