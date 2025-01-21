@@ -1,10 +1,11 @@
 package ru.gnezdilov.service.dto;
 
+import ru.gnezdilov.dao.abstractclass.DTO;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class AccountDTO {
-    private int id;
+public class AccountDTO extends DTO {
     private int userId;
     private String name;
     private BigDecimal balance;
@@ -13,7 +14,7 @@ public class AccountDTO {
     }
 
     public AccountDTO(int id, int userId, String name, BigDecimal balance) {
-        this.id = id;
+        this.setId(id);
         this.userId = userId;
         this.name = name;
         this.balance = balance;

@@ -14,7 +14,7 @@ public class AccountModel extends Model {
     }
 
     public AccountModel(int id, int userId, String name, BigDecimal balance) {
-        this.id = id;
+        this.setId(id);
         this.userId = userId;
         this.name = name;
         this.balance = balance;

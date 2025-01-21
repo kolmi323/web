@@ -5,19 +5,19 @@ import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.view.ViewFactory;
 import ru.gnezdilov.dao.exception.*;
 
-public class TypeTransactionMenu {
+public class TypeMenu {
     private final InputRequest inputRequest;
     private final UIUtils utils;
-    private final TypeTransactionActionMenu typeTransactionActionMenu;
+    private final TypeActionMenu typeActionMenu;
 
-    public TypeTransactionMenu(InputRequest inputRequest, UIUtils utils,
-                               TypeTransactionActionMenu typeTransactionActionMenu) {
+    public TypeMenu(InputRequest inputRequest, UIUtils utils,
+                    TypeActionMenu typeActionMenu) {
         this.inputRequest = inputRequest;
         this.utils = utils;
-        this.typeTransactionActionMenu = typeTransactionActionMenu;
+        this.typeActionMenu = typeActionMenu;
     }
 
-    public void startAll() {
+    public void start() {
         String answer;
         System.out.println("Welcome to type transaction action menu " + ViewFactory.getCurrentUser().getName() + "!");
         while (true) {
@@ -31,13 +31,13 @@ public class TypeTransactionMenu {
             );
             try {
                 if (answer.equals("1")) {
-                    typeTransactionActionMenu.showAll();
+                    typeActionMenu.showAll();
                 } else if (answer.equals("2")) {
-                    typeTransactionActionMenu.updateTypeTransaction();
+                    typeActionMenu.updateTypeTransaction();
                 } else if (answer.equals("3")) {
-                    typeTransactionActionMenu.createTypeTransaction();
+                    typeActionMenu.createTypeTransaction();
                 } else if (answer.equals("4")) {
-                    typeTransactionActionMenu.removeTypeTransaction();
+                    typeActionMenu.removeTypeTransaction();
                 } else if (utils.isExitAction(answer)) {
                     System.out.println("You exit from type transaction action menu!");
                     return;

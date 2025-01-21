@@ -2,14 +2,17 @@ package ru.gnezdilov.service.converter;
 
 import org.junit.Test;
 import ru.gnezdilov.dao.model.AccountModel;
-import ru.gnezdilov.dao.model.TypeTransactionModel;
+import ru.gnezdilov.dao.model.TransactionModel;
+import ru.gnezdilov.dao.model.TypeModel;
 import ru.gnezdilov.dao.model.UserModel;
 import ru.gnezdilov.service.custominterface.Converter;
 import ru.gnezdilov.service.dto.AccountDTO;
-import ru.gnezdilov.service.dto.TypeTransactionDTO;
+import ru.gnezdilov.service.dto.TransactionDTO;
+import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.dto.UserDTO;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 
 import static org.junit.Assert.*;
 
@@ -32,11 +35,11 @@ public class ConverterTest {
     }
 
     @Test
-    public void convert_ReturnTypeTransactionDTO() {
-        ConverterTypeTransactionModelToTypeTransactionDTO converter
-                = new ConverterTypeTransactionModelToTypeTransactionDTO();
-        TypeTransactionModel typeModel = new TypeTransactionModel(1, 1, "hobby");
-        TypeTransactionDTO typeDTO = new TypeTransactionDTO(1, 1, "hobby");
+    public void convert_ReturnTypeDTO() {
+        ConverterTypeModelToTypeDTO converter
+                = new ConverterTypeModelToTypeDTO();
+        TypeModel typeModel = new TypeModel(1, 1, "hobby");
+        TypeDTO typeDTO = new TypeDTO(1, 1, "hobby");
         convert_ReturnDTO(converter, typeModel, typeDTO);
     }
 
@@ -49,21 +52,37 @@ public class ConverterTest {
     }
 
     @Test
+    public void converter_ReturnTransactionDTO() {
+        ConverterTransactionModelToTransactionDTO converter = new ConverterTransactionModelToTransactionDTO();
+        TransactionModel transactionModel = new TransactionModel(1, 1, 2,
+                new BigDecimal("1000.10"), new Date(System.currentTimeMillis()));
+        TransactionDTO transactionDTO = new TransactionDTO(1, 1, 2,
+                new BigDecimal("1000.10"), new Date(System.currentTimeMillis()));
+        convert_ReturnDTO(converter, transactionModel, transactionDTO);
+    }
+
+    @Test
     public void convert_AccountThrowNullPointerException() {
         ConverterAccountModelToAccountDTO converter = new ConverterAccountModelToAccountDTO();
         convert_ThrowNullPointerException(converter);
     }
 
     @Test
-    public void converter_TypeTransactionThrowNullPointerException() {
-        ConverterTypeTransactionModelToTypeTransactionDTO converter
-                = new ConverterTypeTransactionModelToTypeTransactionDTO();
+    public void converter_TypeThrowNullPointerException() {
+        ConverterTypeModelToTypeDTO converter
+                = new ConverterTypeModelToTypeDTO();
         convert_ThrowNullPointerException(converter);
     }
 
     @Test
     public void converter_UserThrowNullPointerException() {
         ConverterUserModelToUserDTO converter = new ConverterUserModelToUserDTO();
+        convert_ThrowNullPointerException(converter);
+    }
+
+    @Test
+    public void converter_TransactionThrowNullPointerException() {
+        ConverterTransactionModelToTransactionDTO converter = new ConverterTransactionModelToTransactionDTO();
         convert_ThrowNullPointerException(converter);
     }
 }

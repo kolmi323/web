@@ -8,14 +8,16 @@ public class PersonalOfficePage {
     private final InputRequest inputRequest;
     private final UIUtils utils;
     private final AccountMenu accountMenu;
-    private final TypeTransactionMenu typeTransactionMenu;
+    private final TypeMenu typeMenu;
+    private final TransactionMenu transactionMenu;
 
     public PersonalOfficePage(InputRequest inputRequest, UIUtils utils,
-                              AccountMenu accountMenu, TypeTransactionMenu typeTransactionMenu) {
+                              AccountMenu accountMenu, TypeMenu typeMenu, TransactionMenu transactionMenu) {
         this.inputRequest = inputRequest;
         this.utils = utils;
         this.accountMenu = accountMenu;
-        this.typeTransactionMenu = typeTransactionMenu;
+        this.typeMenu = typeMenu;
+        this.transactionMenu = transactionMenu;
     }
 
     public void start() {
@@ -26,13 +28,17 @@ public class PersonalOfficePage {
                     "Please choice action menu:" +
                             "\n1. Account action" +
                             "\n2. Type transaction action" +
+                            "\n3. Transaction action" +
                             "\nexit. Exit"
             );
             if (answer.equals("1")) {
                 accountMenu.start();
             } else if (answer.equals("2")) {
-                typeTransactionMenu.startAll();
-            } else if (utils.isExitAction(answer)) {
+                typeMenu.start();
+            } else if (answer.equals("3")) {
+                transactionMenu.start();
+            }
+            else if (utils.isExitAction(answer)) {
                 System.out.println("You exit from person office!");
                 return;
             } else {

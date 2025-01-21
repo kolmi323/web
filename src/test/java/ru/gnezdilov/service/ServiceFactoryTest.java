@@ -24,7 +24,7 @@ public class ServiceFactoryTest {
     }
 
     @Test
-    public void getTypeTransactionService_ReturnNotNull() {
-        assertNotNull(ServiceFactory.getInstance().getTypeTransactionService());
+    public void getTypeService_ReturnNotNull() {
+        assertNotNull(ServiceFactory.getInstance().getTypeService());
     }
 }

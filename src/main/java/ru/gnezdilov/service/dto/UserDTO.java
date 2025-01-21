@@ -1,20 +1,17 @@
 package ru.gnezdilov.service.dto;
 
+import ru.gnezdilov.dao.abstractclass.DTO;
+
 import java.util.Objects;
 
-public class UserDTO {
-    private int id;
+public class UserDTO extends DTO {
     private String name;
     private String email;
 
     public UserDTO(int id, String name, String email) {
-        this.id = id;
+        this.setId(id);
         this.name = name;
         this.email = email;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {
@@ -23,10 +20,6 @@ public class UserDTO {
 
     public String getEmail() {
         return email;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setName(String name) {

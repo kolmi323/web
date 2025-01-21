@@ -1,24 +1,24 @@
 package ru.gnezdilov.view.personal;
 
 
-import ru.gnezdilov.service.dto.TypeTransactionDTO;
-import ru.gnezdilov.service.personal.TypeTransactionService;
+import ru.gnezdilov.service.dto.TypeDTO;
+import ru.gnezdilov.service.personal.TypeService;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.view.ViewFactory;
 
 import java.util.List;
 
-public class TypeTransactionActionMenu {
+public class TypeActionMenu {
     private final UIUtils utils;
-    private final TypeTransactionService typeTransactionService;
+    private final TypeService typeService;
 
-    public TypeTransactionActionMenu(UIUtils utils, TypeTransactionService typeTransactionService) {
+    public TypeActionMenu(UIUtils utils, TypeService typeService) {
         this.utils = utils;
-        this.typeTransactionService = typeTransactionService;
+        this.typeService = typeService;
     }
 
     public void showAll() {
-        List<TypeTransactionDTO> types = typeTransactionService
+        List<TypeDTO> types = typeService
                 .getAll(ViewFactory.getCurrentUser().getId());
         if (types.isEmpty()) {
             System.out.println("No types transaction found");
@@ -36,7 +36,7 @@ public class TypeTransactionActionMenu {
         if (utils.isExitAction(newName)) {
             return;
         }
-        TypeTransactionDTO newType = typeTransactionService
+        TypeDTO newType = typeService
                 .edit(Integer.parseInt(typeId), ViewFactory.getCurrentUser().getId(), newName);
         System.out.println("New name: " + newType.getName());
     }
@@ -47,9 +47,9 @@ public class TypeTransactionActionMenu {
         if (this.utils.isExitAction(name)) {
             return;
         }
-        TypeTransactionDTO typeTransactionDTO = typeTransactionService
+        TypeDTO typeDTO = typeService
                 .create(ViewFactory.getCurrentUser().getId(), name);
-        System.out.println("Type create: " + typeTransactionDTO.getName());
+        System.out.println("Type create: " + typeDTO.getName());
     }
 
     public void removeTypeTransaction() {
@@ -57,7 +57,7 @@ public class TypeTransactionActionMenu {
         if (this.utils.isExitAction(id)) {
             return;
         }
-        if (typeTransactionService.delete(Integer.parseInt(id), ViewFactory.getCurrentUser().getId())) {
+        if (typeService.delete(Integer.parseInt(id), ViewFactory.getCurrentUser().getId())) {
             System.out.println("Type: " + id + " - deleted");
         } else {
             System.out.println("Type: " + id + " - not found");

@@ -1,5 +1,8 @@
 package ru.gnezdilov.view;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -43,6 +46,19 @@ public class UIUtils {
         return false;
     }
 
+    public boolean isDataCorrect(String data) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            df.setLenient(false);
+            df.parse(data);
+        } catch (ParseException e) {
+            System.out.println("Data is not valid" +
+                    "\nData example: 2024-12-31");
+            return false;
+        }
+        return true;
+    }
+
     public String enterName() {
         String message = "Enter your Name or enter \"exit\" to exit: ";
         return this.inputRequest.requestNotBlancString(message);
@@ -83,5 +99,11 @@ public class UIUtils {
     public String enterId() {
         String message = "Enter your ID or enter \"exit\" to exit: ";
         return this.inputRequest.requestNotBlancString(message);
+    }
+
+    public String enterDate() {
+        String message = "Enter your Date or enter \"exit\" to exit: ";
+        Predicate<String> predicate = this::isDataCorrect;
+        return this.inputRequest.requestNotBlancString(message, predicate);
     }
 }

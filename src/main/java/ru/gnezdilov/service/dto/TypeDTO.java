@@ -1,17 +1,18 @@
 package ru.gnezdilov.service.dto;
 
+import ru.gnezdilov.dao.abstractclass.DTO;
+
 import java.util.Objects;
 
-public class TypeTransactionDTO {
-    private int id;
+public class TypeDTO extends DTO {
     private int userId;
     private String name;
 
-    public TypeTransactionDTO() {
+    public TypeDTO() {
     }
 
-    public TypeTransactionDTO(int id, int userId, String name) {
-        this.id = id;
+    public TypeDTO(int id, int userId, String name) {
+        this.setId(id);
         this.userId = userId;
         this.name = name;
     }
@@ -41,7 +42,7 @@ public class TypeTransactionDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TypeTransactionDTO that = (TypeTransactionDTO) o;
+        TypeDTO that = (TypeDTO) o;
         return id == that.id && userId == that.userId && Objects.equals(name, that.name);
     }
 

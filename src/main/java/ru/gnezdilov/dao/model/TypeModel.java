@@ -4,15 +4,15 @@ import ru.gnezdilov.dao.abstractclass.Model;
 
 import java.util.Objects;
 
-public class TypeTransactionModel extends Model {
+public class TypeModel extends Model {
     private int userId;
     private String name;
 
-    public TypeTransactionModel() {
+    public TypeModel() {
     }
 
-    public TypeTransactionModel(int id, int userId, String name) {
-        this.id = id;
+    public TypeModel(int id, int userId, String name) {
+        this.setId(id);
         this.userId = userId;
         this.name = name;
     }
@@ -42,7 +42,7 @@ public class TypeTransactionModel extends Model {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TypeTransactionModel that = (TypeTransactionModel) o;
+        TypeModel that = (TypeModel) o;
         return userId == that.userId && Objects.equals(name, that.name);
     }
 
