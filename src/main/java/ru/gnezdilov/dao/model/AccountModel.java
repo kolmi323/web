@@ -55,11 +55,11 @@ public class AccountModel extends Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AccountModel that = (AccountModel) o;
-        return userId == that.userId && Objects.equals(name, that.name) && Objects.equals(balance, that.balance);
+        return this.getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, name, balance);
+        return Objects.hash(this.getId());
     }
 }

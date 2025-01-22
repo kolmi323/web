@@ -7,7 +7,7 @@ import ru.gnezdilov.service.converter.ConverterUserModelToUserDTO;
 import ru.gnezdilov.dao.DaoFactory;
 import ru.gnezdilov.service.custominterface.DigestService;
 import ru.gnezdilov.service.personal.AccountService;
-import ru.gnezdilov.service.personal.TransactionService;
+import ru.gnezdilov.service.personal.CategoryTransactionService;
 import ru.gnezdilov.service.personal.TypeService;
 
 public final class ServiceFactory {
@@ -18,7 +18,7 @@ public final class ServiceFactory {
     private AuthService authService;
     private AccountService accountService;
     private TypeService typeService;
-    private TransactionService transactionService;
+    private CategoryTransactionService categoryTransactionService;
 
     private ConverterAccountModelToAccountDTO converterToAccountDTO;
     private ConverterUserModelToUserDTO converterToUserDTO;
@@ -95,11 +95,10 @@ public final class ServiceFactory {
         return typeService;
     }
 
-    public TransactionService getTransactionService() {
-        if (transactionService == null) {
-            transactionService = new TransactionService(this.daoFactory.getTransactionDao(),
-                    getConverterToTransactionDTO());
+    public CategoryTransactionService getTransactionService() {
+        if (categoryTransactionService == null) {
+            categoryTransactionService = new CategoryTransactionService(this.daoFactory.getTransactionDao());
         }
-        return transactionService;
+        return categoryTransactionService;
     }
 }

@@ -9,15 +9,15 @@ public class PersonalOfficePage {
     private final UIUtils utils;
     private final AccountMenu accountMenu;
     private final TypeMenu typeMenu;
-    private final TransactionMenu transactionMenu;
+    private final CategoryTransactionMenu categoryTransactionMenu;
 
     public PersonalOfficePage(InputRequest inputRequest, UIUtils utils,
-                              AccountMenu accountMenu, TypeMenu typeMenu, TransactionMenu transactionMenu) {
+                              AccountMenu accountMenu, TypeMenu typeMenu, CategoryTransactionMenu categoryTransactionMenu) {
         this.inputRequest = inputRequest;
         this.utils = utils;
         this.accountMenu = accountMenu;
         this.typeMenu = typeMenu;
-        this.transactionMenu = transactionMenu;
+        this.categoryTransactionMenu = categoryTransactionMenu;
     }
 
     public void start() {
@@ -36,7 +36,7 @@ public class PersonalOfficePage {
             } else if (answer.equals("2")) {
                 typeMenu.start();
             } else if (answer.equals("3")) {
-                transactionMenu.start();
+                categoryTransactionMenu.start();
             }
             else if (utils.isExitAction(answer)) {
                 System.out.println("You exit from person office!");

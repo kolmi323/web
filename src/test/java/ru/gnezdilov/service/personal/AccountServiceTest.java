@@ -27,7 +27,7 @@ public class AccountServiceTest {
     @Mock ConverterAccountModelToAccountDTO converter;
 
     @Test
-    public void getAll_ListIsNotEmpty() {
+    public void getAll_shouldReturnAllAccounts_whenCalledWithValidArguments() {
         AccountModel accountModel = new AccountModel(1, 1, "bank", new BigDecimal("1000.50"));
         List<AccountModel> accountsModelsList = new ArrayList<>();
         accountsModelsList.add(accountModel);
@@ -46,7 +46,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void getAll_ListIsEmpty() {
+    public void getAll_shouldReturnEmptyList_whenCalledWithValidArguments() {
         List<AccountModel> accountsModelsList = new ArrayList<>();
         when(accountDAO.getAll(1)).thenReturn(accountsModelsList);
 
@@ -59,7 +59,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void getAll_UserDAOThrowDAOException() {
+    public void getAll_shouldAcceptDAOException_whenCalledWithValidArguments() {
         when(accountDAO.getAll(1)).thenThrow(DAOException.class);
 
         assertThrows(DAOException.class, () -> subj.getAll(1));
@@ -69,7 +69,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void create_AccountCreated() {
+    public void create_shouldReturnAccountDTO_whenCalledWithValidArguments() {
         AccountModel accountModel = new AccountModel(1, 1, "bank", new BigDecimal("1000.50"));
         when(accountDAO.insert(1, "bank", new BigDecimal("1000.50"))).thenReturn(accountModel);
 
@@ -85,7 +85,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void create_AccountCreatedFailed() {
+    public void create_shouldAcceptDAOExceptionWithMessageAboutFailedCreated_whenCalledWithValidArguments() {
         when(accountDAO.insert(1, "bank", new BigDecimal("1000.50")))
                 .thenThrow(new DAOException("Insert account failed"));
 
@@ -99,7 +99,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void create_AccountAlreadyExists() {
+    public void create_shouldAcceptAlreadyExistsException_whenCalledWithValidArguments() {
         when(accountDAO.insert(1, "bank", new BigDecimal("1000.50")))
                 .thenThrow(AlreadyExistsException.class);
 
@@ -112,7 +112,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void create_UserDAOThrowDAOException() {
+    public void create_shouldAcceptDAOException_whenCalledWithValidArguments() {
         when(accountDAO.insert(1, "bank", new BigDecimal("1000.50"))).thenThrow(DAOException.class);
 
         assertThrows(DAOException.class, () -> subj.create(1, "bank", new BigDecimal("1000.50")));
@@ -123,7 +123,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void delete_AccountDeleted() {
+    public void delete_shouldReturnSuccess_whenCalledWithValidArguments() {
         when(accountDAO.delete(1, 1)).thenReturn(true);
 
         assertTrue(subj.delete(1, 1));
@@ -132,7 +132,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void delete_AccountDeletedFailed() {
+    public void delete_shouldReturnFailed_whenCalledWithValidArguments() {
         when(accountDAO.delete(1, 1)).thenReturn(false);
 
         assertFalse(subj.delete(1, 1));
@@ -141,7 +141,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void delete_UserDAOThrowDAOException() {
+    public void delete_shouldAcceptDAOException_whenCalledWithValidArguments() {
         when(accountDAO.delete(1, 1)).thenThrow(DAOException.class);
 
         assertThrows(DAOException.class, () -> subj.delete(1, 1));

@@ -22,8 +22,8 @@ public final class ViewFactory {
     private AccountActionMenu accountActionMenu;
     private TypeMenu typeMenu;
     private TypeActionMenu typeActionMenu;
-    private TransactionActionMenu transactionActionMenu;
-    private TransactionMenu transactionMenu;
+    private CategoryTransactionActionMenu categoryTransactionActionMenu;
+    private CategoryTransactionMenu categoryTransactionMenu;
 
     private UIUtils utils;
     private InputRequest inputRequest;
@@ -118,18 +118,18 @@ public final class ViewFactory {
         return typeActionMenu;
     }
 
-    public TransactionActionMenu getTransactionActionMenu() {
-        if (transactionActionMenu == null) {
-            transactionActionMenu = new TransactionActionMenu(getUtils(), this.serviceFactory.getTransactionService(),
+    public CategoryTransactionActionMenu getTransactionActionMenu() {
+        if (categoryTransactionActionMenu == null) {
+            categoryTransactionActionMenu = new CategoryTransactionActionMenu(getUtils(), this.serviceFactory.getTransactionService(),
                     getTypeActionMenu(), getAccountActionMenu());
         }
-        return transactionActionMenu;
+        return categoryTransactionActionMenu;
     }
 
-    public TransactionMenu getTransactionMenu() {
-        if (transactionMenu == null) {
-            transactionMenu = new TransactionMenu(getInputRequest(), getUtils(), getTransactionActionMenu());
+    public CategoryTransactionMenu getTransactionMenu() {
+        if (categoryTransactionMenu == null) {
+            categoryTransactionMenu = new CategoryTransactionMenu(getInputRequest(), getUtils(), getTransactionActionMenu());
         }
-        return transactionMenu;
+        return categoryTransactionMenu;
     }
 }

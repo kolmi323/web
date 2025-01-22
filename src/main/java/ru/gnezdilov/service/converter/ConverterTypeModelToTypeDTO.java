@@ -9,7 +9,7 @@ public class ConverterTypeModelToTypeDTO
     @Override
     public TypeDTO convert(TypeModel source) {
         if (source == null) {
-            throw new NullPointerException("source is null");
+            return null;
         }
         return new TypeDTO(source.getId(), source.getUserId(), source.getName());
     }

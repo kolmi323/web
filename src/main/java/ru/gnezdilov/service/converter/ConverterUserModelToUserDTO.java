@@ -8,7 +8,7 @@ public class ConverterUserModelToUserDTO implements Converter<UserModel, UserDTO
     @Override
     public UserDTO convert(UserModel source) {
         if (source == null) {
-            throw new NullPointerException("source is null");
+            return null;
         }
         return new UserDTO(source.getId() ,source.getName(), source.getEmail());
     }

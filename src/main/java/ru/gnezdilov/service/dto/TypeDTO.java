@@ -43,11 +43,11 @@ public class TypeDTO extends DTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TypeDTO that = (TypeDTO) o;
-        return id == that.id && userId == that.userId && Objects.equals(name, that.name);
+        return this.getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, name);
+        return Objects.hash(this.getId());
     }
 }

@@ -29,7 +29,7 @@ public class AuthServiceTest {
     @Mock private ConverterUserModelToUserDTO converter;
 
     @Test
-    public void authorization_UserFound() {
+    public void authorization_returnUserDTO_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
 
         Optional<UserModel> userModel = Optional
@@ -48,7 +48,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void authorization_UserNotFound() {
+    public void authorization_acceptNotFoundException_whenCalledWithInvalidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
         when(userDAO.findByEmailAndPassword("anton@mail.ru", "hash")).thenReturn(Optional.empty());
 
@@ -60,7 +60,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void authorization_UserDAOThrowDaoException() {
+    public void authorization_acceptDAOException_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
         when(userDAO.findByEmailAndPassword("anton@mail.ru", "hash")).thenThrow(DAOException.class);
 
@@ -72,7 +72,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void createNewUser_UserCreated() {
+    public void createNewUser_returnUserDTO_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
 
         UserModel userModel = new UserModel(1, "Anton", "anton@mail.ru", "hash");
@@ -90,7 +90,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void createNewUser_UserCreatedFailed() {
+    public void createNewUser_acceptDAOExceptionWithMessageAboutFailedCreated_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
 
         DAOException daoException = new DAOException("Insert user failed");
@@ -106,7 +106,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void createNewUser_EmailAlreadyExists() {
+    public void createNewUser_acceptAlreadyExistsException_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
 
         when(userDAO.insert("Anton", "anton@mail.ru", "hash"))
@@ -121,7 +121,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void createNewUser_UserDAOThrowDaoException() {
+    public void createNewUser_acceptDAOException_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
         when(userDAO.insert("Anton", "anton@mail.ru", "hash")).thenThrow(DAOException.class);
 

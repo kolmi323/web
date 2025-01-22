@@ -12,77 +12,76 @@ import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.dto.UserDTO;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 
 import static org.junit.Assert.*;
 
 public class ConverterTest {
-    private <S, T> void convert_ReturnDTO(Converter<S, T> converter, S model, T dto) {
+    private <S, T> void ReturnDTO(Converter<S, T> converter, S model, T dto) {
         T result = converter.convert(model);
         assertEquals(dto, result);
     }
 
-    private <S, T> void convert_ThrowNullPointerException(Converter<S, T> converter) {
-        assertThrows(NullPointerException.class, () -> converter.convert(null));
+    private <S, T> void ThrowNullPointerException(Converter<S, T> converter) {
+        assertNull(converter.convert(null));
     }
 
     @Test
-    public void convert_ReturnAccountDTO() {
+    public void convert_returnAccountDTO_whenCalledWithValidArguments() {
         ConverterAccountModelToAccountDTO converter = new ConverterAccountModelToAccountDTO();
         AccountModel accountModel = new AccountModel(1, 1, "Bank", new BigDecimal("1000.00"));
         AccountDTO accountDTO = new AccountDTO(1, 1, "Bank", new BigDecimal("1000.00"));
-        convert_ReturnDTO(converter, accountModel, accountDTO);
+        ReturnDTO(converter, accountModel, accountDTO);
     }
 
     @Test
-    public void convert_ReturnTypeDTO() {
-        ConverterTypeModelToTypeDTO converter
-                = new ConverterTypeModelToTypeDTO();
+    public void convert_returnTypeDTO_whenCalledWithValidArguments() {
+        ConverterTypeModelToTypeDTO converter = new ConverterTypeModelToTypeDTO();
         TypeModel typeModel = new TypeModel(1, 1, "hobby");
         TypeDTO typeDTO = new TypeDTO(1, 1, "hobby");
-        convert_ReturnDTO(converter, typeModel, typeDTO);
+        ReturnDTO(converter, typeModel, typeDTO);
     }
 
     @Test
-    public void convert_ReturnUserDTO() {
+    public void convert_returnUserDTO_whenCalledWithValidArguments() {
         ConverterUserModelToUserDTO converter = new ConverterUserModelToUserDTO();
         UserModel userModel = new UserModel(1, "Anton", "anton@mail.ru", "hash");
         UserDTO userDTO = new UserDTO(1, "Anton", "anton@mail.ru");
-        convert_ReturnDTO(converter, userModel, userDTO);
+        ReturnDTO(converter, userModel, userDTO);
     }
 
     @Test
-    public void converter_ReturnTransactionDTO() {
+    public void converter_returnTransactionDTO_whenCalledWithValidArguments() {
         ConverterTransactionModelToTransactionDTO converter = new ConverterTransactionModelToTransactionDTO();
         TransactionModel transactionModel = new TransactionModel(1, 1, 2,
-                new BigDecimal("1000.10"), Date.valueOf("2025-01-21"));
+                new BigDecimal("1000.10"), LocalDate.parse("2025-01-21"));
         TransactionDTO transactionDTO = new TransactionDTO(1, 1, 2,
-                new BigDecimal("1000.10"), Date.valueOf("2025-01-21"));
-        convert_ReturnDTO(converter, transactionModel, transactionDTO);
+                new BigDecimal("1000.10"), LocalDate.parse("2025-01-21"));
+        ReturnDTO(converter, transactionModel, transactionDTO);
     }
 
     @Test
-    public void convert_AccountThrowNullPointerException() {
+    public void convert_accountThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterAccountModelToAccountDTO converter = new ConverterAccountModelToAccountDTO();
-        convert_ThrowNullPointerException(converter);
+        ThrowNullPointerException(converter);
     }
 
     @Test
-    public void converter_TypeThrowNullPointerException() {
+    public void converter_typeThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterTypeModelToTypeDTO converter
                 = new ConverterTypeModelToTypeDTO();
-        convert_ThrowNullPointerException(converter);
+        ThrowNullPointerException(converter);
     }
 
     @Test
-    public void converter_UserThrowNullPointerException() {
+    public void converter_userThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterUserModelToUserDTO converter = new ConverterUserModelToUserDTO();
-        convert_ThrowNullPointerException(converter);
+        ThrowNullPointerException(converter);
     }
 
     @Test
-    public void converter_TransactionThrowNullPointerException() {
+    public void converter_transactionThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterTransactionModelToTransactionDTO converter = new ConverterTransactionModelToTransactionDTO();
-        convert_ThrowNullPointerException(converter);
+        ThrowNullPointerException(converter);
     }
 }

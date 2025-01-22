@@ -20,16 +20,13 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TypeServiceTest {
-    @InjectMocks
-    TypeService subj;
+    @InjectMocks TypeService subj;
 
-    @Mock
-    TypeDAO typeDAO;
-    @Mock
-    ConverterTypeModelToTypeDTO converter;
+    @Mock TypeDAO typeDAO;
+    @Mock ConverterTypeModelToTypeDTO converter;
 
     @Test
-    public void getAll_ListIsNotEmpty() {
+    public void getAll_returnLustTypeModel_whenCalledWithValidException() {
         TypeModel typeModel = new TypeModel(1, 1, "hobby");
         List<TypeModel> accountsModelsList = new ArrayList<>();
         accountsModelsList.add(typeModel);
@@ -48,7 +45,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void getAll_ReturnEmptyList() {
+    public void getAll_returnEmptyList_whenCalledWithValidException() {
         List<TypeModel> typeModelList = new ArrayList<>();
         when(typeDAO.getAll(1)).thenReturn(typeModelList);
 
@@ -61,7 +58,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void getAll_UserDAOThrowDAOException() {
+    public void getAll_acceptDAOException_whenCalledWithValidException() {
         when(typeDAO.getAll(1)).thenThrow(DAOException.class);
 
         assertThrows(DAOException.class, () -> subj.getAll(1));
@@ -71,7 +68,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void create_TypeCreated() {
+    public void create_returnTypeDTO_whenCalledWithValidException() {
         TypeModel typeModel = new TypeModel(1, 1, "hobby");
         when(typeDAO.insert(1, "hobby")).thenReturn(typeModel);
 
@@ -87,7 +84,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void create_AccountCreatedFailed() {
+    public void create_acceptDAOExceptionWithMessageAboutFailedCreated_whenCalledWithValidException() {
         when(typeDAO.insert(1, "hobby"))
                 .thenThrow(new DAOException("Insert type failed"));
 
@@ -101,7 +98,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void create_AccountAlreadyExists() {
+    public void create_acceptAlreadyExistsException_whenCalledWithValidException() {
         when(typeDAO.insert(1, "hobby"))
                 .thenThrow(AlreadyExistsException.class);
 
@@ -114,7 +111,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void create_UserDAOThrowDAOException() {
+    public void create_acceptDAOException_whenCalledWithValidException() {
         when(typeDAO.insert(1, "hobby")).thenThrow(DAOException.class);
 
         assertThrows(DAOException.class, () -> subj.create(1, "hobby"));
@@ -125,7 +122,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void delete_AccountDeleted() {
+    public void delete_returnSuccessDeleted_whenCalledWithValidException() {
         when(typeDAO.delete(1, 1)).thenReturn(true);
 
         assertTrue(subj.delete(1, 1));
@@ -134,7 +131,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void delete_AccountDeletedFailed() {
+    public void delete_returnFailedDeleted_whenCalledWithValidException() {
         when(typeDAO.delete(1, 1)).thenReturn(false);
 
         assertFalse(subj.delete(1, 1));
@@ -143,7 +140,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void delete_UserDAOThrowDAOException() {
+    public void delete_acceptDAOException_whenCalledWithValidException() {
         when(typeDAO.delete(1, 1)).thenThrow(DAOException.class);
 
         assertThrows(DAOException.class, () -> subj.delete(1, 1));
@@ -152,7 +149,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void edit_AccountEdited() {
+    public void edit_returnEditedTypeDTO_whenCalledWithValidException() {
         TypeModel typeModel = new TypeModel(1, 1, "hobby");
         when(typeDAO.update(1, 1, "work")).thenReturn(typeModel);
 
@@ -167,7 +164,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void edit_AccountEditedFailed() {
+    public void edit_acceptDAOExceptionWithMessageAboutNotFoundType_whenCalledWithValidException() {
         when(typeDAO.update(1, 1, "work")).thenThrow(new DAOException("Not found type"));
 
         DAOException exception = assertThrows(DAOException.class, () -> subj.edit(1, 1, "work"));
@@ -178,7 +175,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void edit_UserDAOThrowDAOException() {
+    public void edit_acceptDAOException_whenCalledWithValidException() {
         when(typeDAO.update(1, 1, "work")).thenThrow(DAOException.class);
 
         assertThrows(DAOException.class, () -> subj.edit(1, 1, "work"));

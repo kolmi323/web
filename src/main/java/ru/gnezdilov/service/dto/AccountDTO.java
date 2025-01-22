@@ -55,11 +55,11 @@ public class AccountDTO extends DTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AccountDTO that = (AccountDTO) o;
-        return id == that.id && userId == that.userId && Objects.equals(name, that.name) && Objects.equals(balance, that.balance);
+        return this.getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, name, balance);
+        return Objects.hash(this.getId());
     }
 }

@@ -12,7 +12,7 @@ public class MD5DigestUtilsTest {
     @InjectMocks MD5DigestUtils subj;
 
     @Test
-    public void hashPassword_ReturnHash() {
+    public void hashPassword_returnHash_whenPasswordIsValid() {
         String password = "password";
         String hash = "5f4dcc3b5aa765d61d8327deb882cf99";
 
@@ -20,7 +20,7 @@ public class MD5DigestUtilsTest {
     }
 
     @Test
-    public void HashPassword_ThrowNullPointerException() {
+    public void hashPassword_throwNullPointerException_whenPasswordIsNull() {
         String password = null;
         assertThrows(NullPointerException.class, () -> subj.hashPassword(password));
     }

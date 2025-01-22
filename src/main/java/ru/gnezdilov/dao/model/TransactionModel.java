@@ -3,19 +3,19 @@ package ru.gnezdilov.dao.model;
 import ru.gnezdilov.dao.abstractclass.Model;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class TransactionModel extends Model {
     private int senderAccountId;
     private int receiverAccountId;
     private BigDecimal amount;
-    private Date date;
+    private LocalDate date;
 
     public TransactionModel() {
     }
 
-    public TransactionModel(int id, int senderAccountId, int receiverAccountId, BigDecimal amount, Date date) {
+    public TransactionModel(int id, int senderAccountId, int receiverAccountId, BigDecimal amount, LocalDate date) {
         this.setId(id);
         this.senderAccountId = senderAccountId;
         this.receiverAccountId = receiverAccountId;
@@ -35,7 +35,7 @@ public class TransactionModel extends Model {
         return amount;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
@@ -51,7 +51,7 @@ public class TransactionModel extends Model {
         this.amount = amount;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -65,11 +65,11 @@ public class TransactionModel extends Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TransactionModel that = (TransactionModel) o;
-        return senderAccountId == that.senderAccountId && receiverAccountId == that.receiverAccountId && Objects.equals(amount, that.amount) && Objects.equals(date, that.date);
+        return this.getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(senderAccountId, receiverAccountId, amount, date);
+        return Objects.hash(this.getId());
     }
 }

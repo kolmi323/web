@@ -3,19 +3,19 @@ package ru.gnezdilov.service.dto;
 import ru.gnezdilov.dao.abstractclass.DTO;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class TransactionDTO extends DTO {
     private int senderAccountId;
     private int receiverAccountId;
     private BigDecimal amount;
-    private Date date;
+    private LocalDate date;
 
     public TransactionDTO() {
     }
 
-    public TransactionDTO(int id, int senderAccountId, int receiverAccountId, BigDecimal amount, Date date) {
+    public TransactionDTO(int id, int senderAccountId, int receiverAccountId, BigDecimal amount, LocalDate date) {
         this.setId(id);
         this.senderAccountId = senderAccountId;
         this.receiverAccountId = receiverAccountId;
@@ -35,7 +35,7 @@ public class TransactionDTO extends DTO {
         return amount;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
@@ -51,13 +51,13 @@ public class TransactionDTO extends DTO {
         this.amount = amount;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
     @Override
     public String toString() {
-        return id + ". " + date + ": " + amount + "\n from " + senderAccountId + " to " + receiverAccountId;
+        return id + ". " + date;
     }
 
     @Override
@@ -65,11 +65,11 @@ public class TransactionDTO extends DTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TransactionDTO that = (TransactionDTO) o;
-        return senderAccountId == that.senderAccountId && receiverAccountId == that.receiverAccountId && Objects.equals(amount, that.amount) && Objects.equals(date, that.date);
+        return this.getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(senderAccountId, receiverAccountId, amount, date);
+        return Objects.hash(this.getId());
     }
 }

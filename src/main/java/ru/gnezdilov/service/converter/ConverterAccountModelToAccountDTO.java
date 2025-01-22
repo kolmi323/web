@@ -8,7 +8,7 @@ public class ConverterAccountModelToAccountDTO implements Converter<AccountModel
     @Override
     public AccountDTO convert(AccountModel source) {
         if (source == null) {
-            throw new NullPointerException("source is null");
+            return null;
         }
         return new AccountDTO(source.getId(), source.getUserId(), source.getName(), source.getBalance());
     }

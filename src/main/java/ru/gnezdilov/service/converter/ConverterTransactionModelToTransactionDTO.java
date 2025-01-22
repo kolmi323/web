@@ -8,7 +8,7 @@ public class ConverterTransactionModelToTransactionDTO implements Converter<Tran
     @Override
     public TransactionDTO convert(TransactionModel source) {
         if (source == null) {
-            throw new NullPointerException("source is null");
+            return null;
         }
         return new TransactionDTO(source.getId(), source.getSenderAccountId(), source.getReceiverAccountId(),
                 source.getAmount(), source.getDate());

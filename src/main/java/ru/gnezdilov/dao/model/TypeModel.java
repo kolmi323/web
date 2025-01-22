@@ -43,11 +43,11 @@ public class TypeModel extends Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TypeModel that = (TypeModel) o;
-        return userId == that.userId && Objects.equals(name, that.name);
+        return this.getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, name);
+        return Objects.hash(this.getId());
     }
 }

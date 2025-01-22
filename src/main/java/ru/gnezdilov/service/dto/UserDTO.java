@@ -35,11 +35,11 @@ public class UserDTO extends DTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDTO userDTO = (UserDTO) o;
-        return id == userDTO.id && Objects.equals(name, userDTO.name) && Objects.equals(email, userDTO.email);
+        return this.getId() == userDTO.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, email);
+        return Objects.hash(this.getId());
     }
 }
