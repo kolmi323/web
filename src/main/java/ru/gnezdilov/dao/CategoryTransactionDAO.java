@@ -17,20 +17,22 @@ import java.util.Map;
 
 
 public class CategoryTransactionDAO extends DAO {
-    private final String SQL_INCOMING_TRANSACTION = "select ty.name, tr.amount\n" +
+    private final String SQL_INCOMING_TRANSACTION = "select ty.name, sum(tr.amount)\n" +
             "from users as us\n" +
             "         join type as ty on us.id = ty.user_id\n" +
             "         join type_transaction as tt on ty.id = tt.type_id\n" +
             "         join transaction as tr on tt.transaction_id = tr.id\n" +
             "         join account as ac on tr.to_account_id = ac.id\n" +
-            "where us.id = ? and tr.date > ? and tr.date < ?";
-    private final String SQL_OUTGOING_TRANSACTION = "select ty.name, tr.amount\n" +
+            "where us.id = ? and tr.date > ? and tr.date < ?" +
+            "group by ty.name;";
+    private final String SQL_OUTGOING_TRANSACTION = "select ty.name, sum(tr.amount)\n" +
             "from users as us\n" +
             "         join type as ty on us.id = ty.user_id\n" +
             "         join type_transaction as tt on ty.id = tt.type_id\n" +
             "         join transaction as tr on tt.transaction_id = tr.id\n" +
             "         join account as ac on tr.from_account_id = ac.id\n" +
-            "where us.id = ? and tr.date > ? and tr.date < ?";
+            "where us.id = ? and tr.date > ? and tr.date < ?" +
+            "group by ty.name;";
 
     public CategoryTransactionDAO(DataSource dataSource) {
         super(dataSource);
@@ -42,8 +44,8 @@ public class CategoryTransactionDAO extends DAO {
         try(PreparedStatement psst = getDataSource().getConnection()
                 .prepareStatement(sqlCode)) {
             psst.setInt(1, userId);
-            psst.setDate(2, Date.valueOf(startDate));
-            psst.setDate(3, Date.valueOf(endDate));
+            psst.setObject(2, startDate);
+            psst.setObject(3, endDate);
             ResultSet rs = psst.executeQuery();
             while (rs.next()) {
                 transactions.put(rs.getString(1), rs.getBigDecimal(2));

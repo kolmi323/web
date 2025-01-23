@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 
-public class  CategoryTransactionService {
+public class CategoryTransactionService {
     private CategoryTransactionDAO categoryTransactionDAO;
 
     public CategoryTransactionService(CategoryTransactionDAO categoryTransactionDAO) {
