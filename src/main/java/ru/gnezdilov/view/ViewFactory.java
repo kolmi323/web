@@ -20,8 +20,10 @@ public final class ViewFactory {
     private PersonalOfficePage personalOfficePage;
     private AccountMenu accountMenu;
     private AccountActionMenu accountActionMenu;
-    private TypeTransactionMenu typeTransactionMenu;
-    private TypeTransactionActionMenu typeTransactionActionMenu;
+    private TypeMenu typeMenu;
+    private TypeActionMenu typeActionMenu;
+    private CategoryTransactionActionMenu categoryTransactionActionMenu;
+    private CategoryTransactionMenu categoryTransactionMenu;
 
     private UIUtils utils;
     private InputRequest inputRequest;
@@ -82,7 +84,8 @@ public final class ViewFactory {
 
     public PersonalOfficePage getPersonalOfficePage() {
         if (personalOfficePage == null) {
-            personalOfficePage = new PersonalOfficePage(getInputRequest(), getUtils(), getAccountMenu(), getTypeTransactionMenu());
+            personalOfficePage = new PersonalOfficePage(getInputRequest(), getUtils(), getAccountMenu(),
+                    getTypeMenu(), getTransactionMenu());
         }
         return personalOfficePage;
     }
@@ -101,17 +104,32 @@ public final class ViewFactory {
         return accountActionMenu;
     }
 
-    public TypeTransactionMenu getTypeTransactionMenu() {
-        if (typeTransactionMenu == null) {
-            typeTransactionMenu = new TypeTransactionMenu(getInputRequest(), getUtils(), getTypeTransactionActionMenu());
+    public TypeMenu getTypeMenu() {
+        if (typeMenu == null) {
+            typeMenu = new TypeMenu(getInputRequest(), getUtils(), getTypeActionMenu());
         }
-        return typeTransactionMenu;
+        return typeMenu;
     }
 
-    public TypeTransactionActionMenu getTypeTransactionActionMenu() {
-        if (typeTransactionActionMenu == null) {
-            typeTransactionActionMenu = new TypeTransactionActionMenu(getUtils(), serviceFactory.getTypeTransactionService());
+    public TypeActionMenu getTypeActionMenu() {
+        if (typeActionMenu == null) {
+            typeActionMenu = new TypeActionMenu(getUtils(), serviceFactory.getTypeService());
         }
-        return typeTransactionActionMenu;
+        return typeActionMenu;
+    }
+
+    public CategoryTransactionActionMenu getTransactionActionMenu() {
+        if (categoryTransactionActionMenu == null) {
+            categoryTransactionActionMenu = new CategoryTransactionActionMenu(getUtils(), this.serviceFactory.getTransactionService(),
+                    getTypeActionMenu(), getAccountActionMenu());
+        }
+        return categoryTransactionActionMenu;
+    }
+
+    public CategoryTransactionMenu getTransactionMenu() {
+        if (categoryTransactionMenu == null) {
+            categoryTransactionMenu = new CategoryTransactionMenu(getInputRequest(), getUtils(), getTransactionActionMenu());
+        }
+        return categoryTransactionMenu;
     }
 }

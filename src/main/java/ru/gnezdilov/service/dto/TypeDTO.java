@@ -1,15 +1,18 @@
 package ru.gnezdilov.service.dto;
 
-public class TypeTransactionDTO {
-    private int id;
+import ru.gnezdilov.dao.abstractclass.DTO;
+
+import java.util.Objects;
+
+public class TypeDTO extends DTO {
     private int userId;
     private String name;
 
-    public TypeTransactionDTO() {
+    public TypeDTO() {
     }
 
-    public TypeTransactionDTO(int id, int userId, String name) {
-        this.id = id;
+    public TypeDTO(int id, int userId, String name) {
+        this.setId(id);
         this.userId = userId;
         this.name = name;
     }
@@ -33,5 +36,18 @@ public class TypeTransactionDTO {
     @Override
     public String toString() {
         return this.id + ". Название типа транзакции: " + this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TypeDTO that = (TypeDTO) o;
+        return this.getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getId());
     }
 }

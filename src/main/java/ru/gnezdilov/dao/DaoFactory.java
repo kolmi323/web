@@ -11,7 +11,8 @@ public final class DaoFactory {
     private DataSource dataSource;
     private UserDAO userDao;
     private AccountDAO accountDao;
-    private TypeTransactionDAO typeTransactionDao;
+    private TypeDAO typeDao;
+    private CategoryTransactionDAO categoryTransactionDao;
 
     public static DaoFactory getInstance() {
         if (instance == null) {
@@ -45,10 +46,17 @@ public final class DaoFactory {
         return accountDao;
     }
 
-    public TypeTransactionDAO getTypeTransactionDao() {
-        if (typeTransactionDao == null) {
-            typeTransactionDao = new TypeTransactionDAO(getDataSource());
+    public TypeDAO getTypeDao() {
+        if (typeDao == null) {
+            typeDao = new TypeDAO(getDataSource());
         }
-        return typeTransactionDao;
+        return typeDao;
+    }
+
+    public CategoryTransactionDAO getTransactionDao() {
+        if (categoryTransactionDao == null) {
+            categoryTransactionDao = new CategoryTransactionDAO(getDataSource());
+        }
+        return categoryTransactionDao;
     }
 }

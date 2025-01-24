@@ -3,6 +3,7 @@ package ru.gnezdilov.dao.model;
 import ru.gnezdilov.dao.abstractclass.Model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class AccountModel extends Model {
     private int userId;
@@ -13,7 +14,7 @@ public class AccountModel extends Model {
     }
 
     public AccountModel(int id, int userId, String name, BigDecimal balance) {
-        this.id = id;
+        this.setId(id);
         this.userId = userId;
         this.name = name;
         this.balance = balance;
@@ -47,5 +48,18 @@ public class AccountModel extends Model {
     public String toString() {
         return "Название счета: " + name +
                 ", баланс на счету = " + balance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AccountModel that = (AccountModel) o;
+        return this.getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getId());
     }
 }

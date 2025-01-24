@@ -2,15 +2,17 @@ package ru.gnezdilov.dao.model;
 
 import ru.gnezdilov.dao.abstractclass.Model;
 
-public class TypeTransactionModel extends Model {
+import java.util.Objects;
+
+public class TypeModel extends Model {
     private int userId;
     private String name;
 
-    public TypeTransactionModel() {
+    public TypeModel() {
     }
 
-    public TypeTransactionModel(int id, int userId, String name) {
-        this.id = id;
+    public TypeModel(int id, int userId, String name) {
+        this.setId(id);
         this.userId = userId;
         this.name = name;
     }
@@ -34,5 +36,18 @@ public class TypeTransactionModel extends Model {
     @Override
     public String toString() {
         return "Название типа транзакции: " + this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TypeModel that = (TypeModel) o;
+        return this.getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getId());
     }
 }

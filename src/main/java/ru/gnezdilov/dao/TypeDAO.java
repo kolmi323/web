@@ -3,7 +3,7 @@ package ru.gnezdilov.dao;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.abstractclass.DAO;
-import ru.gnezdilov.dao.model.TypeTransactionModel;
+import ru.gnezdilov.dao.model.TypeModel;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -13,14 +13,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeTransactionDAO extends DAO {
+public class TypeDAO extends DAO {
     private static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
 
-    public TypeTransactionDAO(DataSource ds) {
+    public TypeDAO(DataSource ds) {
         super(ds);
     }
 
-    public TypeTransactionModel update(int id, int userId, String newName) {
+    public TypeModel update(int id, int userId, String newName) {
         try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
                 ("UPDATE type SET name = ? WHERE id = ? AND user_id = ?", Statement.RETURN_GENERATED_KEYS)) {
             psst.setString(1, newName);
@@ -29,7 +29,7 @@ public class TypeTransactionDAO extends DAO {
             psst.executeUpdate();
             ResultSet rs = psst.getGeneratedKeys();
             if (rs.next()) {
-                return new TypeTransactionModel(rs.getInt(1), userId, newName);
+                return new TypeModel(rs.getInt(1), userId, newName);
             } else {
                 throw new DAOException("Not found type");
             }
@@ -38,7 +38,7 @@ public class TypeTransactionDAO extends DAO {
         }
     }
 
-    public TypeTransactionModel insert(int userId, String name) {
+    public TypeModel insert(int userId, String name) {
         try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
                 ("INSERT INTO type (user_id, name) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS))
         {
@@ -47,7 +47,7 @@ public class TypeTransactionDAO extends DAO {
             psst.executeUpdate();
             ResultSet rs = psst.getGeneratedKeys();
             if (rs.next()) {
-                return new TypeTransactionModel(rs.getInt(1), userId, name);
+                return new TypeModel(rs.getInt(1), userId, name);
             } else {
                 throw new DAOException("Insert Type Error");
             }
@@ -72,15 +72,15 @@ public class TypeTransactionDAO extends DAO {
         }
     }
 
-    public List<TypeTransactionModel> getAll(int userId) {
-        List<TypeTransactionModel> types = new ArrayList<>();
+    public List<TypeModel> getAll(int userId) {
+        List<TypeModel> types = new ArrayList<>();
         try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
                 ("SELECT * FROM type WHERE user_id = ?")) {
             psst.setInt(1, userId);
             psst.executeQuery();
             ResultSet rs = psst.getResultSet();
             while (rs.next()) {
-                types.add(new TypeTransactionModel
+                types.add(new TypeModel
                         (rs.getInt("id"), rs.getInt("user_id"), rs.getString("name")));
             }
         } catch (SQLException e) {
