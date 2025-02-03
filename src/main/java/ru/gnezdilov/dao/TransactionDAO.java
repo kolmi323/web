@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionDAO extends DAO {
+    private static final String SQL_STATE_ABSENCE_FOREIGN_KEY = "23503";
+
     private final String SQL_GET_ALL_TRANSACTIONS = "SELECT t.id, t.from_account_id, t.to_account_id, t.amount, t.date\n" +
             "FROM users AS u\n" +
             "JOIN account AS a ON u.id = a.user_id\n" +
@@ -55,7 +57,11 @@ public class TransactionDAO extends DAO {
                 throw new DAOException("Insert transaction failed");
             }
         } catch (SQLException e) {
-            throw new DAOException(e);
+            if (SQL_STATE_ABSENCE_FOREIGN_KEY.equals(e.getSQLState())) {
+                throw new DAOException("Account with id " + toAccountId +" not found");
+            } else {
+                throw new DAOException(e);
+            }
         }
     }
 }

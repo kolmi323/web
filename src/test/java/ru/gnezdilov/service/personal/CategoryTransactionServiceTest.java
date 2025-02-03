@@ -17,8 +17,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CategoryTransactionServiceTest {
-    @InjectMocks
-    CategoryTransactionService subj;
+    @InjectMocks CategoryTransactionService subj;
 
     @Mock CategoryTransactionDAO categoryTransactionDAO;
 
