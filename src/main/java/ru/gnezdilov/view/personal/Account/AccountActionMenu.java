@@ -1,4 +1,4 @@
-package ru.gnezdilov.view.personal;
+package ru.gnezdilov.view.personal.Account;
 
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.personal.AccountService;

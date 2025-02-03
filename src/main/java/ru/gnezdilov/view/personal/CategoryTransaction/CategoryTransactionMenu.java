@@ -1,7 +1,8 @@
-package ru.gnezdilov.view.personal;
+package ru.gnezdilov.view.personal.CategoryTransaction;
 
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.exception.DataSourceException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
@@ -20,7 +21,7 @@ public class CategoryTransactionMenu {
 
     public void start() {
         String answer;
-        System.out.println("Welcome to transaction action menu " + ViewFactory.getCurrentUser().getName() + "!");
+        System.out.println("Welcome to category transaction action menu " + ViewFactory.getCurrentUser().getName() + "!");
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Action menu:" +
@@ -39,7 +40,8 @@ public class CategoryTransactionMenu {
                 } else {
                     System.out.println("Invalid input");
                 }
-            } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException e) {
+            } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException |
+                     DataSourceException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());

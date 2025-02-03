@@ -1,6 +1,5 @@
-package ru.gnezdilov.view.personal;
+package ru.gnezdilov.view.personal.Account;
 
-import org.mockito.internal.matchers.Null;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.view.ViewFactory;
@@ -41,7 +40,7 @@ public class AccountMenu {
                 } else {
                     System.out.println("Invalid input");
                 }
-            } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException e) {
+            } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException | DataSourceException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());

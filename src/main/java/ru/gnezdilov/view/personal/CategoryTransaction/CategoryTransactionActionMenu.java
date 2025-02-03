@@ -1,8 +1,10 @@
-package ru.gnezdilov.view.personal;
+package ru.gnezdilov.view.personal.CategoryTransaction;
 
 import ru.gnezdilov.service.personal.CategoryTransactionService;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.view.ViewFactory;
+import ru.gnezdilov.view.personal.Account.AccountActionMenu;
+import ru.gnezdilov.view.personal.Type.TypeActionMenu;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

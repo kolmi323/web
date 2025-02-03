@@ -33,7 +33,7 @@ public class AccountDAO extends DAO {
                          rs.getString("name"), rs.getBigDecimal("balance")));
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DAOException(e);
         }
         return accounts;
     }
@@ -57,7 +57,7 @@ public class AccountDAO extends DAO {
             if (UNIQUE_CONSTRAINT_VIOLATION.equals(e.getSQLState())) {
                 throw new AlreadyExistsException("Account already exists");
             } else {
-                throw new DAOException(e.getMessage(), e);
+                throw new DAOException(e);
             }
         }
     }
@@ -69,7 +69,7 @@ public class AccountDAO extends DAO {
             psst.setInt(2, userId);
             return psst.executeUpdate() == 1;
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DAOException(e);
         }
     }
 }

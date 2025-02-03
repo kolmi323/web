@@ -1,6 +1,5 @@
 package ru.gnezdilov.view;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.function.Predicate;
@@ -46,7 +45,7 @@ public class UIUtils {
         return false;
     }
 
-    public boolean isDataCorrect(String data) {
+    public boolean isDateCorrect(String data) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         try {
             df.setLenient(false);
@@ -103,7 +102,7 @@ public class UIUtils {
 
     public String enterDate() {
         String message = "Enter your Date or enter \"exit\" to exit: ";
-        Predicate<String> predicate = this::isDataCorrect;
+        Predicate<String> predicate = this::isDateCorrect;
         return this.inputRequest.requestNotBlancString(message, predicate);
     }
 }

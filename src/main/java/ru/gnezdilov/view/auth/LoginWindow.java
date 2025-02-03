@@ -32,7 +32,7 @@ public class LoginWindow {
             System.out.println("Logged in successfully");
             ViewFactory.setCurrentUser(user);
             personalOfficePage.start();
-        } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException e) {
+        } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException | DataSourceException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println(e.getMessage());

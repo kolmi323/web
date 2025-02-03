@@ -37,7 +37,7 @@ public class UserDAO extends DAO {
             if (UNIQUE_CONSTRAINT_VIOLATION.equals(e.getSQLState())) {
                 throw new AlreadyExistsException("Email already exists");
             } else {
-                throw new DAOException(e.getMessage(), e);
+                throw new DAOException(e);
             }
         }
     }
@@ -53,7 +53,7 @@ public class UserDAO extends DAO {
                         rs.getString("email"), rs.getString("password")));
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DAOException(e);
         }
         return Optional.empty();
     }

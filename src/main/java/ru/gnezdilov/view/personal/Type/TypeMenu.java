@@ -1,4 +1,4 @@
-package ru.gnezdilov.view.personal;
+package ru.gnezdilov.view.personal.Type;
 
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
@@ -44,7 +44,7 @@ public class TypeMenu {
                 } else {
                     System.out.println("Invalid input");
                 }
-            } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException e) {
+            } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException | DataSourceException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());

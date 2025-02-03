@@ -36,7 +36,7 @@ public class RegisterWindow {
             System.out.println("User created");
             ViewFactory.setCurrentUser(user);
             personalOfficePage.start();
-        } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException e) {
+        } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException | DataSourceException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println(e.getMessage());

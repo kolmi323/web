@@ -1,4 +1,4 @@
-package ru.gnezdilov.view.personal;
+package ru.gnezdilov.view.personal.Type;
 
 
 import ru.gnezdilov.service.dto.TypeDTO;

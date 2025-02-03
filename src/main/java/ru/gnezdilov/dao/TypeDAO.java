@@ -34,7 +34,7 @@ public class TypeDAO extends DAO {
                 throw new DAOException("Not found type");
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DAOException(e);
         }
     }
 
@@ -55,7 +55,7 @@ public class TypeDAO extends DAO {
             if (UNIQUE_CONSTRAINT_VIOLATION.equals(e.getSQLState())) {
                 throw new AlreadyExistsException("Type already exists");
             } else {
-                throw new DAOException(e.getMessage(), e);
+                throw new DAOException(e);
             }
         }
     }
@@ -68,7 +68,7 @@ public class TypeDAO extends DAO {
             psst.setInt(2, userId);
             return psst.executeUpdate() == 1;
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DAOException(e);
         }
     }
 
@@ -84,7 +84,7 @@ public class TypeDAO extends DAO {
                         (rs.getInt("id"), rs.getInt("user_id"), rs.getString("name")));
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DAOException(e);
         }
         return types;
     }

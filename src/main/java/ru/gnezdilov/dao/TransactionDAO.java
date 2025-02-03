@@ -1,0 +1,61 @@
+package ru.gnezdilov.dao;
+
+import ru.gnezdilov.dao.abstractclass.DAO;
+import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.model.TransactionModel;
+
+import javax.sql.DataSource;
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TransactionDAO extends DAO {
+    private final String SQL_GET_ALL_TRANSACTIONS = "SELECT t.id, t.from_account_id, t.to_account_id, t.amount, t.date\n" +
+            "FROM users AS u\n" +
+            "JOIN account AS a ON u.id = a.user_id\n" +
+            "JOIN transaction AS t ON a.id = t.from_account_id OR a.id = t.to_account_id\n" +
+            "WHERE u.id = ?";
+
+    public TransactionDAO(DataSource ds) {
+        super(ds);
+    }
+
+    public List<TransactionModel> getAll(int userId) {
+        List<TransactionModel> transactions = new ArrayList<>();
+        try (PreparedStatement psst = getDataSource().getConnection().prepareStatement(SQL_GET_ALL_TRANSACTIONS)) {
+            psst.setInt(1, userId);
+            ResultSet rs = psst.executeQuery();
+            while (rs.next()) {
+                TransactionModel transaction = new TransactionModel(rs.getInt("id"),
+                        rs.getInt("from_account_id"), rs.getInt("to_account_id"),
+                        rs.getBigDecimal("amount"), LocalDate.parse(rs.getDate("date").toString()));
+                transactions.add(transaction);
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+        return transactions;
+    }
+
+    public int insert(int fromAccountId, int toAccountId, BigDecimal amount) {
+        try (PreparedStatement psst = getDataSource().getConnection()
+                .prepareStatement("SELECT transfer_money(?, ?, ?)")) {
+            psst.setInt(1, fromAccountId);
+            psst.setInt(2, toAccountId);
+            psst.setBigDecimal(3, amount);
+            ResultSet rs = psst.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            } else {
+                throw new DAOException("Insert transaction failed");
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+}

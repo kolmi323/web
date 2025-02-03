@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="gnezdilov">
+        <createTable tableName="users">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints unique="true" nullable="false" primaryKey="true" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="gnezdilov">
+        <sql>
+            create table account (
+                id SERIAL PRIMARY KEY,
+                user_id INT REFERENCES users(id) NOT NULL,
+                name VARCHAR(255) NOT NULL,
+                balance DECIMAL(20, 2) NOT NULL,
+                UNIQUE (user_id, name)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="3" author="gnezdilov">
+        <sql>
+            create table type (
+               id SERIAL PRIMARY KEY,
+               user_id INT REFERENCES users(id) NOT NULL ,
+               name VARCHAR(255) NOT NULL,
+                UNIQUE (user_id, name)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="4" author="gnezdilov">
+        <sql>
+            create table transaction (
+                id SERIAL PRIMARY KEY,
+                from_account_id INT REFERENCES account(id),
+                to_account_id INT REFERENCES account(id),
+                amount DECIMAL(20,2) NOT NULL,
+                date DATE NOT NULL
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="5" author="gnezdilov">
+        <sql>
+            create table type_transaction (
+                id SERIAL PRIMARY KEY,
+                type_id INT REFERENCES type(id) NOT NULL,
+                transaction_id INT REFERENCES transaction(id) NOT NULL
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="6" author="gnezdilov">
+        <sql splitStatements="false">
+            CREATE OR REPLACE FUNCTION transfer_money(
+                v_from_account_id INT,
+                v_to_account_id INT,
+                v_amount DECIMAL(20,2)) RETURNS INT AS $$
+            DECLARE
+                new_transaction_id INT;
+            BEGIN
+                UPDATE account
+                SET balance = balance - v_amount
+                WHERE id = v_from_account_id;
+                UPDATE account
+                SET balance = balance + v_amount
+                WHERE id = v_to_account_id;
+                INSERT INTO transaction (from_account_id, to_account_id, amount, date)
+                VALUES (v_from_account_id, v_to_account_id, v_amount, CURRENT_DATE)
+                RETURNING id INTO new_transaction_id;
+            RETURN new_transaction_id;
+            END;
+            $$ LANGUAGE plpgsql;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
