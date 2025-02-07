@@ -16,7 +16,7 @@ public class UserDAOTest extends AbstractDAOTest<UserDAO> {
 
     @Test
     public void insert_successCreateAndReturnUserModel_whenCalledWithValidArguments() {
-        UserModel userModel = new UserModel(2, "anton", "anton@mail.ru", "784742a66a3a0c271feced5b149ff8db");
+        UserModel userModel = new UserModel(3, "anton", "anton@mail.ru", "784742a66a3a0c271feced5b149ff8db");
         UserModel user = subj.insert("anton", "anton@mail.ru", "784742a66a3a0c271feced5b149ff8db");
 
         assertEquals(userModel, user);

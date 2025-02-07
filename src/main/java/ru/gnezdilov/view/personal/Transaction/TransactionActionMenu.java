@@ -54,11 +54,14 @@ public class TransactionActionMenu {
 
     private String returnSenderAmount(AccountDTO toAccountDTO) {
         String amount;
+        BigDecimal bufferAmount;
         while (true) {
             amount = utils.enterBalanceAccount();
+            bufferAmount = new BigDecimal(amount);
             if (utils.isExitAction(amount)) {
                 return amount;
-            }else if (toAccountDTO.getBalance().compareTo(new BigDecimal(amount)) >= 0) {
+            } else if (toAccountDTO.getBalance().compareTo(bufferAmount) >= 0 &&
+                    bufferAmount.compareTo(BigDecimal.ZERO) >= 0) {
                 return amount;
             } else {
                 System.out.println("On this account have not enough money. Please try again.");

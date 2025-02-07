@@ -24,9 +24,8 @@ public class TransactionDAO extends DAO {
         super(ds);
     }
 
-    private ResultSet transferMoney(int fromAccountId, int toAccountId, BigDecimal amount) {
-        try (Connection con = getDataSource().getConnection()){
-            con.setAutoCommit(false);
+    private ResultSet transferMoney(int fromAccountId, int toAccountId, BigDecimal amount, Connection con) {
+        try {
             PreparedStatement psst = con.prepareStatement("UPDATE account SET balance = balance - ? WHERE id = ?");
             psst.setBigDecimal(1, amount);
             psst.setInt(2, fromAccountId);
@@ -41,7 +40,6 @@ public class TransactionDAO extends DAO {
             psst.setInt(2, toAccountId);
             psst.setBigDecimal(3, amount);
             psst.executeUpdate();
-            con.commit();
             return psst.getGeneratedKeys();
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -66,11 +64,14 @@ public class TransactionDAO extends DAO {
     }
 
     public int insert(int fromAccountId, int toAccountId, BigDecimal amount) {
-        try {
-            ResultSet rs = transferMoney(fromAccountId, toAccountId, amount);
-            if (rs.next()) {
+        try (Connection con = getDataSource().getConnection()) {
+            con.setAutoCommit(false);
+            ResultSet rs = transferMoney(fromAccountId, toAccountId, amount, con);
+            if(rs.next()) {
+                con.commit();
                 return rs.getInt(1);
             } else {
+                con.rollback();
                 throw new DAOException("Insert transaction failed");
             }
         } catch (SQLException e) {

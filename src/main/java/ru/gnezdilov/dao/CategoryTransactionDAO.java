@@ -33,8 +33,7 @@ public class CategoryTransactionDAO extends DAO {
         super(dataSource);
     }
 
-    private HashMap<String, BigDecimal> getAll(int userId, LocalDate startDate, LocalDate endDate,
-                                               String sqlCode) {
+    private HashMap<String, BigDecimal> getAll(int userId, LocalDate startDate, LocalDate endDate, String sqlCode) {
         HashMap<String, BigDecimal> transactions = new HashMap<>();
         try(PreparedStatement psst = getDataSource().getConnection()
                 .prepareStatement(sqlCode)) {

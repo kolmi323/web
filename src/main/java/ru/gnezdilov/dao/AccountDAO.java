@@ -7,10 +7,7 @@ import ru.gnezdilov.dao.model.AccountModel;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +16,29 @@ public class AccountDAO extends DAO {
 
     public AccountDAO(DataSource ds) {
         super(ds);
+    }
+
+    private int deleteAccount(int id, int user_id, Connection con){
+        try {
+            PreparedStatement psst = con.prepareStatement("DELETE FROM type_transaction \n" +
+                    "WHERE transaction_id IN (\n" +
+                    "SELECT id FROM transaction \n" +
+                    "WHERE from_account_id = ? OR to_account_id = ?);");
+            psst.setInt(1, id);
+            psst.setInt(2, id);
+            psst.executeUpdate();
+            psst = con.prepareStatement("DELETE FROM transaction \n" +
+                    "WHERE from_account_id = ? OR to_account_id = ?;");
+            psst.setInt(1, id);
+            psst.setInt(2, id);
+            psst.executeUpdate();
+            psst = con.prepareStatement("DELETE FROM account WHERE id = ? AND user_id = ?;");
+            psst.setInt(1, id);
+            psst.setInt(2, user_id);
+            return psst.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 
     public List<AccountModel> getAll(int userId) {
@@ -63,11 +83,15 @@ public class AccountDAO extends DAO {
     }
 
     public boolean delete(int id, int userId) {
-        try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
-                ("DELETE FROM account WHERE id = ? and user_id = ?")) {
-            psst.setInt(1, id);
-            psst.setInt(2, userId);
-            return psst.executeUpdate() == 1;
+        try (Connection con = getDataSource().getConnection()) {
+            con.setAutoCommit(false);
+            if (deleteAccount(id, userId, con) == 1) {
+                con.commit();
+                return true;
+            } else {
+                con.rollback();
+                return false;
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
