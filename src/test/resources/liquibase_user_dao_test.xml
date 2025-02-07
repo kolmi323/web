@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <include file="liquibase.xml"/>
+
+    <changeSet id="filling_user" author="gnezdilov">
+        <insert tableName="users">
+            <column name="name">John Doe</column>
+            <column name="email">john@mail.ru</column>
+            <column name="password">527bd5b5d689e2c32ae974c6229ff785</column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="filling_type" author="gnezdilov">
+        <insert tableName="type">
+            <column name="user_id">1</column>
+            <column name="name">hobby</column>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -3,13 +3,17 @@ package ru.gnezdilov.dao.abstractclass;
 import javax.sql.DataSource;
 
 public abstract class DAO {
-    private final DataSource dataSource;
+    private DataSource dataSource;
 
     protected DAO(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    protected DataSource getDataSource() {
+    public DataSource getDataSource() {
         return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 }

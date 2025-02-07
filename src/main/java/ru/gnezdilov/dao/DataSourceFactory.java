@@ -20,9 +20,9 @@ public class DataSourceFactory {
     private static DataSourceFactory instance;
     private static DataSource dataSource;
 
-    private final String URL = "jdbc:postgresql://localhost:5432/postgres";
-    private final String USER = "postgres";
-    private final String PASSWORD = "postgres";
+    private final String URL = System.getProperty("jdbcUrl", "jdbc:postgresql://localhost:5432/postgres");
+    private final String USER = System.getProperty("jdbcUser", "postgres");
+    private final String PASSWORD = System.getProperty("jdbcPassword", "postgres");
 
     public static DataSourceFactory getInstance() {
         if (instance == null) {
@@ -43,11 +43,15 @@ public class DataSourceFactory {
         return dataSource;
     }
 
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     private static void initDataBase() {
         try {
             DatabaseConnection connection = new JdbcConnection(dataSource.getConnection());
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
-            Liquibase liquibase = new Liquibase("liquibase.xml",
+            Liquibase liquibase = new Liquibase(System.getProperty("liquibaseFile", "liquibase.xml"),
                     new ClassLoaderResourceAccessor(), database);
             liquibase.update(new Contexts());
         } catch (SQLException | LiquibaseException e) {

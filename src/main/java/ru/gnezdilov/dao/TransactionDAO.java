@@ -6,10 +6,7 @@ import ru.gnezdilov.dao.model.TransactionModel;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +22,30 @@ public class TransactionDAO extends DAO {
 
     public TransactionDAO(DataSource ds) {
         super(ds);
+    }
+
+    private ResultSet transferMoney(int fromAccountId, int toAccountId, BigDecimal amount) {
+        try (Connection con = getDataSource().getConnection()){
+            con.setAutoCommit(false);
+            PreparedStatement psst = con.prepareStatement("UPDATE account SET balance = balance - ? WHERE id = ?");
+            psst.setBigDecimal(1, amount);
+            psst.setInt(2, fromAccountId);
+            psst.executeUpdate();
+            psst = con.prepareStatement("UPDATE account SET balance = balance + ? WHERE id = ?");
+            psst.setBigDecimal(1, amount);
+            psst.setInt(2, toAccountId);
+            psst.executeUpdate();
+            psst = con.prepareStatement("INSERT INTO transaction (from_account_id, to_account_id, amount, date) " +
+                    "VALUES (?, ?, ?, CURRENT_DATE)", Statement.RETURN_GENERATED_KEYS);
+            psst.setInt(1, fromAccountId);
+            psst.setInt(2, toAccountId);
+            psst.setBigDecimal(3, amount);
+            psst.executeUpdate();
+            con.commit();
+            return psst.getGeneratedKeys();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 
     public List<TransactionModel> getAll(int userId) {
@@ -45,12 +66,8 @@ public class TransactionDAO extends DAO {
     }
 
     public int insert(int fromAccountId, int toAccountId, BigDecimal amount) {
-        try (PreparedStatement psst = getDataSource().getConnection()
-                .prepareStatement("SELECT transfer_money(?, ?, ?)")) {
-            psst.setInt(1, fromAccountId);
-            psst.setInt(2, toAccountId);
-            psst.setBigDecimal(3, amount);
-            ResultSet rs = psst.executeQuery();
+        try {
+            ResultSet rs = transferMoney(fromAccountId, toAccountId, amount);
             if (rs.next()) {
                 return rs.getInt(1);
             } else {
