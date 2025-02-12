@@ -21,10 +21,10 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountServiceTest {
-    @InjectMocks AccountService subj;
+    @InjectMocks private AccountService subj;
 
-    @Mock AccountDAO accountDAO;
-    @Mock ConverterAccountModelToAccountDTO converter;
+    @Mock private AccountDAO accountDAO;
+    @Mock private ConverterAccountModelToAccountDTO converter;
 
     @Test
     public void getAll_shouldReturnAllAccounts_whenCalledWithValidArguments() {

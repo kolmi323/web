@@ -1,9 +1,6 @@
 package ru.gnezdilov.view.personal.CategoryTransaction;
 
-import ru.gnezdilov.dao.exception.AlreadyExistsException;
-import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.exception.DataSourceException;
-import ru.gnezdilov.dao.exception.NotFoundException;
+import ru.gnezdilov.dao.exception.*;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.view.ViewFactory;
@@ -41,7 +38,7 @@ public class CategoryTransactionMenu {
                     System.out.println("Invalid input");
                 }
             } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException |
-                     DataSourceException e) {
+                     DataSourceException | ExitException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());

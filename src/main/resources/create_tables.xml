@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="create_users" author="gnezdilov">
+        <createTable tableName="users">
+            <column name="id" type="serial" autoIncrement="true">
+                <constraints unique="true" nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id = "create_account" author="gnezdilov">
+        <createTable tableName="account">
+            <column name="id" type="serial" autoIncrement="true">
+                <constraints unique="true" nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="balance" type="decimal(20, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="account"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_account_users"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addUniqueConstraint tableName="account"
+                             columnNames="user_id, name"
+                             constraintName="unique_pare_name_and_user_id_on_account"/>
+    </changeSet>
+
+    <changeSet id="create_type" author="gnezdilov">
+        <createTable tableName="type">
+            <column name="id" type="serial" autoIncrement="true">
+                <constraints unique="true" nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="type"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_type_users"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addUniqueConstraint tableName="type"
+                             columnNames="user_id, name"
+                             constraintName="unique_pare_name_and_user_id_on_type"/>
+    </changeSet>
+
+    <changeSet id="create_transaction" author="gnezdilov">
+        <createTable tableName="transaction">
+            <column name="id" type="serial" autoIncrement="true">
+                <constraints unique="true" nullable="false" primaryKey="true"/>
+            </column>
+            <column name="from_account_id" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="to_account_id" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="amount" type="decimal(20,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="transaction"
+                                 baseColumnNames="from_account_id"
+                                 constraintName="fk_transaction_from_account"
+                                 referencedTableName="account"
+                                 referencedColumnNames="id"
+                                 onDelete="SET NULL"/>
+
+        <addForeignKeyConstraint baseTableName="transaction"
+                                 baseColumnNames="to_account_id"
+                                 constraintName="fk_transaction_to_account"
+                                 referencedTableName="account"
+                                 referencedColumnNames="id"
+                                 onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="create_type_transaction" author="gnezdilov">
+        <createTable tableName="type_transaction">
+            <column name="id" type="serial" autoIncrement="true">
+                <constraints unique="true" nullable="false" primaryKey="true"/>
+            </column>
+            <column name="type_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_id" type="int">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="type_transaction"
+                                 baseColumnNames="type_id"
+                                 constraintName="fk_type_transaction_type"
+                                 referencedTableName="type"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="type_transaction"
+                                 baseColumnNames="transaction_id"
+                                 constraintName="fk_type_transaction_transaction"
+                                 referencedTableName="transaction"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

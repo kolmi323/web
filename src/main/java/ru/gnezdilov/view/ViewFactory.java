@@ -46,20 +46,6 @@ public final class ViewFactory {
         this.serviceFactory = serviceFactory;
     }
 
-    private UIUtils getUtils() {
-        if (utils == null) {
-            utils = new UIUtils();
-        }
-        return utils;
-    }
-
-    private InputRequest getInputRequest() {
-        if (inputRequest == null) {
-            inputRequest = new InputRequest();
-        }
-        return inputRequest;
-    }
-
     public static ViewFactory getInstance() {
         if (instance == null) {
             instance = new ViewFactory(ServiceFactory.getInstance());
@@ -150,7 +136,7 @@ public final class ViewFactory {
     public TransactionActionMenu getTransactionActionMenu() {
         if (transactionActionMenu == null) {
             transactionActionMenu = new TransactionActionMenu(getUtils(), serviceFactory.getTransactionService(),
-                    serviceFactory.getAccountService());
+                    getAccountActionMenu(), getTypeActionMenu());
         }
         return transactionActionMenu;
     }
@@ -160,5 +146,19 @@ public final class ViewFactory {
             transactionMenu = new TransactionMenu(getInputRequest(), getUtils(), getTransactionActionMenu());
         }
         return transactionMenu;
+    }
+
+    private UIUtils getUtils() {
+        if (utils == null) {
+            utils = new UIUtils();
+        }
+        return utils;
+    }
+
+    private InputRequest getInputRequest() {
+        if (inputRequest == null) {
+            inputRequest = new InputRequest();
+        }
+        return inputRequest;
     }
 }

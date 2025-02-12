@@ -29,25 +29,16 @@ public class AccountActionMenu {
 
     public void createAccount() {
         String name = this.utils.enterNameAccount();
-        if (this.utils.isExitAction(name)) {
-            return;
-        }
-        String answer = this.utils.enterBalanceAccount();
-        if (this.utils.isExitAction(answer)) {
-            return;
-        }
-        BigDecimal balance = new BigDecimal(answer).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal answer = this.utils.enterBalanceAccount();
+        BigDecimal balance = answer.setScale(2, RoundingMode.HALF_UP);
         AccountDTO account = accountService
                 .create(ViewFactory.getCurrentUser().getId(), name, balance);
         System.out.println("New account " + account.getName() + " created");
     }
 
     public void removeAccount() {
-        String id = this.utils.enterId();
-        if (this.utils.isExitAction(id)) {
-            return;
-        }
-        if (accountService.delete(Integer.parseInt(id), ViewFactory.getCurrentUser().getId())) {
+        int id = this.utils.enterId();
+        if (accountService.delete(id, ViewFactory.getCurrentUser().getId())) {
             System.out.println("Account: " + id + " - deleted");
         } else {
             System.out.println("Account: " + id + " - not found");

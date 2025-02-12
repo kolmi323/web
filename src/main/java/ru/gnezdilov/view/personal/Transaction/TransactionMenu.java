@@ -1,12 +1,11 @@
 package ru.gnezdilov.view.personal.Transaction;
 
-import ru.gnezdilov.dao.exception.AlreadyExistsException;
-import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.exception.DataSourceException;
-import ru.gnezdilov.dao.exception.NotFoundException;
+import ru.gnezdilov.dao.exception.*;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.view.ViewFactory;
+
+import java.sql.SQLException;
 
 public class TransactionMenu {
     private InputRequest inputRequest;
@@ -25,14 +24,11 @@ public class TransactionMenu {
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Action menu:" +
-                            "\n1. Show all transaction" +
-                            "\n2. Create transaction" +
+                            "\n1. Create transaction" +
                             "\nexit. Exit"
             );
             try {
                 if (answer.equals("1")) {
-                    transactionActionMenu.showAll();
-                } else if (answer.equals("2")) {
                     transactionActionMenu.create();
                 } else if (utils.isExitAction(answer)) {
                     System.out.println("You exit from transaction action menu!");
@@ -41,7 +37,7 @@ public class TransactionMenu {
                     System.out.println("Invalid input");
                 }
             } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException |
-                     DataSourceException e) {
+                     DataSourceException | InsufficientFundsException | ServiceException | ExitException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());

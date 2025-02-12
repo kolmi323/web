@@ -1,9 +1,6 @@
 package ru.gnezdilov.service;
 
-import ru.gnezdilov.service.converter.ConverterAccountModelToAccountDTO;
-import ru.gnezdilov.service.converter.ConverterTransactionModelToTransactionDTO;
-import ru.gnezdilov.service.converter.ConverterTypeModelToTypeDTO;
-import ru.gnezdilov.service.converter.ConverterUserModelToUserDTO;
+import ru.gnezdilov.service.converter.*;
 import ru.gnezdilov.dao.DaoFactory;
 import ru.gnezdilov.service.custominterface.DigestService;
 import ru.gnezdilov.service.personal.AccountService;
@@ -26,6 +23,7 @@ public final class ServiceFactory {
     private ConverterUserModelToUserDTO converterToUserDTO;
     private ConverterTypeModelToTypeDTO converterToTypeDTO;
     private ConverterTransactionModelToTransactionDTO converterToTransactionDTO;
+    private ConverterCategoryTransactionModelToCategoryTransactionDTO converterToCategoryTransactionDTO;
     private DigestService digestService;
 
     private ServiceFactory(DaoFactory daoFactory) {
@@ -37,6 +35,46 @@ public final class ServiceFactory {
             instance = new ServiceFactory(DaoFactory.getInstance());
         }
         return instance;
+    }
+
+    public AuthService getAuthService() {
+        if (authService == null) {
+            authService = new AuthService(this.daoFactory.getUserDAO(), getDigestService(), getConverterToUserDTO());
+        }
+        return authService;
+    }
+
+    public AccountService getAccountService() {
+        if (accountService == null) {
+            accountService = new AccountService(this.daoFactory.getAccountDao(),
+                    getConverterToAccountDTO());
+        }
+        return accountService;
+    }
+
+    public TypeService getTypeService() {
+        if (typeService == null) {
+            typeService = new TypeService(this.daoFactory.getTypeDao(),
+                    getConverterToTypeDTO());
+        }
+        return typeService;
+    }
+
+    public CategoryTransactionService getCategoryTransactionService() {
+        if (categoryTransactionService == null) {
+            categoryTransactionService = new CategoryTransactionService(this.daoFactory.getCategoryTransactionDao(),
+                    getConverterToCategoryTransactionDTO());
+        }
+        return categoryTransactionService;
+    }
+
+    public TransactionService getTransactionService() {
+        if (transactionService == null) {
+            transactionService = new TransactionService(this.daoFactory.getTransactionDao(),
+                    getAccountService(), getCategoryTransactionService(), getTypeService(),
+                    getConverterToTransactionDTO());
+        }
+        return transactionService;
     }
 
     private DigestService getDigestService() {
@@ -74,40 +112,10 @@ public final class ServiceFactory {
         return converterToTransactionDTO;
     }
 
-    public AuthService getAuthService() {
-        if (authService == null) {
-            authService = new AuthService(this.daoFactory.getUserDAO(), getDigestService(), getConverterToUserDTO());
+    private ConverterCategoryTransactionModelToCategoryTransactionDTO getConverterToCategoryTransactionDTO() {
+        if (converterToCategoryTransactionDTO == null) {
+            converterToCategoryTransactionDTO = new ConverterCategoryTransactionModelToCategoryTransactionDTO();
         }
-        return authService;
-    }
-
-    public AccountService getAccountService() {
-        if (accountService == null) {
-            accountService = new AccountService(this.daoFactory.getAccountDao(),
-                    getConverterToAccountDTO());
-        }
-        return accountService;
-    }
-
-    public TypeService getTypeService() {
-        if (typeService == null) {
-            typeService = new TypeService(this.daoFactory.getTypeDao(),
-                    getConverterToTypeDTO());
-        }
-        return typeService;
-    }
-
-    public CategoryTransactionService getCategoryTransactionService() {
-        if (categoryTransactionService == null) {
-            categoryTransactionService = new CategoryTransactionService(this.daoFactory.getCategoryTransactionDao());
-        }
-        return categoryTransactionService;
-    }
-
-    public TransactionService getTransactionService() {
-        if (transactionService == null) {
-            transactionService = new TransactionService(this.daoFactory.getTransactionDao(), getConverterToTransactionDTO());
-        }
-        return transactionService;
+        return converterToCategoryTransactionDTO;
     }
 }

@@ -3,6 +3,7 @@ package ru.gnezdilov.dao;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.abstractclass.DAO;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.AccountModel;
 
 import javax.sql.DataSource;
@@ -18,24 +19,19 @@ public class AccountDAO extends DAO {
         super(ds);
     }
 
-    private int deleteAccount(int id, int user_id, Connection con){
-        try {
-            PreparedStatement psst = con.prepareStatement("DELETE FROM type_transaction \n" +
-                    "WHERE transaction_id IN (\n" +
-                    "SELECT id FROM transaction \n" +
-                    "WHERE from_account_id = ? OR to_account_id = ?);");
+    public AccountModel get(int id, int userId) {
+        try(PreparedStatement psst = getDataSource().getConnection().
+                prepareStatement("SELECT * FROM account WHERE id = ? AND user_id = ?")) {
             psst.setInt(1, id);
-            psst.setInt(2, id);
-            psst.executeUpdate();
-            psst = con.prepareStatement("DELETE FROM transaction \n" +
-                    "WHERE from_account_id = ? OR to_account_id = ?;");
-            psst.setInt(1, id);
-            psst.setInt(2, id);
-            psst.executeUpdate();
-            psst = con.prepareStatement("DELETE FROM account WHERE id = ? AND user_id = ?;");
-            psst.setInt(1, id);
-            psst.setInt(2, user_id);
-            return psst.executeUpdate();
+            psst.setInt(2, userId);
+            psst.executeQuery();
+            ResultSet rs = psst.getResultSet();
+            if (rs.next()) {
+                return new AccountModel(rs.getInt("id"), rs.getInt("user_id"),
+                        rs.getString("name"), rs.getBigDecimal("balance"));
+            } else {
+                throw new NotFoundException("Account with id " + id + " - not found");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -83,15 +79,11 @@ public class AccountDAO extends DAO {
     }
 
     public boolean delete(int id, int userId) {
-        try (Connection con = getDataSource().getConnection()) {
-            con.setAutoCommit(false);
-            if (deleteAccount(id, userId, con) == 1) {
-                con.commit();
-                return true;
-            } else {
-                con.rollback();
-                return false;
-            }
+        try (PreparedStatement psst = getDataSource().getConnection()
+                .prepareStatement("DELETE FROM account WHERE id = ? AND user_id = ?")) {
+            psst.setInt(1, id);
+            psst.setInt(2, userId);
+            return psst.executeUpdate() == 1;
         } catch (SQLException e) {
             throw new DAOException(e);
         }

@@ -25,27 +25,27 @@ public class CategoryTransactionActionMenu {
         this.accountActionMenu = accountActionMenu;
     }
 
+    public void showAllIncoming() {
+        showAll(true);
+    }
+
+    public void showAllOutgoing() {
+        showAll(false);
+    }
+
     private void showAll(boolean isIncoming) {
         System.out.println("You must enter the date after the transaction");
-        String dateAfter = utils.enterDate();
-        if (utils.isExitAction(dateAfter)) {
-            return;
-        }
+        LocalDate dateAfter = utils.enterDate();
         System.out.println("You must enter the date before the transaction");
-        String dateBefore = utils.enterDate();
-        if (utils.isExitAction(dateBefore)) {
-            return;
-        }
+        LocalDate dateBefore = utils.enterDate();
         HashMap<String, BigDecimal> transactions;
         if (isIncoming) {
             transactions = categoryTransactionService
-                    .getIncomingTransactions(ViewFactory.getCurrentUser().getId(),
-                            LocalDate.parse(dateAfter), LocalDate.parse(dateBefore));
+                    .getIncomingTransactions(ViewFactory.getCurrentUser().getId(), dateAfter, dateBefore);
             System.out.println("Incoming transactions:");
         } else {
             transactions = categoryTransactionService
-                    .getOutgoingTransactions(ViewFactory.getCurrentUser().getId(),
-                            LocalDate.parse(dateAfter), LocalDate.parse(dateBefore));
+                    .getOutgoingTransactions(ViewFactory.getCurrentUser().getId(), dateAfter, dateBefore);
             System.out.println("Outgoing transactions:");
         }
         if (transactions.isEmpty()) {
@@ -60,13 +60,5 @@ public class CategoryTransactionActionMenu {
             System.out.print(entry.getKey() + " - " + entry.getValue() + "; ");
         }
         System.out.println();
-    }
-
-    public void showAllIncoming() {
-        showAll(true);
-    }
-
-    public void showAllOutgoing() {
-        showAll(false);
     }
 }

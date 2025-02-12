@@ -19,13 +19,6 @@ public abstract class AbstractDAOTest <T extends DAO> {
                     "DROP TABLE account;" +
                     "DROP TABLE users;";
 
-    protected void setPropertyForConnectH2() {
-        System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem");
-        System.setProperty("jdbcUser", "test");
-        System.setProperty("jdbcPassword", "test");
-        System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");
-    }
-
     @Before
     public void setUp() throws Exception {
         subj.setDataSource(DataSourceFactory.getInstance().getDataSource());
@@ -40,5 +33,12 @@ public abstract class AbstractDAOTest <T extends DAO> {
         }
         subj.setDataSource(null);
         DataSourceFactory.getInstance().setDataSource(null);
+    }
+
+    protected void setPropertyForConnectH2() {
+        System.setProperty("jdbcUrl", "jdbc:h2:mem:test_mem");
+        System.setProperty("jdbcUser", "test");
+        System.setProperty("jdbcPassword", "test");
+        System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");
     }
 }

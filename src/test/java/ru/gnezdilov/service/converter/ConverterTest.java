@@ -17,15 +17,6 @@ import java.time.LocalDate;
 import static org.junit.Assert.*;
 
 public class ConverterTest {
-    private <S, T> void ReturnDTO(Converter<S, T> converter, S model, T dto) {
-        T result = converter.convert(model);
-        assertEquals(dto, result);
-    }
-
-    private <S, T> void ThrowNullPointerException(Converter<S, T> converter) {
-        assertNull(converter.convert(null));
-    }
-
     @Test
     public void convert_returnAccountDTO_whenCalledWithValidArguments() {
         ConverterAccountModelToAccountDTO converter = new ConverterAccountModelToAccountDTO();
@@ -83,5 +74,14 @@ public class ConverterTest {
     public void converter_transactionThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterTransactionModelToTransactionDTO converter = new ConverterTransactionModelToTransactionDTO();
         ThrowNullPointerException(converter);
+    }
+
+    private <S, T> void ReturnDTO(Converter<S, T> converter, S model, T dto) {
+        T result = converter.convert(model);
+        assertEquals(dto, result);
+    }
+
+    private <S, T> void ThrowNullPointerException(Converter<S, T> converter) {
+        assertNull(converter.convert(null));
     }
 }

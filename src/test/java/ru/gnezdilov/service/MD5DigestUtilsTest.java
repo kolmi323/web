@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MD5DigestUtilsTest {
-    @InjectMocks MD5DigestUtils subj;
+    @InjectMocks private MD5DigestUtils subj;
 
     @Test
     public void hashPassword_returnHash_whenPasswordIsValid() {

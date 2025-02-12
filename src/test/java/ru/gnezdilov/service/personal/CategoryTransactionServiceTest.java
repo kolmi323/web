@@ -17,9 +17,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CategoryTransactionServiceTest {
-    @InjectMocks CategoryTransactionService subj;
+    @InjectMocks private CategoryTransactionService subj;
 
-    @Mock CategoryTransactionDAO categoryTransactionDAO;
+    @Mock private CategoryTransactionDAO categoryTransactionDAO;
 
     @Test
     public void getIncomingTransactions_returnHashMap_whenCalledWithValidArguments() {

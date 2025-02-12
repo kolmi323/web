@@ -19,14 +19,6 @@ public final class DaoFactory {
         return instance;
     }
 
-    private DataSource getDataSource() {
-        if (dataSource == null) {
-            dataSource = DataSourceFactory.getInstance().getDataSource();
-        }
-        return dataSource;
-    }
-
-
     public UserDAO getUserDAO() {
         if (userDao == null) {
             userDao = new UserDAO(getDataSource());
@@ -60,5 +52,12 @@ public final class DaoFactory {
             transactionDao = new TransactionDAO(getDataSource());
         }
         return transactionDao;
+    }
+
+    private DataSource getDataSource() {
+        if (dataSource == null) {
+            dataSource = DataSourceFactory.getInstance().getDataSource();
+        }
+        return dataSource;
     }
 }

@@ -8,68 +8,24 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TransactionDAO extends DAO {
     private static final String SQL_STATE_ABSENCE_FOREIGN_KEY = "23503";
-
-    private final String SQL_GET_ALL_TRANSACTIONS = "SELECT t.id, t.from_account_id, t.to_account_id, t.amount, t.date\n" +
-            "FROM users AS u\n" +
-            "JOIN account AS a ON u.id = a.user_id\n" +
-            "JOIN transaction AS t ON a.id = t.from_account_id OR a.id = t.to_account_id\n" +
-            "WHERE u.id = ?";
 
     public TransactionDAO(DataSource ds) {
         super(ds);
     }
 
-    private ResultSet transferMoney(int fromAccountId, int toAccountId, BigDecimal amount, Connection con) {
-        try {
-            PreparedStatement psst = con.prepareStatement("UPDATE account SET balance = balance - ? WHERE id = ?");
-            psst.setBigDecimal(1, amount);
-            psst.setInt(2, fromAccountId);
-            psst.executeUpdate();
-            psst = con.prepareStatement("UPDATE account SET balance = balance + ? WHERE id = ?");
-            psst.setBigDecimal(1, amount);
-            psst.setInt(2, toAccountId);
-            psst.executeUpdate();
-            psst = con.prepareStatement("INSERT INTO transaction (from_account_id, to_account_id, amount, date) " +
-                    "VALUES (?, ?, ?, CURRENT_DATE)", Statement.RETURN_GENERATED_KEYS);
-            psst.setInt(1, fromAccountId);
-            psst.setInt(2, toAccountId);
-            psst.setBigDecimal(3, amount);
-            psst.executeUpdate();
-            return psst.getGeneratedKeys();
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-    }
-
-    public List<TransactionModel> getAll(int userId) {
-        List<TransactionModel> transactions = new ArrayList<>();
-        try (PreparedStatement psst = getDataSource().getConnection().prepareStatement(SQL_GET_ALL_TRANSACTIONS)) {
-            psst.setInt(1, userId);
-            ResultSet rs = psst.executeQuery();
-            while (rs.next()) {
-                TransactionModel transaction = new TransactionModel(rs.getInt("id"),
-                        rs.getInt("from_account_id"), rs.getInt("to_account_id"),
-                        rs.getBigDecimal("amount"), LocalDate.parse(rs.getDate("date").toString()));
-                transactions.add(transaction);
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        return transactions;
-    }
-
-    public int insert(int fromAccountId, int toAccountId, BigDecimal amount) {
+    public TransactionModel insert(int userId, int fromAccountId, int toAccountId, BigDecimal amount) {
         try (Connection con = getDataSource().getConnection()) {
             con.setAutoCommit(false);
-            ResultSet rs = transferMoney(fromAccountId, toAccountId, amount, con);
+            updateFromAccount(userId, fromAccountId, amount, con);
+            updateToAccount(toAccountId, amount, con);
+            ResultSet rs = createTransaction(userId, fromAccountId, toAccountId, amount, con);
             if(rs.next()) {
                 con.commit();
-                return rs.getInt(1);
+                return new TransactionModel(rs.getInt("id"), fromAccountId, toAccountId, amount,
+                        LocalDate.now());
             } else {
                 con.rollback();
                 throw new DAOException("Insert transaction failed");
@@ -80,6 +36,46 @@ public class TransactionDAO extends DAO {
             } else {
                 throw new DAOException(e);
             }
+        }
+    }
+
+    private void updateFromAccount(int userId, int fromAccountId, BigDecimal amount, Connection con) {
+        try {
+            PreparedStatement psst = con.prepareStatement("UPDATE account SET balance = balance - ? " +
+                    "WHERE id = ? AND user_id = ? AND balance >= ?");
+            psst.setBigDecimal(1, amount);
+            psst.setInt(2, fromAccountId);
+            psst.setInt(3, userId);
+            psst.setBigDecimal(4, amount);
+            psst.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    private void updateToAccount(int toAccountId, BigDecimal amount, Connection con) {
+        try {
+            PreparedStatement psst = con.prepareStatement("UPDATE account SET balance = balance + ? WHERE id = ?");
+            psst.setBigDecimal(1, amount);
+            psst.setInt(2, toAccountId);
+            psst.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    private ResultSet createTransaction(int userId, int fromAccountId, int toAccountId, BigDecimal amount,
+                                        Connection con) {
+        try {
+            PreparedStatement psst = con.prepareStatement("INSERT INTO transaction (from_account_id, to_account_id, amount, date) " +
+                    "VALUES (?, ?, ?, CURRENT_DATE)", Statement.RETURN_GENERATED_KEYS);
+            psst.setInt(1, fromAccountId);
+            psst.setInt(2, toAccountId);
+            psst.setBigDecimal(3, amount);
+            psst.executeUpdate();
+            return psst.getGeneratedKeys();
+        } catch (SQLException e) {
+            throw new DAOException(e);
         }
     }
 }

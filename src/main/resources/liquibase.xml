@@ -8,66 +8,6 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet id="1" author="gnezdilov">
-        <createTable tableName="users">
-            <column name="id" type="SERIAL" autoIncrement="true">
-                <constraints unique="true" nullable="false" primaryKey="true" />
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints unique="false" nullable="false"/>
-            </column>
-            <column name="email" type="varchar(255)">
-                <constraints unique="true" nullable="false"/>
-            </column>
-            <column name="password" type="varchar(255)">
-                <constraints unique="false" nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="2" author="gnezdilov">
-        <sql>
-            create table account (
-                id SERIAL PRIMARY KEY,
-                user_id INT REFERENCES users(id) NOT NULL,
-                name VARCHAR(255) NOT NULL,
-                balance DECIMAL(20, 2) NOT NULL,
-                UNIQUE (user_id, name)
-            );
-        </sql>
-    </changeSet>
-
-    <changeSet id="3" author="gnezdilov">
-        <sql>
-            create table type (
-               id SERIAL PRIMARY KEY,
-               user_id INT REFERENCES users(id) NOT NULL ,
-               name VARCHAR(255) NOT NULL,
-                UNIQUE (user_id, name)
-            );
-        </sql>
-    </changeSet>
-
-    <changeSet id="4" author="gnezdilov">
-        <sql>
-            create table transaction (
-                id SERIAL PRIMARY KEY,
-                from_account_id INT REFERENCES account(id),
-                to_account_id INT REFERENCES account(id),
-                amount DECIMAL(20,2) NOT NULL,
-                date DATE NOT NULL
-            );
-        </sql>
-    </changeSet>
-
-    <changeSet id="5" author="gnezdilov">
-        <sql>
-            create table type_transaction (
-                id SERIAL PRIMARY KEY,
-                type_id INT REFERENCES type(id) NOT NULL,
-                transaction_id INT REFERENCES transaction(id) NOT NULL
-            );
-        </sql>
-    </changeSet>
+    <include file="create_tables.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

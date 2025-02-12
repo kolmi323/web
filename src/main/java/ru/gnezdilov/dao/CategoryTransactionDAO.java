@@ -2,13 +2,17 @@ package ru.gnezdilov.dao;
 
 import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.model.CategoryTransactionModel;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 public class CategoryTransactionDAO extends DAO {
@@ -33,7 +37,32 @@ public class CategoryTransactionDAO extends DAO {
         super(dataSource);
     }
 
-    private HashMap<String, BigDecimal> getAll(int userId, LocalDate startDate, LocalDate endDate, String sqlCode) {
+    public CategoryTransactionModel insert(int typeId, int transactionId) {
+        try (PreparedStatement psst = getDataSource().getConnection().prepareStatement("INSERT INTO type_transaction " +
+                "(type_id, transaction_id) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+            psst.setInt(1, typeId);
+            psst.setInt(2, transactionId);
+            psst.executeUpdate();
+            ResultSet rs = psst.getGeneratedKeys();
+            if (rs.next()) {
+                return new CategoryTransactionModel(rs.getInt(1), typeId, transactionId);
+            } else {
+                throw new DAOException("Failed to insert category transaction");
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    public HashMap<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
+        return getAllInTimeFrame(userId, startDate, endDate, SQL_INCOMING_TRANSACTION);
+    }
+
+    public HashMap<String, BigDecimal> getOutgoingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
+        return getAllInTimeFrame(userId, startDate, endDate, SQL_OUTGOING_TRANSACTION);
+    }
+
+    private HashMap<String, BigDecimal> getAllInTimeFrame(int userId, LocalDate startDate, LocalDate endDate, String sqlCode) {
         HashMap<String, BigDecimal> transactions = new HashMap<>();
         try(PreparedStatement psst = getDataSource().getConnection()
                 .prepareStatement(sqlCode)) {
@@ -49,13 +78,5 @@ public class CategoryTransactionDAO extends DAO {
             throw new DAOException(e);
         }
         return transactions;
-    }
-
-    public HashMap<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
-        return getAll(userId, startDate, endDate, SQL_INCOMING_TRANSACTION);
-    }
-
-    public HashMap<String, BigDecimal> getOutgoingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
-        return getAll(userId, startDate, endDate, SQL_OUTGOING_TRANSACTION);
     }
 }

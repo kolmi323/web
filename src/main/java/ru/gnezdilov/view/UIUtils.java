@@ -1,7 +1,11 @@
 package ru.gnezdilov.view;
 
+import ru.gnezdilov.dao.exception.ExitException;
+
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -14,6 +18,10 @@ public class UIUtils {
 
     public boolean isExitAction(String text) {
         return text.equalsIgnoreCase("exit");
+    }
+
+    public void getExitAction() {
+        throw new ExitException();
     }
 
     public boolean isEmailCorrect(String email) {
@@ -81,10 +89,10 @@ public class UIUtils {
         return this.inputRequest.requestNotBlancString(message);
     }
 
-    public String enterBalanceAccount() {
+    public BigDecimal enterBalanceAccount() {
         String message = "Enter your Balance for your account or enter \"exit\" to exit: ";
         Predicate<String> predicate = this::isBalanceAccountCorrect;
-        return this.inputRequest.requestNotBlancString(message, predicate);
+        return new BigDecimal(this.inputRequest.requestNotBlancString(message, predicate));
     }
 
     public String enterNameType(boolean isNewName) {
@@ -95,14 +103,14 @@ public class UIUtils {
         return this.inputRequest.requestNotBlancString(message);
     }
 
-    public String enterId() {
+    public int enterId() {
         String message = "Enter your ID or enter \"exit\" to exit: ";
-        return this.inputRequest.requestNotBlancString(message);
+        return Integer.parseInt(this.inputRequest.requestNotBlancString(message));
     }
 
-    public String enterDate() {
+    public LocalDate enterDate() {
         String message = "Enter your Date or enter \"exit\" to exit: ";
         Predicate<String> predicate = this::isDateCorrect;
-        return this.inputRequest.requestNotBlancString(message, predicate);
+        return LocalDate.parse(this.inputRequest.requestNotBlancString(message, predicate));
     }
 }

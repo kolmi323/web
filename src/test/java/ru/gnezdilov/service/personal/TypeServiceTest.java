@@ -20,10 +20,10 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TypeServiceTest {
-    @InjectMocks TypeService subj;
+    @InjectMocks private TypeService subj;
 
-    @Mock TypeDAO typeDAO;
-    @Mock ConverterTypeModelToTypeDTO converter;
+    @Mock private TypeDAO typeDAO;
+    @Mock private ConverterTypeModelToTypeDTO converter;
 
     @Test
     public void getAll_returnLustTypeModel_whenCalledWithValidException() {
