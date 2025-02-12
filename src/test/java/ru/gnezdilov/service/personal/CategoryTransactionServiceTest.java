@@ -7,8 +7,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.CategoryTransactionDAO;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.model.CategoryTransactionModel;
+import ru.gnezdilov.dao.model.TransactionModel;
+import ru.gnezdilov.service.converter.ConverterCategoryTransactionModelToCategoryTransactionDTO;
+import ru.gnezdilov.service.dto.CategoryTransactionDTO;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -20,6 +25,7 @@ public class CategoryTransactionServiceTest {
     @InjectMocks private CategoryTransactionService subj;
 
     @Mock private CategoryTransactionDAO categoryTransactionDAO;
+    @Mock private ConverterCategoryTransactionModelToCategoryTransactionDTO converter;
 
     @Test
     public void getIncomingTransactions_returnHashMap_whenCalledWithValidArguments() {
@@ -97,5 +103,40 @@ public class CategoryTransactionServiceTest {
 
         verify(categoryTransactionDAO, times(1)).getOutgoingTransactions(1,
                 LocalDate.parse("2025-01-10"), LocalDate.parse("2025-01-30"));
+    }
+
+    @Test
+    public void create_successAndReturnCategoryTransactionDTO_whenCalledWithValidArguments() {
+        CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel(1, 1, 1);
+        when(categoryTransactionDAO.insert(1, 1)).thenReturn(categoryTransactionModel);
+
+        CategoryTransactionDTO categoryTransactionDTO = new CategoryTransactionDTO(1, 1, 1);
+        when(converter.convert(categoryTransactionModel)).thenReturn(categoryTransactionDTO);
+
+        assertEquals(categoryTransactionDTO, subj.create(1, 1));
+
+        verify(categoryTransactionDAO, times(1)).insert(1, 1);
+        verify(converter, times(1)).convert(categoryTransactionModel);
+    }
+
+    @Test
+    public void create_failedAndReturnDaoExceptionWithMessageFailedInsert_whenCalledWithValidArguments() {
+        when(categoryTransactionDAO.insert(1, 1)).thenThrow(new DAOException("Failed to insert category transaction"));
+
+        DAOException exception = assertThrows(DAOException.class, () -> subj.create(1, 1));
+        assertEquals("Failed to insert category transaction", exception.getMessage());
+
+        verify(categoryTransactionDAO, times(1)).insert(1, 1);
+        verifyNoInteractions(converter);
+    }
+
+    @Test
+    public void create_failedAndReturnDaoExceptionWithSQLException_whenCalledWithValidArguments() {
+        when(categoryTransactionDAO.insert(1, 1)).thenThrow(new DAOException(new SQLException()));
+
+        assertThrows(DAOException.class, () -> subj.create(1, 1));
+
+        verify(categoryTransactionDAO, times(1)).insert(1, 1);
+        verifyNoInteractions(converter);
     }
 }

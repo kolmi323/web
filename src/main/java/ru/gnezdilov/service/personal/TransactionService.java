@@ -63,7 +63,7 @@ public class TransactionService {
     private boolean isSenderAccountIdValid(List<AccountDTO> accounts, int senderAccountId) {
         if (accounts.stream().anyMatch(a -> a.getId() == senderAccountId)) {
             AccountDTO account = accounts.stream().filter(a -> a.getId() == senderAccountId).findFirst().get();
-            if (account.getBalance().compareTo(BigDecimal.ZERO) < 0) {
+            if (account.getBalance().compareTo(BigDecimal.ZERO) <= 0) {
                 throw new InsufficientFundsException("On sender account id " + senderAccountId + " is insufficient funds");
             } else {
                 return true;

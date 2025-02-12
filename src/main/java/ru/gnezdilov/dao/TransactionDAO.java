@@ -47,7 +47,10 @@ public class TransactionDAO extends DAO {
             psst.setInt(2, fromAccountId);
             psst.setInt(3, userId);
             psst.setBigDecimal(4, amount);
-            psst.executeUpdate();
+            if (psst.executeUpdate() == 0) {
+                con.rollback();
+                throw new DAOException("Insert transaction failed");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -58,7 +61,10 @@ public class TransactionDAO extends DAO {
             PreparedStatement psst = con.prepareStatement("UPDATE account SET balance = balance + ? WHERE id = ?");
             psst.setBigDecimal(1, amount);
             psst.setInt(2, toAccountId);
-            psst.executeUpdate();
+            if (psst.executeUpdate() == 0) {
+                con.rollback();
+                throw new DAOException("Insert transaction failed");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }

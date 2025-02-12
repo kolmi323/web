@@ -1,6 +1,8 @@
 package ru.gnezdilov.dao;
 
 import org.junit.Test;
+import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.model.CategoryTransactionModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -46,5 +48,21 @@ public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransact
 
         assertEquals(categories, subj.getIncomingTransactions(2, LocalDate.of(2025, 01, 01),
                 LocalDate.of(2025, 01, 030)));
+    }
+
+    @Test
+    public void insert_successAndReturnCategoryTransactionModel_whenCalledWithValidArguments() {
+        CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel(1, 1, 2);
+        assertEquals(categoryTransactionModel, subj.insert(1, 2));
+    }
+
+    @Test (expected = DAOException.class)
+    public void insert_failedAndThrowDAOException_whenCalledWithInvalidArgumentsTransactionNotExists() {
+        CategoryTransactionModel categoryTransactionModel = subj.insert(1, 3);
+    }
+
+    @Test (expected = DAOException.class)
+    public void insert_failedAndThrowDAOException_whenCalledWithInvalidArgumentsTypeNotExists() {
+        CategoryTransactionModel categoryTransactionModel = subj.insert(2, 2);
     }
 }
