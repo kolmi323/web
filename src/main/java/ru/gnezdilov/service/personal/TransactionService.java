@@ -3,14 +3,12 @@ package ru.gnezdilov.service.personal;
 import ru.gnezdilov.dao.TransactionDAO;
 import ru.gnezdilov.dao.exception.*;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
-import ru.gnezdilov.dao.model.TransactionModel;
 import ru.gnezdilov.service.converter.ConverterTransactionModelToTransactionDTO;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.dto.TransactionDTO;
 import ru.gnezdilov.service.dto.TypeDTO;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public class TransactionService {
     private final TransactionDAO transactionDAO;
@@ -39,7 +37,7 @@ public class TransactionService {
     private void validateAccounts (int userId, int fromAccountId, int toAccountId, BigDecimal amount) {
         if (fromAccountId == toAccountId) {
             throw new IllegalArgumentException("Sender account and receiver accounts cannot be the same");
-        } else if (fromAccountId == 0 && toAccountId == 0) {
+        } else if (fromAccountId == 0 || toAccountId == 0) {
             throw new IllegalArgumentException("Sender account id and receiver accounts id cannot be the zero");
         }
         assertHasEnoughAccounts(userId, fromAccountId, amount);
@@ -47,13 +45,13 @@ public class TransactionService {
     }
 
     private void assertHasEnoughAccounts (int userId, int fromAccountId, BigDecimal amount) {
-        AccountDTO accountDTO = accountService.get(fromAccountId, userId);
+        AccountDTO accountDTO = accountService.getById(fromAccountId, userId);
         if (amount.compareTo(accountDTO.getBalance()) > 0) {
             throw new InsufficientFundsException("On Sender account " + fromAccountId + " has insufficient funds");
         }
     }
 
     private void assertReceiverAccount(int userId, int toAccountId) {
-        AccountDTO accountDTO = accountService.get(toAccountId, userId);
+        AccountDTO accountDTO = accountService.getById(toAccountId, userId);
     }
 }

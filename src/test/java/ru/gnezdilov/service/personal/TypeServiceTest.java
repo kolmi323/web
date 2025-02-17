@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.TypeDAO;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.TypeModel;
 import ru.gnezdilov.service.converter.ConverterTypeModelToTypeDTO;
 import ru.gnezdilov.service.dto.TypeDTO;
@@ -181,6 +182,38 @@ public class TypeServiceTest {
         assertThrows(DAOException.class, () -> subj.edit(1, 1, "work"));
 
         verify(typeDAO, times(1)).update(1, 1, "work");
+        verifyNoInteractions(converter);
+    }
+
+    @Test
+    public void getById_returnTypeDTO_whenCalledWithValidException() {
+        TypeModel typeModel = new TypeModel(1, 1, "hobby");
+        when(typeDAO.findById(1, 1)).thenReturn(typeModel);
+
+        TypeDTO typeDTO = new TypeDTO(1, 1, "hobby");
+        when(converter.convert(typeModel)).thenReturn(typeDTO);
+
+        assertEquals(typeDTO, subj.getById(1, 1));
+
+        verify(typeDAO, times(1)).findById(1, 1);
+        verify(converter, times(1)).convert(typeModel);
+    }
+
+    @Test
+    public void getById_acceptNotFound_whenCalledWithInvalidException() {
+        when(typeDAO.findById(1, 2)).thenThrow(NotFoundException.class);
+        assertThrows(NotFoundException.class, () -> subj.getById(2, 1));
+
+        verify(typeDAO, times(1)).findById(1, 2);
+        verifyNoInteractions(converter);
+    }
+
+    @Test
+    public void getById_acceptDAOException_whenCalledWithValidException() {
+        when(typeDAO.findById(1, 1)).thenThrow(DAOException.class);
+        assertThrows(DAOException.class, () -> subj.getById(1, 1));
+
+        verify(typeDAO, times(1)).findById(1, 1);
         verifyNoInteractions(converter);
     }
 }

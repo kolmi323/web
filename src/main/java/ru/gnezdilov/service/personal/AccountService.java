@@ -18,7 +18,7 @@ public class AccountService {
         this.converter = converter;
     }
 
-    public AccountDTO get(int id, int userId) {
+    public AccountDTO getById(int id, int userId) {
         return converter.convert(this.accountDAO.findById(id, userId));
     }
 

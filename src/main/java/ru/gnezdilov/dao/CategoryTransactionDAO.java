@@ -39,11 +39,12 @@ public class CategoryTransactionDAO extends DAO {
             psst.setInt(1, typeId);
             psst.setInt(2, transactionId);
             psst.executeUpdate();
-            ResultSet rs = psst.getGeneratedKeys();
-            if (rs.next()) {
-                return new CategoryTransactionModel(rs.getInt(1), typeId, transactionId);
-            } else {
-                throw new DAOException("Failed to insert category transaction");
+            try (ResultSet rs = psst.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return new CategoryTransactionModel(rs.getInt(1), typeId, transactionId);
+                } else {
+                    throw new DAOException("Failed to insert category transaction");
+                }
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -60,15 +61,16 @@ public class CategoryTransactionDAO extends DAO {
 
     private Map<String, BigDecimal> getAllInTimeFrame(int userId, LocalDate startDate, LocalDate endDate, String sqlCode) {
         Map<String, BigDecimal> transactions = new HashMap<>();
-        try(PreparedStatement psst = getDataSource().getConnection()
-                .prepareStatement(sqlCode)) {
+        try(Connection con = getDataSource().getConnection();
+            PreparedStatement psst = con.prepareStatement(sqlCode)) {
             psst.setInt(1, userId);
             psst.setObject(2, startDate);
             psst.setObject(3, endDate);
             psst.executeQuery();
-            ResultSet rs = psst.getResultSet();
-            while (rs.next()) {
-                transactions.put(rs.getString(1), rs.getBigDecimal(2));
+            try (ResultSet rs = psst.getResultSet() ) {
+                while (rs.next()) {
+                    transactions.put(rs.getString(1), rs.getBigDecimal(2));
+                }
             }
         } catch (SQLException e) {
             throw new DAOException(e);

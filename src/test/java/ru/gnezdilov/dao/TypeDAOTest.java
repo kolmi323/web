@@ -3,7 +3,11 @@ package ru.gnezdilov.dao;
 import org.junit.Test;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.TypeModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -46,6 +50,33 @@ public class TypeDAOTest extends AbstractDAOTest<TypeDAO> {
     }
 
     @Test
-    public void getAll() {
+    public void delete_failedAndReturnFalse_whenCalledWithInvalidArgument() {
+        assertFalse(subj.delete(2, 2));
+    }
+
+    @Test
+    public void getAll_successAndReturnListTypes_whenCalledWithValidArgument() {
+        List<TypeModel> typeModels = new ArrayList<TypeModel>();
+        typeModels.add(new TypeModel(1, 1, "hobby"));
+
+        assertEquals(typeModels, subj.getAll(1));
+    }
+
+    @Test
+    public void getAll_failedAndReturnEmptyList_whenCalledWithValidArgument() {
+        List<TypeModel> typeModels = new ArrayList<>();
+        assertEquals(typeModels, subj.getAll(2));
+    }
+
+    @Test
+    public void getById_successAndReturnTypeModel_whenCalledWithValidArgument() {
+        TypeModel typeModel = new TypeModel(1, 1, "hobby");
+
+        assertEquals(typeModel, subj.findById(1, 1));
+    }
+
+    @Test (expected = NotFoundException.class)
+    public void getById_failedAndReturnNotFound_whenCalledWithInvalidArgument() {
+        subj.findById(1, 2);
     }
 }

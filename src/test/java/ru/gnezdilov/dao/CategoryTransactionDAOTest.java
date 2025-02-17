@@ -53,7 +53,7 @@ public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransact
 
     @Test
     public void insert_successAndReturnCategoryTransactionModel_whenCalledWithValidArguments() {
-        CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel(1, 1, 2);
+        CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel(2, 1, 2);
         try {
             assertEquals(categoryTransactionModel, subj.insert(1, 2, subj.getDataSource().getConnection()));
         } catch (SQLException e) {

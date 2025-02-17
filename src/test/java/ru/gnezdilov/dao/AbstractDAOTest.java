@@ -1,26 +1,22 @@
 package ru.gnezdilov.dao;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.junit.After;
 import org.junit.Before;
 import ru.gnezdilov.dao.abstractclass.DAO;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractDAOTest <T extends DAO> {
     protected T subj;
 
-    private final String CLEAN_H2_SQL =
-            "DROP TABLE databasechangeloglock;" +
-                    "DROP TABLE databasechangelog;" +
-                    "DROP TABLE type_transaction;" +
-                    "DROP TABLE type;" +
-                    "DROP TABLE transaction;" +
-                    "DROP TABLE account;" +
-                    "DROP TABLE users;";
+    private final String CLEAN_H2_SQL = "DROP ALL OBJECTS";
 
     @Before
     public void setUp() throws Exception {
+        DataSourceFactory.getInstance().getDataSource();
         subj.setDataSource(DataSourceFactory.getInstance().getDataSource());
     }
 

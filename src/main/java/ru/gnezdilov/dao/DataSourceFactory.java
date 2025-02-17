@@ -36,6 +36,7 @@ public class DataSourceFactory {
             config.setJdbcUrl(URL);
             config.setUsername(USER);
             config.setPassword(PASSWORD);
+            config.setMaximumPoolSize(10);
             dataSource = new HikariDataSource(config);
             initDataBase();
         }
