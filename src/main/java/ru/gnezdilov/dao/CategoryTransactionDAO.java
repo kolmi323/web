@@ -6,14 +6,10 @@ import ru.gnezdilov.dao.model.CategoryTransactionModel;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CategoryTransactionDAO extends DAO {
     private final String SQL_INCOMING_TRANSACTION = "select ty.name, sum(tr.amount)\n" +
@@ -37,8 +33,8 @@ public class CategoryTransactionDAO extends DAO {
         super(dataSource);
     }
 
-    public CategoryTransactionModel insert(int typeId, int transactionId) {
-        try (PreparedStatement psst = getDataSource().getConnection().prepareStatement("INSERT INTO type_transaction " +
+    public CategoryTransactionModel insert(int typeId, int transactionId, Connection con) {
+        try (PreparedStatement psst = con.prepareStatement("INSERT INTO type_transaction " +
                 "(type_id, transaction_id) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
             psst.setInt(1, typeId);
             psst.setInt(2, transactionId);
@@ -54,16 +50,16 @@ public class CategoryTransactionDAO extends DAO {
         }
     }
 
-    public HashMap<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
+    public Map<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
         return getAllInTimeFrame(userId, startDate, endDate, SQL_INCOMING_TRANSACTION);
     }
 
-    public HashMap<String, BigDecimal> getOutgoingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
+    public Map<String, BigDecimal> getOutgoingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
         return getAllInTimeFrame(userId, startDate, endDate, SQL_OUTGOING_TRANSACTION);
     }
 
-    private HashMap<String, BigDecimal> getAllInTimeFrame(int userId, LocalDate startDate, LocalDate endDate, String sqlCode) {
-        HashMap<String, BigDecimal> transactions = new HashMap<>();
+    private Map<String, BigDecimal> getAllInTimeFrame(int userId, LocalDate startDate, LocalDate endDate, String sqlCode) {
+        Map<String, BigDecimal> transactions = new HashMap<>();
         try(PreparedStatement psst = getDataSource().getConnection()
                 .prepareStatement(sqlCode)) {
             psst.setInt(1, userId);

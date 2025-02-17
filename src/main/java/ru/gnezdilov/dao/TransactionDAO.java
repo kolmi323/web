@@ -2,33 +2,43 @@ package ru.gnezdilov.dao;
 
 import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.model.CategoryTransactionModel;
 import ru.gnezdilov.dao.model.TransactionModel;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TransactionDAO extends DAO {
     private static final String SQL_STATE_ABSENCE_FOREIGN_KEY = "23503";
+    private final CategoryTransactionDAO categoryTransactionDAO;
 
-    public TransactionDAO(DataSource ds) {
+    public TransactionDAO(DataSource ds, CategoryTransactionDAO categoryTransactionDAO) {
         super(ds);
+        this.categoryTransactionDAO = categoryTransactionDAO;
     }
 
-    public TransactionModel insert(int userId, int fromAccountId, int toAccountId, BigDecimal amount) {
+    public TransactionModel insert(int typeId, int userId, int fromAccountId, int toAccountId, BigDecimal amount) {
         try (Connection con = getDataSource().getConnection()) {
             con.setAutoCommit(false);
-            updateFromAccount(userId, fromAccountId, amount, con);
-            updateToAccount(toAccountId, amount, con);
-            ResultSet rs = createTransaction(userId, fromAccountId, toAccountId, amount, con);
-            if(rs.next()) {
-                con.commit();
-                return new TransactionModel(rs.getInt("id"), fromAccountId, toAccountId, amount,
-                        LocalDate.now());
-            } else {
+            try {
+                updateFromAccount(userId, fromAccountId, amount, con);
+                updateToAccount(userId, toAccountId, amount, con);
+                ResultSet rs = createTransaction(fromAccountId, toAccountId, amount, con);
+                if(rs.next()) {
+                    int transactionId = rs.getInt(1);
+                    categoryTransactionDAO.insert(typeId, transactionId, con);
+                    con.commit();
+                    return new TransactionModel(transactionId, fromAccountId, toAccountId, amount, LocalDate.now());
+                } else {
+                    throw new DAOException("Insert transaction failed");
+                }
+            } catch (DAOException e) {
                 con.rollback();
-                throw new DAOException("Insert transaction failed");
+                throw new DAOException(e);
             }
         } catch (SQLException e) {
             if (SQL_STATE_ABSENCE_FOREIGN_KEY.equals(e.getSQLState())) {
@@ -48,7 +58,6 @@ public class TransactionDAO extends DAO {
             psst.setInt(3, userId);
             psst.setBigDecimal(4, amount);
             if (psst.executeUpdate() == 0) {
-                con.rollback();
                 throw new DAOException("Insert transaction failed");
             }
         } catch (SQLException e) {
@@ -56,13 +65,14 @@ public class TransactionDAO extends DAO {
         }
     }
 
-    private void updateToAccount(int toAccountId, BigDecimal amount, Connection con) {
+    private void updateToAccount(int userId, int toAccountId, BigDecimal amount, Connection con) {
         try {
-            PreparedStatement psst = con.prepareStatement("UPDATE account SET balance = balance + ? WHERE id = ?");
+            PreparedStatement psst = con.prepareStatement("UPDATE account SET balance = balance + ? WHERE id = ? " +
+                    "AND user_id = ?");
             psst.setBigDecimal(1, amount);
             psst.setInt(2, toAccountId);
+            psst.setInt(3, userId);
             if (psst.executeUpdate() == 0) {
-                con.rollback();
                 throw new DAOException("Insert transaction failed");
             }
         } catch (SQLException e) {
@@ -70,7 +80,7 @@ public class TransactionDAO extends DAO {
         }
     }
 
-    private ResultSet createTransaction(int userId, int fromAccountId, int toAccountId, BigDecimal amount,
+    private ResultSet createTransaction(int fromAccountId, int toAccountId, BigDecimal amount,
                                         Connection con) {
         try {
             PreparedStatement psst = con.prepareStatement("INSERT INTO transaction (from_account_id, to_account_id, amount, date) " +

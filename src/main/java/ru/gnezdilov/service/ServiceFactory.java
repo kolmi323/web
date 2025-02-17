@@ -71,8 +71,7 @@ public final class ServiceFactory {
     public TransactionService getTransactionService() {
         if (transactionService == null) {
             transactionService = new TransactionService(this.daoFactory.getTransactionDao(),
-                    getAccountService(), getCategoryTransactionService(), getTypeService(),
-                    getConverterToTransactionDTO());
+                    getAccountService(), getTypeService(), getConverterToTransactionDTO());
         }
         return transactionService;
     }

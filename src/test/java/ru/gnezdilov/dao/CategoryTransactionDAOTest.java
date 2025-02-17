@@ -5,8 +5,10 @@ import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.model.CategoryTransactionModel;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -35,7 +37,7 @@ public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransact
 
     @Test
     public void getOutgoingTransactions_returnInfoTransaction_whenCalledWithValidArguments() {
-        HashMap<String, BigDecimal> categories = new HashMap<>();
+        Map<String, BigDecimal> categories = new HashMap<>();
         categories.put("hobby", new BigDecimal("500.00"));
 
         assertEquals(categories, subj.getIncomingTransactions(1, LocalDate.of(2025, 01, 01),
@@ -44,8 +46,7 @@ public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransact
 
     @Test
     public void getOutgoingTransactions_returnEmptyHashMap_whenCalledWithValidArguments() {
-        HashMap<String, BigDecimal> categories = new HashMap<>();
-
+        Map<String, BigDecimal> categories = new HashMap<>();
         assertEquals(categories, subj.getIncomingTransactions(2, LocalDate.of(2025, 01, 01),
                 LocalDate.of(2025, 01, 030)));
     }
@@ -53,16 +54,28 @@ public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransact
     @Test
     public void insert_successAndReturnCategoryTransactionModel_whenCalledWithValidArguments() {
         CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel(1, 1, 2);
-        assertEquals(categoryTransactionModel, subj.insert(1, 2));
+        try {
+            assertEquals(categoryTransactionModel, subj.insert(1, 2, subj.getDataSource().getConnection()));
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Test (expected = DAOException.class)
     public void insert_failedAndThrowDAOException_whenCalledWithInvalidArgumentsTransactionNotExists() {
-        CategoryTransactionModel categoryTransactionModel = subj.insert(1, 3);
+        try {
+            CategoryTransactionModel categoryTransactionModel = subj.insert(1, 3, subj.getDataSource().getConnection());
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Test (expected = DAOException.class)
     public void insert_failedAndThrowDAOException_whenCalledWithInvalidArgumentsTypeNotExists() {
-        CategoryTransactionModel categoryTransactionModel = subj.insert(2, 2);
+        try {
+            CategoryTransactionModel categoryTransactionModel = subj.insert(2, 2, subj.getDataSource().getConnection());
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

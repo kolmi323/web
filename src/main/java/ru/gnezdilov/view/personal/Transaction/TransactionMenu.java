@@ -1,6 +1,7 @@
 package ru.gnezdilov.view.personal.Transaction;
 
 import ru.gnezdilov.dao.exception.*;
+import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.view.ViewFactory;
@@ -37,7 +38,7 @@ public class TransactionMenu {
                     System.out.println("Invalid input");
                 }
             } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException |
-                     DataSourceException | InsufficientFundsException | ServiceException | ExitException e) {
+                     DataSourceException | InsufficientFundsException | IllegalArgumentException | ExitException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());

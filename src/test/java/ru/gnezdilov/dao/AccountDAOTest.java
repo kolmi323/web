@@ -17,7 +17,7 @@ public class AccountDAOTest extends AbstractDAOTest<AccountDAO> {
     }
 
     @Test
-    public void getAll_returnListAccountModel_whenCalledWithValidArguments() {
+    public void findByIdAll_returnListAccountModel_whenCalledWithValidArguments() {
         List<AccountModel> accountModels = new ArrayList<>();
         accountModels.add(new AccountModel(1, 1, "sber", new BigDecimal("1000.00")));
         accountModels.add(new AccountModel(2, 1, "T", new BigDecimal("500.00")));
@@ -27,7 +27,7 @@ public class AccountDAOTest extends AbstractDAOTest<AccountDAO> {
     }
 
     @Test
-    public void getAll_returnEmptyList_whenCalledWithInvalidArguments() {
+    public void findByIdAll_returnEmptyList_whenCalledWithInvalidArguments() {
         List<AccountModel> accountModels = new ArrayList<>();
 
         assertEquals(accountModels, subj.getAll(2));

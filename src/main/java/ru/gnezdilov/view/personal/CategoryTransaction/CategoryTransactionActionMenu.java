@@ -9,6 +9,7 @@ import ru.gnezdilov.view.personal.Type.TypeActionMenu;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class CategoryTransactionActionMenu {
@@ -38,7 +39,7 @@ public class CategoryTransactionActionMenu {
         LocalDate dateAfter = utils.enterDate();
         System.out.println("You must enter the date before the transaction");
         LocalDate dateBefore = utils.enterDate();
-        HashMap<String, BigDecimal> transactions;
+        Map<String, BigDecimal> transactions;
         if (isIncoming) {
             transactions = categoryTransactionService
                     .getIncomingTransactions(ViewFactory.getCurrentUser().getId(), dateAfter, dateBefore);
@@ -55,7 +56,7 @@ public class CategoryTransactionActionMenu {
         }
     }
 
-    private void showTransactionResult(HashMap<String, BigDecimal> transactions) {
+    private void showTransactionResult(Map<String, BigDecimal> transactions) {
         for (Entry<String, BigDecimal> entry : transactions.entrySet()) {
             System.out.print(entry.getKey() + " - " + entry.getValue() + "; ");
         }

@@ -39,8 +39,8 @@ public class TransactionActionMenu {
             System.out.println("You need to enter a positive amount!");
             utils.getExitAction();
         }
-        TransactionDTO transaction = this.transactionService.create(ViewFactory.getCurrentUser().getId(),
-                sendingId, receivingId, amount, typeId);
+        TransactionDTO transaction = this.transactionService.create(typeId, ViewFactory.getCurrentUser().getId(),
+                sendingId, receivingId, amount);
         if (transaction == null) {
             System.out.println("Transaction creation failed!");
         } else {

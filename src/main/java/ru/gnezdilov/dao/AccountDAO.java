@@ -19,7 +19,7 @@ public class AccountDAO extends DAO {
         super(ds);
     }
 
-    public AccountModel get(int id, int userId) {
+    public AccountModel findById(int id, int userId) {
         try(PreparedStatement psst = getDataSource().getConnection().
                 prepareStatement("SELECT * FROM account WHERE id = ? AND user_id = ?")) {
             psst.setInt(1, id);

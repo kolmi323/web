@@ -90,4 +90,21 @@ public class TypeDAO extends DAO {
         }
         return types;
     }
+
+    public TypeModel findById(int userId, int id) {
+        try (PreparedStatement psst = getDataSource().getConnection()
+                .prepareStatement("SELECT * FROM type WHERE id = ? AND user_id = ?")) {
+            psst.setInt(1, id);
+            psst.setInt(2, userId);
+            psst.executeQuery();
+            ResultSet rs = psst.getResultSet();
+            if (rs.next()) {
+                return new TypeModel(rs.getInt("id"), rs.getInt("user_id"), rs.getString("name"));
+            } else {
+                throw new DAOException("Type with id " + id + " not found");
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
 }

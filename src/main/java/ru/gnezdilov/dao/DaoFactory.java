@@ -49,7 +49,7 @@ public final class DaoFactory {
 
     public TransactionDAO getTransactionDao() {
         if (transactionDao == null) {
-            transactionDao = new TransactionDAO(getDataSource());
+            transactionDao = new TransactionDAO(getDataSource(), getCategoryTransactionDao());
         }
         return transactionDao;
     }
