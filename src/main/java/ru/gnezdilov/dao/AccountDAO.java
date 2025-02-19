@@ -19,6 +19,21 @@ public class AccountDAO extends DAO {
         super(ds);
     }
 
+    public boolean existsById(int id, int userId) {
+        try(Connection con = getDataSource().getConnection();
+            PreparedStatement psst = con.prepareStatement("SELECT EXISTS(SELECT 1 FROM account WHERE id = ? AND user_id = ?)")) {
+            psst.setInt(1, id);
+            psst.setInt(2, userId);
+            psst.executeQuery();
+            try (ResultSet rs = psst.getResultSet()) {
+                rs.next();
+                return rs.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
     public AccountModel findById(int id, int userId) {
         try(Connection con = getDataSource().getConnection();
             PreparedStatement psst = con.prepareStatement("SELECT * FROM account WHERE id = ? AND user_id = ?")) {
@@ -37,6 +52,7 @@ public class AccountDAO extends DAO {
             throw new DAOException(e);
         }
     }
+
 
     public List<AccountModel> getAll(int userId) {
         List<AccountModel> accounts = new ArrayList<>();

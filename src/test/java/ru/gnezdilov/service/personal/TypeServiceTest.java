@@ -186,34 +186,34 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void getById_returnTypeDTO_whenCalledWithValidException() {
+    public void existsById_returnTypeDTO_whenCalledWithValidException() {
         TypeModel typeModel = new TypeModel(1, 1, "hobby");
-        when(typeDAO.findById(1, 1)).thenReturn(typeModel);
+        when(typeDAO.existsById(1, 1)).thenReturn(true);
 
         TypeDTO typeDTO = new TypeDTO(1, 1, "hobby");
         when(converter.convert(typeModel)).thenReturn(typeDTO);
 
-        assertEquals(typeDTO, subj.getById(1, 1));
+        assertEquals(typeDTO, subj.existsById(1, 1));
 
-        verify(typeDAO, times(1)).findById(1, 1);
+        verify(typeDAO, times(1)).existsById(1, 1);
         verify(converter, times(1)).convert(typeModel);
     }
 
     @Test
-    public void getById_acceptNotFound_whenCalledWithInvalidException() {
-        when(typeDAO.findById(1, 2)).thenThrow(NotFoundException.class);
-        assertThrows(NotFoundException.class, () -> subj.getById(2, 1));
+    public void existsById_acceptNotFound_whenCalledWithInvalidException() {
+        when(typeDAO.existsById(1, 2)).thenThrow(NotFoundException.class);
+        assertThrows(NotFoundException.class, () -> subj.existsById(2, 1));
 
-        verify(typeDAO, times(1)).findById(1, 2);
+        verify(typeDAO, times(1)).existsById(1, 2);
         verifyNoInteractions(converter);
     }
 
     @Test
-    public void getById_acceptDAOException_whenCalledWithValidException() {
-        when(typeDAO.findById(1, 1)).thenThrow(DAOException.class);
-        assertThrows(DAOException.class, () -> subj.getById(1, 1));
+    public void existsById_acceptDAOException_whenCalledWithValidException() {
+        when(typeDAO.existsById(1, 1)).thenThrow(DAOException.class);
+        assertThrows(DAOException.class, () -> subj.existsById(1, 1));
 
-        verify(typeDAO, times(1)).findById(1, 1);
+        verify(typeDAO, times(1)).existsById(1, 1);
         verifyNoInteractions(converter);
     }
 }

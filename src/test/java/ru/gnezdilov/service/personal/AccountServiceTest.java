@@ -27,7 +27,7 @@ public class AccountServiceTest {
     @Mock private ConverterAccountModelToAccountDTO converter;
 
     @Test
-    public void getByIdAll_shouldReturnAllAccounts_whenCalledWithValidArguments() {
+    public void existsByIdAll_shouldReturnAllAccounts_whenCalledWithValidArguments() {
         AccountModel accountModel = new AccountModel(1, 1, "bank", new BigDecimal("1000.50"));
         List<AccountModel> accountsModelsList = new ArrayList<>();
         accountsModelsList.add(accountModel);
@@ -46,7 +46,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void getByIdAll_shouldReturnEmptyList_whenCalledWithValidArguments() {
+    public void existsByIdAll_shouldReturnEmptyList_whenCalledWithValidArguments() {
         List<AccountModel> accountsModelsList = new ArrayList<>();
         when(accountDAO.getAll(1)).thenReturn(accountsModelsList);
 
@@ -59,7 +59,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void getByIdAll_shouldAcceptDAOException_whenCalledWithValidArguments() {
+    public void existsByIdAll_shouldAcceptDAOException_whenCalledWithValidArguments() {
         when(accountDAO.getAll(1)).thenThrow(DAOException.class);
 
         assertThrows(DAOException.class, () -> subj.getAll(1));

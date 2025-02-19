@@ -22,8 +22,8 @@ public class TypeService {
                 .collect(Collectors.toList());
     }
 
-    public TypeDTO getById(int id, int userId) {
-        return converter.convert(typeDAO.findById(userId, id));
+    public boolean existsById(int id, int userId) {
+        return typeDAO.existsById(userId, id);
     }
 
     public TypeDTO edit(int id, int userId, String newName) {

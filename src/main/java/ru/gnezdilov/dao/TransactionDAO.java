@@ -6,12 +6,12 @@ import ru.gnezdilov.dao.exception.InsufficientFundsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.AccountModel;
 import ru.gnezdilov.dao.model.TransactionModel;
-import ru.gnezdilov.dao.model.TypeModel;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.List;
 
 public class TransactionDAO extends DAO {
     private final CategoryTransactionDAO categoryTransactionDAO;
@@ -26,9 +26,8 @@ public class TransactionDAO extends DAO {
         this.typeDAO = typeDAO;
     }
 
-    public TransactionModel insert(int typeId, int userId, int fromAccountId, int toAccountId, BigDecimal amount) {
+    public TransactionModel insert(List<Integer> typeIds, int userId, int fromAccountId, int toAccountId, BigDecimal amount) {
         try (Connection con = getDataSource().getConnection()) {
-            validIncomingArguments(typeId, userId, fromAccountId, toAccountId, amount);
             con.setAutoCommit(false);
             try {
                 updateFromAccount(userId, fromAccountId, amount, con);
@@ -36,16 +35,16 @@ public class TransactionDAO extends DAO {
                 try (ResultSet rs = createTransaction(fromAccountId, toAccountId, amount, con)) {
                     if(rs.next()) {
                         int transactionId = rs.getInt(1);
-                        categoryTransactionDAO.insert(typeId, transactionId, con);
+                        linkingTypeAndTransaction(typeIds, transactionId, con);
                         con.commit();
                         return new TransactionModel(transactionId, fromAccountId, toAccountId, amount, LocalDate.now());
                     } else {
                         throw new DAOException("Insert transaction failed");
                     }
                 }
-            } catch (DAOException e) {
+            } catch (Exception e) {
                 con.rollback();
-                throw new DAOException(e);
+                throw e;
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -97,40 +96,9 @@ public class TransactionDAO extends DAO {
         }
     }
 
-    private void validIncomingArguments(int typeId, int userId, int senderAccountId, int receiverAccountId,
-                                        BigDecimal amount) {
-        assertUserId(userId);
-        assertTypeId(userId, typeId);
-        assertSenderAccount(userId, senderAccountId, amount);
-        assertReceiverAccount(userId, receiverAccountId);
-    }
-
-    private void assertSenderAccount(int userId, int senderAccountId, BigDecimal amount) {
-        AccountModel accountModel = accountDAO.findById(senderAccountId, userId);
-        if (amount.compareTo(accountModel.getBalance()) > 0) {
-            throw new InsufficientFundsException("On Sender account " + senderAccountId + " has insufficient funds");
-        }
-    }
-
-    private void assertReceiverAccount(int userId, int receiverAccountId) {
-        AccountModel accountModel = accountDAO.findById(receiverAccountId, userId);
-    }
-
-    private void assertTypeId(int userId, int typeId) {
-        TypeModel typeModel = typeDAO.findById(userId, typeId);
-    }
-
-    private void assertUserId(int userId) {
-        try (Connection con = getDataSource().getConnection();
-             PreparedStatement psst = con.prepareStatement("SELECT * FROM users WHERE id = ?")) {
-            psst.setInt(1, userId);
-            psst.executeQuery();
-            ResultSet rs = psst.getResultSet();
-            if (!rs.next()) {
-                throw new NotFoundException("User with id " + userId + " not found");
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e);
+    private void linkingTypeAndTransaction(List<Integer> typeIds, int transactionId, Connection con) {
+        for (Integer id : typeIds) {
+            categoryTransactionDAO.insert(id, transactionId, con);
         }
     }
 }

@@ -6,10 +6,7 @@ import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.model.UserModel;
 
 import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Optional;
 
 public class UserDAO extends DAO {
@@ -56,5 +53,19 @@ public class UserDAO extends DAO {
             throw new DAOException(e);
         }
         return Optional.empty();
+    }
+
+    public boolean existsById(int id) {
+        try (Connection con = getDataSource().getConnection();
+        PreparedStatement psst = con.prepareStatement("SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)")) {
+            psst.setInt(1, id);
+            psst.executeQuery();
+            try (ResultSet rs = psst.getGeneratedKeys()) {
+                rs.next();
+                return rs.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 }

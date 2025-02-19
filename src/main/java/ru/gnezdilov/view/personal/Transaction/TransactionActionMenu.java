@@ -9,6 +9,8 @@ import ru.gnezdilov.view.personal.Account.AccountActionMenu;
 import ru.gnezdilov.view.personal.Type.TypeActionMenu;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionActionMenu {
     private final UIUtils utils;
@@ -25,9 +27,7 @@ public class TransactionActionMenu {
     }
 
     public void create() {
-        System.out.println("You need to enter the type of creating transaction!");
-        typeActionMenu.showAll();
-        int typeId = utils.enterId();
+        List<Integer> typeIds = returnListTypeIds();
         accountActionMenu.showAll();
         System.out.println("You need to enter the id of SENDING transaction!");
         int sendingId = utils.enterId();
@@ -39,7 +39,7 @@ public class TransactionActionMenu {
             System.out.println("You need to enter a positive amount!");
             utils.getExitAction();
         }
-        TransactionDTO transaction = this.transactionService.create(typeId, ViewFactory.getCurrentUser().getId(),
+        TransactionDTO transaction = this.transactionService.create(typeIds, ViewFactory.getCurrentUser().getId(),
                 sendingId, receivingId, amount);
         if (transaction == null) {
             System.out.println("Transaction creation failed!");
@@ -49,7 +49,22 @@ public class TransactionActionMenu {
         }
     }
 
-    public boolean isAmountPositive(BigDecimal amount) {
+    private boolean isAmountPositive(BigDecimal amount) {
         return amount.compareTo(BigDecimal.ZERO) >= 0;
+    }
+
+    private List<Integer> returnListTypeIds() {
+        List<Integer> typeIds = new ArrayList<>();
+        typeActionMenu.showAll();
+        System.out.println("You need to enter the type ids of creating transaction!" +
+                "\nif you enter enough ids - press 0");
+        while(true) {
+            int typeId = utils.enterId();
+            if (typeId == 0) {
+                break;
+            }
+            typeIds.add(typeId);
+        }
+        return typeIds;
     }
 }

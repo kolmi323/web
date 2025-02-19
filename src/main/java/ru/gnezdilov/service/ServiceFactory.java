@@ -3,10 +3,7 @@ package ru.gnezdilov.service;
 import ru.gnezdilov.service.converter.*;
 import ru.gnezdilov.dao.DaoFactory;
 import ru.gnezdilov.service.custominterface.DigestService;
-import ru.gnezdilov.service.personal.AccountService;
-import ru.gnezdilov.service.personal.CategoryTransactionService;
-import ru.gnezdilov.service.personal.TransactionService;
-import ru.gnezdilov.service.personal.TypeService;
+import ru.gnezdilov.service.personal.*;
 
 public final class ServiceFactory {
     private static ServiceFactory instance;
@@ -18,6 +15,7 @@ public final class ServiceFactory {
     private TypeService typeService;
     private CategoryTransactionService categoryTransactionService;
     private TransactionService transactionService;
+    private UserService userService;
 
     private ConverterAccountModelToAccountDTO converterToAccountDTO;
     private ConverterUserModelToUserDTO converterToUserDTO;
@@ -71,9 +69,16 @@ public final class ServiceFactory {
     public TransactionService getTransactionService() {
         if (transactionService == null) {
             transactionService = new TransactionService(this.daoFactory.getTransactionDao(),
-                    getAccountService(), getTypeService(), getConverterToTransactionDTO());
+                    getAccountService(), getTypeService(), getUserService(), getConverterToTransactionDTO());
         }
         return transactionService;
+    }
+
+    public UserService getUserService() {
+        if (userService == null) {
+            userService = new UserService(this.daoFactory.getUserDAO());
+        }
+        return userService;
     }
 
     private DigestService getDigestService() {

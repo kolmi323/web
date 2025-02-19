@@ -92,18 +92,15 @@ public class TypeDAO extends DAO {
         return types;
     }
 
-    public TypeModel findById(int userId, int id) {
+    public boolean existsById(int userId, int id) {
         try (Connection con = getDataSource().getConnection();
-             PreparedStatement psst = con.prepareStatement("SELECT * FROM type WHERE id = ? AND user_id = ?")) {
+             PreparedStatement psst = con.prepareStatement("SELECT EXISTS(SELECT FROM type WHERE id = ? AND user_id = ?)")) {
             psst.setInt(1, id);
             psst.setInt(2, userId);
             psst.executeQuery();
             try (ResultSet rs = psst.getResultSet()) {
-                if (rs.next()) {
-                    return new TypeModel(rs.getInt("id"), rs.getInt("user_id"), rs.getString("name"));
-                } else {
-                    throw new NotFoundException("Type with id " + id + " not found");
-                }
+                rs.next();
+                return rs.getBoolean(1);
             }
         } catch (SQLException e) {
             throw new DAOException(e);

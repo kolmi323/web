@@ -69,14 +69,12 @@ public class TypeDAOTest extends AbstractDAOTest<TypeDAO> {
     }
 
     @Test
-    public void getById_successAndReturnTypeModel_whenCalledWithValidArgument() {
-        TypeModel typeModel = new TypeModel(1, 1, "hobby");
-
-        assertEquals(typeModel, subj.findById(1, 1));
+    public void existsById_successAndReturnTypeModel_whenCalledWithValidArgument() {
+          assertTrue(subj.existsById(1, 1));
     }
 
     @Test (expected = NotFoundException.class)
     public void getById_failedAndReturnNotFound_whenCalledWithInvalidArgument() {
-        subj.findById(1, 2);
+        subj.existsById(1, 2);
     }
 }
