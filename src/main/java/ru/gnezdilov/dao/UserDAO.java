@@ -57,10 +57,10 @@ public class UserDAO extends DAO {
 
     public boolean existsById(int id) {
         try (Connection con = getDataSource().getConnection();
-        PreparedStatement psst = con.prepareStatement("SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)")) {
+        PreparedStatement psst = con.prepareStatement("SELECT EXISTS(SELECT FROM users WHERE id = ?)")) {
             psst.setInt(1, id);
             psst.executeQuery();
-            try (ResultSet rs = psst.getGeneratedKeys()) {
+            try (ResultSet rs = psst.getResultSet()) {
                 rs.next();
                 return rs.getBoolean(1);
             }

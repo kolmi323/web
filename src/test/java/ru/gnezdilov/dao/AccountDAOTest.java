@@ -2,6 +2,7 @@ package ru.gnezdilov.dao;
 
 import org.junit.Test;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.AccountModel;
 
 import java.math.BigDecimal;
@@ -17,17 +18,38 @@ public class AccountDAOTest extends AbstractDAOTest<AccountDAO> {
     }
 
     @Test
-    public void existsByIdAll_returnListAccountModel_whenCalledWithValidArguments() {
+    public void existsById_returnTrue_whenCalledWithValidArguments() {
+        assertTrue(subj.existsById(1, 1));
+    }
+
+    @Test
+    public void existsById_returnFalse_whenCalledWithInvalidArguments() {
+        assertFalse(subj.existsById(1, 3));
+    }
+
+    @Test
+    public void findById_returnAccount_whenCalledWithValidArguments() {
+        AccountModel accountModel = new AccountModel(1, 1, "sber", new BigDecimal("1000.00"));
+
+        assertEquals(accountModel, subj.findById(1, 1));
+    }
+
+    @Test (expected = NotFoundException.class)
+    public void findById_acceptNotFound_whenCalledWithInvalidArguments() {
+        subj.findById(1, 3);
+    }
+
+    @Test
+    public void getAll_returnListAccountModel_whenCalledWithValidArguments() {
         List<AccountModel> accountModels = new ArrayList<>();
         accountModels.add(new AccountModel(1, 1, "sber", new BigDecimal("1000.00")));
         accountModels.add(new AccountModel(2, 1, "T", new BigDecimal("500.00")));
 
         assertEquals(accountModels, subj.getAll(1));
-
     }
 
     @Test
-    public void existsByIdAll_returnEmptyList_whenCalledWithInvalidArguments() {
+    public void getAll_returnEmptyList_whenCalledWithInvalidArguments() {
         List<AccountModel> accountModels = new ArrayList<>();
 
         assertEquals(accountModels, subj.getAll(2));

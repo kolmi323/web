@@ -186,23 +186,19 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void existsById_returnTypeDTO_whenCalledWithValidException() {
-        TypeModel typeModel = new TypeModel(1, 1, "hobby");
+    public void existsById_returnTrue_whenCalledWithValidException() {
         when(typeDAO.existsById(1, 1)).thenReturn(true);
 
-        TypeDTO typeDTO = new TypeDTO(1, 1, "hobby");
-        when(converter.convert(typeModel)).thenReturn(typeDTO);
-
-        assertEquals(typeDTO, subj.existsById(1, 1));
+        assertTrue(subj.existsById(1, 1));
 
         verify(typeDAO, times(1)).existsById(1, 1);
-        verify(converter, times(1)).convert(typeModel);
+        verifyNoInteractions(converter);
     }
 
     @Test
-    public void existsById_acceptNotFound_whenCalledWithInvalidException() {
-        when(typeDAO.existsById(1, 2)).thenThrow(NotFoundException.class);
-        assertThrows(NotFoundException.class, () -> subj.existsById(2, 1));
+    public void existsById_returnFalse_whenCalledWithInvalidException() {
+        when(typeDAO.existsById(1, 2)).thenReturn(false);
+        assertFalse(subj.existsById(2, 1));
 
         verify(typeDAO, times(1)).existsById(1, 2);
         verifyNoInteractions(converter);

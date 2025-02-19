@@ -41,6 +41,9 @@ public class TransactionService {
     }
 
     private void validateType(int userId, List<Integer> typeIds) {
+        if (typeIds.isEmpty()) {
+            throw new IllegalArgumentException("Type IDs cannot be empty");
+        }
         Set<Integer> ids = new HashSet<>();
         for (int id : typeIds) {
             if (!typeService.existsById(id, userId)) {
@@ -53,10 +56,10 @@ public class TransactionService {
     }
 
     private void validateAccounts (int userId, int fromAccountId, int toAccountId, BigDecimal amount) {
-        if (fromAccountId == toAccountId) {
-            throw new IllegalArgumentException("Sender account and receiver accounts can't be the same");
-        } else if (fromAccountId == 0 && toAccountId == 0) {
+        if (fromAccountId == 0 && toAccountId == 0) {
             throw new IllegalArgumentException("Sender account id and receiver accounts id can't be the zero");
+        } else if (fromAccountId == toAccountId) {
+            throw new IllegalArgumentException("Sender account and receiver accounts can't be the same");
         }
         assertHasEnoughAccounts(userId, fromAccountId, amount);
         assertReceiverAccount(userId, toAccountId);

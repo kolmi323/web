@@ -41,4 +41,14 @@ public class UserDAOTest extends AbstractDAOTest<UserDAO> {
 
         assertFalse(userOptional.isPresent());
     }
+
+    @Test
+    public void existsById_returnTrue_whenCalledWithValidArguments() {
+        assertTrue(subj.existsById(1));
+    }
+
+    @Test
+    public void existsById_returnFalse_whenCalledWithInvalidArguments() {
+        assertFalse(subj.existsById(3));
+    }
 }

@@ -73,8 +73,8 @@ public class TypeDAOTest extends AbstractDAOTest<TypeDAO> {
           assertTrue(subj.existsById(1, 1));
     }
 
-    @Test (expected = NotFoundException.class)
-    public void getById_failedAndReturnNotFound_whenCalledWithInvalidArgument() {
-        subj.existsById(1, 2);
+    @Test
+    public void existsById_failedAndReturnNotFound_whenCalledWithInvalidArgument() {
+        assertFalse(subj.existsById(1, 2));
     }
 }
