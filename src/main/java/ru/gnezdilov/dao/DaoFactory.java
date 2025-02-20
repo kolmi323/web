@@ -1,8 +1,5 @@
 package ru.gnezdilov.dao;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
 import javax.sql.DataSource;
 
 public final class DaoFactory {
@@ -13,23 +10,13 @@ public final class DaoFactory {
     private AccountDAO accountDao;
     private TypeDAO typeDao;
     private CategoryTransactionDAO categoryTransactionDao;
+    private TransactionDAO transactionDao;
 
     public static DaoFactory getInstance() {
         if (instance == null) {
             instance = new DaoFactory();
         }
         return instance;
-    }
-
-    private DataSource getDataSource() {
-        if (dataSource == null) {
-            HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(DataBaseConnectionData.getURL());
-            config.setUsername(DataBaseConnectionData.getUser());
-            config.setPassword(DataBaseConnectionData.getPassword());
-            dataSource = new HikariDataSource(config);
-        }
-        return dataSource;
     }
 
     public UserDAO getUserDAO() {
@@ -53,10 +40,25 @@ public final class DaoFactory {
         return typeDao;
     }
 
-    public CategoryTransactionDAO getTransactionDao() {
+    public CategoryTransactionDAO getCategoryTransactionDao() {
         if (categoryTransactionDao == null) {
             categoryTransactionDao = new CategoryTransactionDAO(getDataSource());
         }
         return categoryTransactionDao;
+    }
+
+    public TransactionDAO getTransactionDao() {
+        if (transactionDao == null) {
+            transactionDao = new TransactionDAO(getDataSource(), getCategoryTransactionDao(), getAccountDao(),
+                    getTypeDao());
+        }
+        return transactionDao;
+    }
+
+    private DataSource getDataSource() {
+        if (dataSource == null) {
+            dataSource = DataSourceFactory.getInstance().getDataSource();
+        }
+        return dataSource;
     }
 }

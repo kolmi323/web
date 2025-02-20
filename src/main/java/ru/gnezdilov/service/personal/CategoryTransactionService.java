@@ -1,23 +1,28 @@
 package ru.gnezdilov.service.personal;
 
 import ru.gnezdilov.dao.CategoryTransactionDAO;
+import ru.gnezdilov.service.converter.ConverterCategoryTransactionModelToCategoryTransactionDTO;
+import ru.gnezdilov.service.dto.CategoryTransactionDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.Map;
 
 public class CategoryTransactionService {
-    private CategoryTransactionDAO categoryTransactionDAO;
+    private final CategoryTransactionDAO categoryTransactionDAO;
+    private final ConverterCategoryTransactionModelToCategoryTransactionDTO converter;
 
-    public CategoryTransactionService(CategoryTransactionDAO categoryTransactionDAO) {
+    public CategoryTransactionService(CategoryTransactionDAO categoryTransactionDAO,
+                                      ConverterCategoryTransactionModelToCategoryTransactionDTO converter) {
         this.categoryTransactionDAO = categoryTransactionDAO;
+        this.converter = converter;
     }
 
-    public HashMap<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
+    public Map<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
         return categoryTransactionDAO.getIncomingTransactions(userId, startDate, endDate);
     }
 
-    public HashMap<String, BigDecimal> getOutgoingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
+    public Map<String, BigDecimal> getOutgoingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
         return categoryTransactionDAO.getOutgoingTransactions(userId, startDate, endDate);
     }
 }

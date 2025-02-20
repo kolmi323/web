@@ -1,4 +1,4 @@
-package ru.gnezdilov.view.personal;
+package ru.gnezdilov.view.personal.Type;
 
 
 import ru.gnezdilov.service.dto.TypeDTO;
@@ -28,36 +28,23 @@ public class TypeActionMenu {
     }
 
     public void updateTypeTransaction() {
-        String typeId = this.utils.enterId();
-        if (utils.isExitAction(typeId)) {
-            return;
-        }
+        int typeId = this.utils.enterId();
         String newName = this.utils.enterNameType(true);
-        if (utils.isExitAction(newName)) {
-            return;
-        }
-        TypeDTO newType = typeService
-                .edit(Integer.parseInt(typeId), ViewFactory.getCurrentUser().getId(), newName);
+        TypeDTO newType = typeService.edit(typeId, ViewFactory.getCurrentUser().getId(), newName);
         System.out.println("New name: " + newType.getName());
     }
 
 
     public void createTypeTransaction() {
         String name = this.utils.enterNameType(false);
-        if (this.utils.isExitAction(name)) {
-            return;
-        }
         TypeDTO typeDTO = typeService
                 .create(ViewFactory.getCurrentUser().getId(), name);
         System.out.println("Type create: " + typeDTO.getName());
     }
 
     public void removeTypeTransaction() {
-        String id = this.utils.enterId();
-        if (this.utils.isExitAction(id)) {
-            return;
-        }
-        if (typeService.delete(Integer.parseInt(id), ViewFactory.getCurrentUser().getId())) {
+        int id = this.utils.enterId();
+        if (typeService.delete(id, ViewFactory.getCurrentUser().getId())) {
             System.out.println("Type: " + id + " - deleted");
         } else {
             System.out.println("Type: " + id + " - not found");

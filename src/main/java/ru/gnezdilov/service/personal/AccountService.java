@@ -18,6 +18,14 @@ public class AccountService {
         this.converter = converter;
     }
 
+    public boolean existsById(int id, int userId) {
+        return this.accountDAO.existsById(id, userId);
+    }
+
+    public AccountDTO getById(int id, int userId) {
+        return converter.convert(this.accountDAO.findById(id, userId));
+    }
+
     public List<AccountDTO> getAll(int userId) {
         return this.accountDAO.getAll(userId).stream()
                 .map(this.converter::convert)

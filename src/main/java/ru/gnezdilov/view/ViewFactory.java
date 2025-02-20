@@ -6,6 +6,14 @@ import ru.gnezdilov.view.auth.RegisterWindow;
 import ru.gnezdilov.view.personal.*;
 import ru.gnezdilov.service.ServiceFactory;
 import ru.gnezdilov.service.dto.UserDTO;
+import ru.gnezdilov.view.personal.Account.AccountActionMenu;
+import ru.gnezdilov.view.personal.Account.AccountMenu;
+import ru.gnezdilov.view.personal.CategoryTransaction.CategoryTransactionActionMenu;
+import ru.gnezdilov.view.personal.CategoryTransaction.CategoryTransactionMenu;
+import ru.gnezdilov.view.personal.Transaction.TransactionActionMenu;
+import ru.gnezdilov.view.personal.Transaction.TransactionMenu;
+import ru.gnezdilov.view.personal.Type.TypeActionMenu;
+import ru.gnezdilov.view.personal.Type.TypeMenu;
 
 public final class ViewFactory {
     private static ViewFactory instance;
@@ -18,32 +26,24 @@ public final class ViewFactory {
     private RegisterWindow registerWindow;
     private LoginWindow loginWindow;
     private PersonalOfficePage personalOfficePage;
-    private AccountMenu accountMenu;
+
     private AccountActionMenu accountActionMenu;
-    private TypeMenu typeMenu;
+    private AccountMenu accountMenu;
+
     private TypeActionMenu typeActionMenu;
+    private TypeMenu typeMenu;
+
     private CategoryTransactionActionMenu categoryTransactionActionMenu;
     private CategoryTransactionMenu categoryTransactionMenu;
+
+    private TransactionActionMenu transactionActionMenu;
+    private TransactionMenu transactionMenu;
 
     private UIUtils utils;
     private InputRequest inputRequest;
 
     private ViewFactory(ServiceFactory serviceFactory) {
         this.serviceFactory = serviceFactory;
-    }
-
-    private UIUtils getUtils() {
-        if (utils == null) {
-            utils = new UIUtils();
-        }
-        return utils;
-    }
-
-    private InputRequest getInputRequest() {
-        if (inputRequest == null) {
-            inputRequest = new InputRequest();
-        }
-        return inputRequest;
     }
 
     public static ViewFactory getInstance() {
@@ -85,7 +85,7 @@ public final class ViewFactory {
     public PersonalOfficePage getPersonalOfficePage() {
         if (personalOfficePage == null) {
             personalOfficePage = new PersonalOfficePage(getInputRequest(), getUtils(), getAccountMenu(),
-                    getTypeMenu(), getTransactionMenu());
+                    getTypeMenu(), getCategoryTransactionMenu(), getTransactionMenu());
         }
         return personalOfficePage;
     }
@@ -118,18 +118,47 @@ public final class ViewFactory {
         return typeActionMenu;
     }
 
-    public CategoryTransactionActionMenu getTransactionActionMenu() {
+    public CategoryTransactionActionMenu getCategoryTransactionActionMenu() {
         if (categoryTransactionActionMenu == null) {
-            categoryTransactionActionMenu = new CategoryTransactionActionMenu(getUtils(), this.serviceFactory.getTransactionService(),
+            categoryTransactionActionMenu = new CategoryTransactionActionMenu(getUtils(), this.serviceFactory.getCategoryTransactionService(),
                     getTypeActionMenu(), getAccountActionMenu());
         }
         return categoryTransactionActionMenu;
     }
 
-    public CategoryTransactionMenu getTransactionMenu() {
+    public CategoryTransactionMenu getCategoryTransactionMenu() {
         if (categoryTransactionMenu == null) {
-            categoryTransactionMenu = new CategoryTransactionMenu(getInputRequest(), getUtils(), getTransactionActionMenu());
+            categoryTransactionMenu = new CategoryTransactionMenu(getInputRequest(), getUtils(), getCategoryTransactionActionMenu());
         }
         return categoryTransactionMenu;
+    }
+
+    public TransactionActionMenu getTransactionActionMenu() {
+        if (transactionActionMenu == null) {
+            transactionActionMenu = new TransactionActionMenu(getUtils(), serviceFactory.getTransactionService(),
+                    getAccountActionMenu(), getTypeActionMenu());
+        }
+        return transactionActionMenu;
+    }
+
+    public TransactionMenu getTransactionMenu() {
+        if (transactionMenu == null) {
+            transactionMenu = new TransactionMenu(getInputRequest(), getUtils(), getTransactionActionMenu());
+        }
+        return transactionMenu;
+    }
+
+    private UIUtils getUtils() {
+        if (utils == null) {
+            utils = new UIUtils();
+        }
+        return utils;
+    }
+
+    private InputRequest getInputRequest() {
+        if (inputRequest == null) {
+            inputRequest = new InputRequest();
+        }
+        return inputRequest;
     }
 }

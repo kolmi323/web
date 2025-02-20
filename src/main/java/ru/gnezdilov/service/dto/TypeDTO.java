@@ -35,7 +35,7 @@ public class TypeDTO extends DTO {
 
     @Override
     public String toString() {
-        return this.id + ". Название типа транзакции: " + this.name;
+        return this.id + ". " + this.name;
     }
 
     @Override

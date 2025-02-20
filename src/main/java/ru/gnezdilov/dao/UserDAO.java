@@ -6,10 +6,7 @@ import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.model.UserModel;
 
 import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Optional;
 
 public class UserDAO extends DAO {
@@ -37,7 +34,7 @@ public class UserDAO extends DAO {
             if (UNIQUE_CONSTRAINT_VIOLATION.equals(e.getSQLState())) {
                 throw new AlreadyExistsException("Email already exists");
             } else {
-                throw new DAOException(e.getMessage(), e);
+                throw new DAOException(e);
             }
         }
     }
@@ -53,8 +50,22 @@ public class UserDAO extends DAO {
                         rs.getString("email"), rs.getString("password")));
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+            throw new DAOException(e);
         }
         return Optional.empty();
+    }
+
+    public boolean existsById(int id) {
+        try (Connection con = getDataSource().getConnection();
+        PreparedStatement psst = con.prepareStatement("SELECT EXISTS(SELECT FROM users WHERE id = ?)")) {
+            psst.setInt(1, id);
+            psst.executeQuery();
+            try (ResultSet rs = psst.getResultSet()) {
+                rs.next();
+                return rs.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 }

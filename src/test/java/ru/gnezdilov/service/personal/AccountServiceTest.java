@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.AccountDAO;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.AccountModel;
 import ru.gnezdilov.service.converter.ConverterAccountModelToAccountDTO;
 import ru.gnezdilov.service.dto.AccountDTO;
@@ -21,10 +22,10 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountServiceTest {
-    @InjectMocks AccountService subj;
+    @InjectMocks private AccountService subj;
 
-    @Mock AccountDAO accountDAO;
-    @Mock ConverterAccountModelToAccountDTO converter;
+    @Mock private AccountDAO accountDAO;
+    @Mock private ConverterAccountModelToAccountDTO converter;
 
     @Test
     public void getAll_shouldReturnAllAccounts_whenCalledWithValidArguments() {
@@ -147,5 +148,61 @@ public class AccountServiceTest {
         assertThrows(DAOException.class, () -> subj.delete(1, 1));
 
         verify(accountDAO, times(1)).delete(1, 1);
+    }
+
+    @Test
+    public void existsById_returnTrue_whenCalledWithValidArguments() {
+        when(accountDAO.existsById(1, 1)).thenReturn(true);
+
+        assertTrue(subj.existsById(1, 1));
+
+        verify(accountDAO, times(1)).existsById(1, 1);
+    }
+
+    @Test
+    public void existsById_returnFalse_whenCalledWithInvalidArguments() {
+        when(accountDAO.existsById(1, 2)).thenReturn(false);
+
+        assertFalse(subj.existsById(1, 2));
+        verify(accountDAO, times(1)).existsById(1, 2);
+    }
+
+    @Test
+    public void existsById_acceptDaoException_whenCalledWithValidArguments() {
+        when(accountDAO.existsById(1, 1)).thenThrow(DAOException.class);
+
+        assertThrows(DAOException.class, () -> subj.existsById(1, 1));
+        verify(accountDAO, times(1)).existsById(1, 1);
+    }
+
+    @Test
+    public void getById_returnAccountDTO_whenCalledWithValidArguments() {
+        AccountModel accountModel = new AccountModel(1, 1, "bank", new BigDecimal("1000.00"));
+        when(accountDAO.findById(1, 1)).thenReturn(accountModel);
+
+        AccountDTO accountDTO = new AccountDTO(1, 1, "bank", new BigDecimal("1000.00"));
+        when(converter.convert(accountModel)).thenReturn(accountDTO);
+
+        assertEquals(accountDTO, subj.getById(1, 1));
+        verify(accountDAO, times(1)).findById(1, 1);
+        verify(converter, times(1)).convert(accountModel);
+    }
+
+    @Test
+    public void getById_acceptNotFoundException_whenCalledWithInvalidArguments() {
+        when(accountDAO.findById(1, 2)).thenThrow(NotFoundException.class);
+
+        assertThrows(NotFoundException.class, () -> subj.getById(1, 2));
+        verify(accountDAO, times(1)).findById(1, 2);
+        verifyNoInteractions(converter);
+    }
+
+    @Test
+    public void getById_acceptDaoException_whenCalledWithValidArguments() {
+        when(accountDAO.findById(1, 1)).thenThrow(DAOException.class);
+
+        assertThrows(DAOException.class, () -> subj.getById(1, 1));
+        verify(accountDAO, times(1)).findById(1, 1);
+        verifyNoInteractions(converter);
     }
 }

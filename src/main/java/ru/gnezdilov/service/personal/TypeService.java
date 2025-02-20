@@ -22,6 +22,10 @@ public class TypeService {
                 .collect(Collectors.toList());
     }
 
+    public boolean existsById(int id, int userId) {
+        return typeDAO.existsById(userId, id);
+    }
+
     public TypeDTO edit(int id, int userId, String newName) {
         return this.converter
                 .convert(this.typeDAO.update(id, userId, newName));

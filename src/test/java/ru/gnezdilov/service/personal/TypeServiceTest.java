@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.TypeDAO;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.TypeModel;
 import ru.gnezdilov.service.converter.ConverterTypeModelToTypeDTO;
 import ru.gnezdilov.service.dto.TypeDTO;
@@ -20,10 +21,10 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TypeServiceTest {
-    @InjectMocks TypeService subj;
+    @InjectMocks private TypeService subj;
 
-    @Mock TypeDAO typeDAO;
-    @Mock ConverterTypeModelToTypeDTO converter;
+    @Mock private TypeDAO typeDAO;
+    @Mock private ConverterTypeModelToTypeDTO converter;
 
     @Test
     public void getAll_returnLustTypeModel_whenCalledWithValidException() {
@@ -181,6 +182,34 @@ public class TypeServiceTest {
         assertThrows(DAOException.class, () -> subj.edit(1, 1, "work"));
 
         verify(typeDAO, times(1)).update(1, 1, "work");
+        verifyNoInteractions(converter);
+    }
+
+    @Test
+    public void existsById_returnTrue_whenCalledWithValidException() {
+        when(typeDAO.existsById(1, 1)).thenReturn(true);
+
+        assertTrue(subj.existsById(1, 1));
+
+        verify(typeDAO, times(1)).existsById(1, 1);
+        verifyNoInteractions(converter);
+    }
+
+    @Test
+    public void existsById_returnFalse_whenCalledWithInvalidException() {
+        when(typeDAO.existsById(1, 2)).thenReturn(false);
+        assertFalse(subj.existsById(2, 1));
+
+        verify(typeDAO, times(1)).existsById(1, 2);
+        verifyNoInteractions(converter);
+    }
+
+    @Test
+    public void existsById_acceptDAOException_whenCalledWithValidException() {
+        when(typeDAO.existsById(1, 1)).thenThrow(DAOException.class);
+        assertThrows(DAOException.class, () -> subj.existsById(1, 1));
+
+        verify(typeDAO, times(1)).existsById(1, 1);
         verifyNoInteractions(converter);
     }
 }

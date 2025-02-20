@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.CategoryTransactionDAO;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.service.converter.ConverterCategoryTransactionModelToCategoryTransactionDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,10 +18,10 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CategoryTransactionServiceTest {
-    @InjectMocks
-    CategoryTransactionService subj;
+    @InjectMocks private CategoryTransactionService subj;
 
-    @Mock CategoryTransactionDAO categoryTransactionDAO;
+    @Mock private CategoryTransactionDAO categoryTransactionDAO;
+    @Mock private ConverterCategoryTransactionModelToCategoryTransactionDTO converter;
 
     @Test
     public void getIncomingTransactions_returnHashMap_whenCalledWithValidArguments() {
