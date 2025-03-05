@@ -41,16 +41,10 @@ public class TransactionService {
     }
 
     private void validateType(int userId, List<Integer> typeIds) {
-        if (typeIds.isEmpty()) {
-            throw new IllegalArgumentException("Type IDs cannot be empty");
-        }
         Set<Integer> ids = new HashSet<>();
         for (int id : typeIds) {
             if (!typeService.existsById(id, userId)) {
                 throw new NotFoundException("Type " + id + " not found");
-            }
-            if (!ids.add(id)) {
-                throw new IllegalArgumentException("Type " + id + " repeated");
             }
         }
     }

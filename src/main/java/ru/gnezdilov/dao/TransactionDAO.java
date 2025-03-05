@@ -11,7 +11,9 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TransactionDAO extends DAO {
     private final CategoryTransactionDAO categoryTransactionDAO;
@@ -97,8 +99,11 @@ public class TransactionDAO extends DAO {
     }
 
     private void linkingTypeAndTransaction(List<Integer> typeIds, int transactionId, Connection con) {
+        Set<Integer> ids = new HashSet<>();
         for (Integer id : typeIds) {
-            categoryTransactionDAO.insert(id, transactionId, con);
+            if (ids.add(id)) {
+                categoryTransactionDAO.insert(id, transactionId, con);
+            }
         }
     }
 }
