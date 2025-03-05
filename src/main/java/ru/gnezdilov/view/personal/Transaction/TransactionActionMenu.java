@@ -1,10 +1,10 @@
 package ru.gnezdilov.view.personal.Transaction;
 
-import ru.gnezdilov.dao.exception.ExitException;
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.service.dto.TransactionDTO;
 import ru.gnezdilov.service.personal.TransactionService;
+import ru.gnezdilov.view.CurrentUser;
 import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.view.ViewFactory;
 import ru.gnezdilov.view.personal.Account.AccountActionMenu;
 import ru.gnezdilov.view.personal.Type.TypeActionMenu;
 
@@ -12,18 +12,22 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class TransactionActionMenu {
     private final UIUtils utils;
     private final TransactionService transactionService;
     private final AccountActionMenu accountActionMenu;
     private final TypeActionMenu typeActionMenu;
+    private final CurrentUser currentUser;
 
     public TransactionActionMenu(UIUtils utils, TransactionService transactionService,
-                                 AccountActionMenu accountActionMenu, TypeActionMenu typeActionMenu) {
+                                 AccountActionMenu accountActionMenu, TypeActionMenu typeActionMenu,
+                                 CurrentUser currentUser) {
         this.utils = utils;
         this.transactionService = transactionService;
         this.accountActionMenu = accountActionMenu;
         this.typeActionMenu = typeActionMenu;
+        this.currentUser = currentUser;
     }
 
     public void create() {
@@ -39,7 +43,7 @@ public class TransactionActionMenu {
             System.out.println("You need to enter a positive amount!");
             utils.getExitAction();
         }
-        TransactionDTO transaction = this.transactionService.create(typeIds, ViewFactory.getCurrentUser().getId(),
+        TransactionDTO transaction = this.transactionService.create(typeIds, currentUser.getCurrentUser().getId(),
                 sendingId, receivingId, amount);
         if (transaction == null) {
             System.out.println("Transaction creation failed!");

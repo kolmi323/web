@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
+/*
 public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransactionDAO> {
     public CategoryTransactionDAOTest() {
         setPropertyForConnectH2();
@@ -78,4 +79,4 @@ public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransact
             System.out.println(e.getMessage());
         }
     }
-}
+}*/

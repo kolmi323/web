@@ -1,5 +1,6 @@
 package ru.gnezdilov.service;
 
+import org.springframework.stereotype.Service;
 import ru.gnezdilov.dao.UserDAO;
 import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.UserModel;
@@ -7,6 +8,7 @@ import ru.gnezdilov.service.converter.ConverterUserModelToUserDTO;
 import ru.gnezdilov.service.custominterface.DigestService;
 import ru.gnezdilov.service.dto.UserDTO;
 
+@Service
 public class AuthService {
     private final UserDAO userDAO;
     private final DigestService digestService;

@@ -1,5 +1,6 @@
 package ru.gnezdilov.dao;
 
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.model.CategoryTransactionModel;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class CategoryTransactionDAO extends DAO {
     private final String SQL_INCOMING_TRANSACTION = "select coalesce(ty.name, 'no type'), sum(tr.amount)\n" +
             "from users as us\n" +

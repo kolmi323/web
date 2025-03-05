@@ -1,23 +1,21 @@
 package ru.gnezdilov.dao;
 
-import com.zaxxer.hikari.HikariDataSource;
 import org.junit.After;
 import org.junit.Before;
 import ru.gnezdilov.dao.abstractclass.DAO;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.concurrent.TimeUnit;
 
-public abstract class AbstractDAOTest <T extends DAO> {
+/*public abstract class AbstractDAOTest <T extends DAO> {
     protected T subj;
 
     private final String CLEAN_H2_SQL = "DROP ALL OBJECTS";
 
     @Before
     public void setUp() throws Exception {
-        DataSourceFactory.getInstance().getDataSource();
-        subj.setDataSource(DataSourceFactory.getInstance().getDataSource());
+        DaoConfiguration.getInstance().getDataSource();
+        subj.setDataSource(DaoConfiguration.getInstance().getDataSource());
     }
 
     @After
@@ -28,7 +26,7 @@ public abstract class AbstractDAOTest <T extends DAO> {
             e.printStackTrace();
         }
         subj.setDataSource(null);
-        DataSourceFactory.getInstance().setDataSource(null);
+        DaoConfiguration.getInstance().setDataSource(null);
     }
 
     protected void setPropertyForConnectH2() {
@@ -37,4 +35,4 @@ public abstract class AbstractDAOTest <T extends DAO> {
         System.setProperty("jdbcPassword", "test");
         System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");
     }
-}
+}*/

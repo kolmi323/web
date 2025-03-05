@@ -1,5 +1,6 @@
 package ru.gnezdilov.dao;
 
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.InsufficientFundsException;
@@ -15,17 +16,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
+@Component
 public class TransactionDAO extends DAO {
     private final CategoryTransactionDAO categoryTransactionDAO;
-    private final AccountDAO accountDAO;
-    private final TypeDAO typeDAO;
 
-    public TransactionDAO(DataSource ds, CategoryTransactionDAO categoryTransactionDAO, AccountDAO accountDAO,
-                          TypeDAO typeDAO) {
+    public TransactionDAO(DataSource ds, CategoryTransactionDAO categoryTransactionDAO) {
         super(ds);
         this.categoryTransactionDAO = categoryTransactionDAO;
-        this.accountDAO = accountDAO;
-        this.typeDAO = typeDAO;
     }
 
     public TransactionModel insert(List<Integer> typeIds, int userId, int fromAccountId, int toAccountId, BigDecimal amount) {

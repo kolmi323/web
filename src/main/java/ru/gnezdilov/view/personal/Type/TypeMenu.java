@@ -1,25 +1,29 @@
 package ru.gnezdilov.view.personal.Type;
 
+import org.springframework.stereotype.Component;
+import ru.gnezdilov.view.CurrentUser;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.view.ViewFactory;
 import ru.gnezdilov.dao.exception.*;
 
+@Component
 public class TypeMenu {
     private final InputRequest inputRequest;
     private final UIUtils utils;
     private final TypeActionMenu typeActionMenu;
+    private final CurrentUser currentUser;
 
     public TypeMenu(InputRequest inputRequest, UIUtils utils,
-                    TypeActionMenu typeActionMenu) {
+                    TypeActionMenu typeActionMenu, CurrentUser currentUser) {
         this.inputRequest = inputRequest;
         this.utils = utils;
         this.typeActionMenu = typeActionMenu;
+        this.currentUser = currentUser;
     }
 
     public void start() {
         String answer;
-        System.out.println("Welcome to type transaction action menu " + ViewFactory.getCurrentUser().getName() + "!");
+        System.out.println("Welcome to type transaction action menu " + currentUser.getCurrentUser().getName() + "!");
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Action menu:" +

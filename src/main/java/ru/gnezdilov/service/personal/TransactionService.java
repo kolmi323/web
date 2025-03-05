@@ -1,5 +1,6 @@
 package ru.gnezdilov.service.personal;
 
+import org.springframework.stereotype.Service;
 import ru.gnezdilov.dao.TransactionDAO;
 import ru.gnezdilov.dao.exception.*;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
@@ -11,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Service
 public class TransactionService {
     private final TransactionDAO transactionDAO;
     private final AccountService accountService;

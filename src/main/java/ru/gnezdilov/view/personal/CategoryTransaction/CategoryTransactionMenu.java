@@ -1,24 +1,29 @@
 package ru.gnezdilov.view.personal.CategoryTransaction;
 
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.*;
+import ru.gnezdilov.view.CurrentUser;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.view.ViewFactory;
 
+@Component
 public class CategoryTransactionMenu {
-    private InputRequest inputRequest;
-    private UIUtils utils;
-    private CategoryTransactionActionMenu categoryTransactionActionMenu;
+    private final InputRequest inputRequest;
+    private final UIUtils utils;
+    private final CategoryTransactionActionMenu categoryTransactionActionMenu;
+    private final CurrentUser currentUser;
 
-    public CategoryTransactionMenu(InputRequest inputRequest, UIUtils utils, CategoryTransactionActionMenu categoryTransactionActionMenu) {
+    public CategoryTransactionMenu(InputRequest inputRequest, UIUtils utils, CategoryTransactionActionMenu categoryTransactionActionMenu,
+                                   CurrentUser currentUser) {
         this.inputRequest = inputRequest;
         this.utils = utils;
         this.categoryTransactionActionMenu = categoryTransactionActionMenu;
+        this.currentUser = currentUser;
     }
 
     public void start() {
         String answer;
-        System.out.println("Welcome to category transaction action menu " + ViewFactory.getCurrentUser().getName() + "!");
+        System.out.println("Welcome to category transaction action menu " + currentUser.getCurrentUser().getName() + "!");
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Action menu:" +

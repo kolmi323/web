@@ -1,8 +1,10 @@
 package ru.gnezdilov.view.auth;
 
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 
+@Component
 public class LoginPage {
     private final InputRequest inputRequest;
     private final UIUtils utils;
@@ -10,8 +12,8 @@ public class LoginPage {
     private final LoginWindow loginWindow;
 
     public LoginPage(InputRequest inputRequest, UIUtils utils, RegisterWindow registerWindow, LoginWindow loginWindow) {
-        this.inputRequest = new InputRequest();
-        this.utils = new UIUtils();
+        this.inputRequest = inputRequest;
+        this.utils = utils;
         this.registerWindow = registerWindow;
         this.loginWindow = loginWindow;
     }

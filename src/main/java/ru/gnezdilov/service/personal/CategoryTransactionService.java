@@ -1,13 +1,14 @@
 package ru.gnezdilov.service.personal;
 
+import org.springframework.stereotype.Service;
 import ru.gnezdilov.dao.CategoryTransactionDAO;
 import ru.gnezdilov.service.converter.ConverterCategoryTransactionModelToCategoryTransactionDTO;
-import ru.gnezdilov.service.dto.CategoryTransactionDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
+@Service
 public class CategoryTransactionService {
     private final CategoryTransactionDAO categoryTransactionDAO;
     private final ConverterCategoryTransactionModelToCategoryTransactionDTO converter;

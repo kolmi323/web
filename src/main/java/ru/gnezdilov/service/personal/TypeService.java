@@ -1,5 +1,6 @@
 package ru.gnezdilov.service.personal;
 
+import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.converter.ConverterTypeModelToTypeDTO;
 import ru.gnezdilov.dao.TypeDAO;
@@ -7,6 +8,7 @@ import ru.gnezdilov.dao.TypeDAO;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class TypeService {
     private final TypeDAO typeDAO;
     private final ConverterTypeModelToTypeDTO converter;

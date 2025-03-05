@@ -1,5 +1,6 @@
 package ru.gnezdilov.dao;
 
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.abstractclass.DAO;
@@ -9,6 +10,7 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.Optional;
 
+@Component
 public class UserDAO extends DAO {
     private static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
 

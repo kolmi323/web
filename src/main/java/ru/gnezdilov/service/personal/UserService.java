@@ -1,7 +1,9 @@
 package ru.gnezdilov.service.personal;
 
+import org.springframework.stereotype.Service;
 import ru.gnezdilov.dao.UserDAO;
 
+@Service
 public class UserService {
     private UserDAO userDAO;
 
