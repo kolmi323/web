@@ -12,16 +12,16 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-/*
 public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransactionDAO> {
     public CategoryTransactionDAOTest() {
         setPropertyForConnectH2();
-        subj = DaoFactory.getInstance().getCategoryTransactionDao();
+        subj = context.getBean(CategoryTransactionDAO.class);
     }
 
     @Test
     public void getIncomingTransactions_returnInfoTransaction_whenCalledWithValidArguments() {
         HashMap<String, BigDecimal> categories = new HashMap<>();
+        categories.put("no type", new BigDecimal("600.00"));
         categories.put("hobby", new BigDecimal("500.00"));
 
         assertEquals(categories, subj.getIncomingTransactions(1, LocalDate.of(2025, 01, 01),
@@ -39,6 +39,7 @@ public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransact
     @Test
     public void getOutgoingTransactions_returnInfoTransaction_whenCalledWithValidArguments() {
         Map<String, BigDecimal> categories = new HashMap<>();
+        categories.put("no type", new BigDecimal("600.00"));
         categories.put("hobby", new BigDecimal("500.00"));
 
         assertEquals(categories, subj.getIncomingTransactions(1, LocalDate.of(2025, 01, 01),
@@ -79,4 +80,4 @@ public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransact
             System.out.println(e.getMessage());
         }
     }
-}*/
+}

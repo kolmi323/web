@@ -11,11 +11,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-/*
 public class AccountDAOTest extends AbstractDAOTest<AccountDAO> {
     public AccountDAOTest() {
         setPropertyForConnectH2();
-        subj = DaoFactory.getInstance().getAccountDao();
+        subj = context.getBean(AccountDAO.class);
     }
 
     @Test
@@ -77,4 +76,4 @@ public class AccountDAOTest extends AbstractDAOTest<AccountDAO> {
     public void delete_failedDelete_whenCalledWithInvalidArguments() {
         assertFalse(subj.delete(3, 1));
     }
-}*/
+}

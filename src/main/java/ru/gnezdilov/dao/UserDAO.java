@@ -14,7 +14,7 @@ import java.util.Optional;
 public class UserDAO extends DAO {
     private static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
 
-    public UserDAO(DataSource ds) {
+    public UserDAO(DataSourceDAO ds) {
         super(ds);
     }
 

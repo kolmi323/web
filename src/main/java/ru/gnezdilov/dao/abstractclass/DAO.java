@@ -1,12 +1,14 @@
 package ru.gnezdilov.dao.abstractclass;
 
+import ru.gnezdilov.dao.DataSourceDAO;
+
 import javax.sql.DataSource;
 
 public abstract class DAO {
     private DataSource dataSource;
 
-    protected DAO(DataSource dataSource) {
-        this.dataSource = dataSource;
+    protected DAO(DataSourceDAO dataSourceDao) {
+        this.dataSource = dataSourceDao.getDataSource();
     }
 
     public DataSource getDataSource() {

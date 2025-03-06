@@ -8,10 +8,10 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-/*public class UserDAOTest extends AbstractDAOTest<UserDAO> {
+public class UserDAOTest extends AbstractDAOTest<UserDAO> {
     public UserDAOTest() {
         setPropertyForConnectH2();
-        subj = DaoFactory.getInstance().getUserDAO();
+        subj = context.getBean(UserDAO.class);
     }
 
     @Test
@@ -51,4 +51,4 @@ import static org.junit.Assert.*;
     public void existsById_returnFalse_whenCalledWithInvalidArguments() {
         assertFalse(subj.existsById(3));
     }
-}*/
+}

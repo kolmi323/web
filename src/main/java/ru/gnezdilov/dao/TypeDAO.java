@@ -16,7 +16,7 @@ import java.util.List;
 public class TypeDAO extends DAO {
     private static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
 
-    public TypeDAO(DataSource ds) {
+    public TypeDAO(DataSourceDAO ds) {
         super(ds);
     }
 

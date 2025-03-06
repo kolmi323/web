@@ -14,13 +14,12 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-/*
 public class TransactionDAOTest extends AbstractDAOTest<TransactionDAO> {
     private List<Integer> LIST_TYPES_ID = new ArrayList<Integer>(Arrays.asList(1));
 
     public TransactionDAOTest() {
         setPropertyForConnectH2();
-        subj = DaoFactory.getInstance().getTransactionDao();
+        subj = context.getBean(TransactionDAO.class);
     }
 
     @Test
@@ -59,4 +58,4 @@ public class TransactionDAOTest extends AbstractDAOTest<TransactionDAO> {
     public void insert_acceptDaoException_whenCalledWithInvalidArgumentAmount() {
         subj.insert(LIST_TYPES_ID, 1, 1, 2, new BigDecimal("5000.00"));
     }
-}*/
+}

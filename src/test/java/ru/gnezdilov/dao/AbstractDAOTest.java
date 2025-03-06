@@ -2,20 +2,24 @@ package ru.gnezdilov.dao;
 
 import org.junit.After;
 import org.junit.Before;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.abstractclass.DAO;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-/*public abstract class AbstractDAOTest <T extends DAO> {
+public abstract class AbstractDAOTest <T extends DAO> {
     protected T subj;
+    protected ApplicationContext context = new AnnotationConfigApplicationContext(MainConfiguration.class);
 
     private final String CLEAN_H2_SQL = "DROP ALL OBJECTS";
 
     @Before
     public void setUp() throws Exception {
-        DaoConfiguration.getInstance().getDataSource();
-        subj.setDataSource(DaoConfiguration.getInstance().getDataSource());
+
+        subj.setDataSource(context.getBean(DataSourceDAO.class).getDataSource());
     }
 
     @After
@@ -26,7 +30,7 @@ import java.sql.SQLException;
             e.printStackTrace();
         }
         subj.setDataSource(null);
-        DaoConfiguration.getInstance().setDataSource(null);
+        context.getBean(DataSourceDAO.class).setDataSource(null);
     }
 
     protected void setPropertyForConnectH2() {
@@ -35,4 +39,4 @@ import java.sql.SQLException;
         System.setProperty("jdbcPassword", "test");
         System.setProperty("liquibaseFile", "liquibase_user_dao_test.xml");
     }
-}*/
+}

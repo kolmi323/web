@@ -10,30 +10,31 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.DataSourceException;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-@Configuration
-public class DaoConfiguration {
-    private final String URL = System.getProperty("jdbcUrl", "jdbc:postgresql://localhost:5432/postgres");
-    private final String USER = System.getProperty("jdbcUser", "postgres");
-    private final String PASSWORD = System.getProperty("jdbcPassword", "postgres");
+@Component
+@Scope("singleton")
+public class DataSourceDAO {
+    private DataSource dataSource;
 
-    @Bean
     public DataSource getDataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(URL);
-        config.setUsername(USER);
-        config.setPassword(PASSWORD);
+        config.setJdbcUrl(System.getProperty("jdbcUrl", "jdbc:postgresql://localhost:5432/postgres"));
+        config.setUsername(System.getProperty("jdbcUser", "postgres"));
+        config.setPassword(System.getProperty("jdbcPassword", "postgres"));
         config.setMaximumPoolSize(10);
         DataSource dataSource = new HikariDataSource(config);
         initDataBase(dataSource);
         return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     private static void initDataBase(DataSource dataSource) {

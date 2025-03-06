@@ -21,7 +21,7 @@ import java.util.Set;
 public class TransactionDAO extends DAO {
     private final CategoryTransactionDAO categoryTransactionDAO;
 
-    public TransactionDAO(DataSource ds, CategoryTransactionDAO categoryTransactionDAO) {
+    public TransactionDAO(DataSourceDAO ds, CategoryTransactionDAO categoryTransactionDAO) {
         super(ds);
         this.categoryTransactionDAO = categoryTransactionDAO;
     }
