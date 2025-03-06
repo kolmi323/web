@@ -1,6 +1,8 @@
 package ru.gnezdilov.dao;
 
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.model.CategoryTransactionModel;
 
@@ -15,6 +17,7 @@ import static org.junit.Assert.*;
 public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransactionDAO> {
     public CategoryTransactionDAOTest() {
         setPropertyForConnectH2();
+        context = new AnnotationConfigApplicationContext(MainConfiguration.class);
         subj = context.getBean(CategoryTransactionDAO.class);
     }
 

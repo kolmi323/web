@@ -12,13 +12,12 @@ import java.sql.SQLException;
 
 public abstract class AbstractDAOTest <T extends DAO> {
     protected T subj;
-    protected ApplicationContext context = new AnnotationConfigApplicationContext(MainConfiguration.class);
+    protected ApplicationContext context;
 
     private final String CLEAN_H2_SQL = "DROP ALL OBJECTS";
 
     @Before
     public void setUp() throws Exception {
-
         subj.setDataSource(context.getBean(DataSourceDAO.class).getDataSource());
     }
 
