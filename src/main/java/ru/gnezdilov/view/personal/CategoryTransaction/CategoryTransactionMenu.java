@@ -2,7 +2,7 @@ package ru.gnezdilov.view.personal.CategoryTransaction;
 
 import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.*;
-import ru.gnezdilov.view.CurrentUser;
+import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 
@@ -11,19 +11,16 @@ public class CategoryTransactionMenu {
     private final InputRequest inputRequest;
     private final UIUtils utils;
     private final CategoryTransactionActionMenu categoryTransactionActionMenu;
-    private final CurrentUser currentUser;
 
-    public CategoryTransactionMenu(InputRequest inputRequest, UIUtils utils, CategoryTransactionActionMenu categoryTransactionActionMenu,
-                                   CurrentUser currentUser) {
+    public CategoryTransactionMenu(InputRequest inputRequest, UIUtils utils, CategoryTransactionActionMenu categoryTransactionActionMenu) {
         this.inputRequest = inputRequest;
         this.utils = utils;
         this.categoryTransactionActionMenu = categoryTransactionActionMenu;
-        this.currentUser = currentUser;
     }
 
-    public void start() {
+    public void start(UserDTO currentUser) {
         String answer;
-        System.out.println("Welcome to category transaction action menu " + currentUser.getCurrentUser().getName() + "!");
+        System.out.println("Welcome to category transaction action menu " + currentUser.getName() + "!");
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Action menu:" +
@@ -33,9 +30,9 @@ public class CategoryTransactionMenu {
             );
             try {
                 if (answer.equals("1")) {
-                    categoryTransactionActionMenu.showAllIncoming();
+                    categoryTransactionActionMenu.showAllIncoming(currentUser);
                 } else if (answer.equals("2")) {
-                    categoryTransactionActionMenu.showAllOutgoing();
+                    categoryTransactionActionMenu.showAllOutgoing(currentUser);
                 } else if (utils.isExitAction(answer)) {
                     System.out.println("You exit from type transaction action menu!");
                     return;

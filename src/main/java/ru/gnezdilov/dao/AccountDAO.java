@@ -17,7 +17,7 @@ import java.util.List;
 public class AccountDAO extends DAO {
     private static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
 
-    public AccountDAO(DataSourceDAO ds) {
+    public AccountDAO(DataSource ds) {
         super(ds);
     }
 

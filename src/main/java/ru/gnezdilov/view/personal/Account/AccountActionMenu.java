@@ -2,8 +2,8 @@ package ru.gnezdilov.view.personal.Account;
 
 import org.springframework.stereotype.Component;
 import ru.gnezdilov.service.dto.AccountDTO;
+import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.service.personal.AccountService;
-import ru.gnezdilov.view.CurrentUser;
 import ru.gnezdilov.view.UIUtils;
 
 import java.math.BigDecimal;
@@ -14,16 +14,14 @@ import java.util.List;
 public class AccountActionMenu {
     private final UIUtils utils;
     private final AccountService accountService;
-    private final CurrentUser currentUser;
 
-    public AccountActionMenu(UIUtils utils, AccountService accountService, CurrentUser currentUser) {
+    public AccountActionMenu(UIUtils utils, AccountService accountService) {
         this.utils = utils;
         this.accountService = accountService;
-        this.currentUser = currentUser;
     }
 
-    public void showAll() {
-        List<AccountDTO> accounts = accountService.getAll(currentUser.getCurrentUser().getId());
+    public void showAll(UserDTO currentUser) {
+        List<AccountDTO> accounts = accountService.getAll(currentUser.getId());
         if (accounts.isEmpty()) {
             System.out.println("No accounts found");
         } else {
@@ -31,18 +29,18 @@ public class AccountActionMenu {
         }
     }
 
-    public void createAccount() {
+    public void createAccount(UserDTO currentUser) {
         String name = this.utils.enterNameAccount();
         BigDecimal answer = this.utils.enterBalanceAccount();
         BigDecimal balance = answer.setScale(2, RoundingMode.HALF_UP);
         AccountDTO account = accountService
-                .create(currentUser.getCurrentUser().getId(), name, balance);
+                .create(currentUser.getId(), name, balance);
         System.out.println("New account " + account.getName() + " created");
     }
 
-    public void removeAccount() {
+    public void removeAccount(UserDTO currentUser) {
         int id = this.utils.enterId();
-        if (accountService.delete(id, currentUser.getCurrentUser().getId())) {
+        if (accountService.delete(id, currentUser.getId())) {
             System.out.println("Account: " + id + " - deleted");
         } else {
             System.out.println("Account: " + id + " - not found");

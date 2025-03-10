@@ -3,8 +3,8 @@ package ru.gnezdilov.view.personal.Type;
 
 import org.springframework.stereotype.Component;
 import ru.gnezdilov.service.dto.TypeDTO;
+import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.service.personal.TypeService;
-import ru.gnezdilov.view.CurrentUser;
 import ru.gnezdilov.view.UIUtils;
 
 import java.util.List;
@@ -13,17 +13,15 @@ import java.util.List;
 public class TypeActionMenu {
     private final UIUtils utils;
     private final TypeService typeService;
-    private final CurrentUser currentUser;
 
-    public TypeActionMenu(UIUtils utils, TypeService typeService, CurrentUser currentUser) {
+    public TypeActionMenu(UIUtils utils, TypeService typeService) {
         this.utils = utils;
         this.typeService = typeService;
-        this.currentUser = currentUser;
     }
 
-    public void showAll() {
+    public void showAll(UserDTO currentUser) {
         List<TypeDTO> types = typeService
-                .getAll(currentUser.getCurrentUser().getId());
+                .getAll(currentUser.getId());
         if (types.isEmpty()) {
             System.out.println("No types transaction found");
         } else {
@@ -31,24 +29,24 @@ public class TypeActionMenu {
         }
     }
 
-    public void updateTypeTransaction() {
+    public void updateTypeTransaction(UserDTO currentUser) {
         int typeId = this.utils.enterId();
         String newName = this.utils.enterNameType(true);
-        TypeDTO newType = typeService.edit(typeId, currentUser.getCurrentUser().getId(), newName);
+        TypeDTO newType = typeService.edit(typeId, currentUser.getId(), newName);
         System.out.println("New name: " + newType.getName());
     }
 
 
-    public void createTypeTransaction() {
+    public void createTypeTransaction(UserDTO currentUser) {
         String name = this.utils.enterNameType(false);
         TypeDTO typeDTO = typeService
-                .create(currentUser.getCurrentUser().getId(), name);
+                .create(currentUser.getId(), name);
         System.out.println("Type create: " + typeDTO.getName());
     }
 
-    public void removeTypeTransaction() {
+    public void removeTypeTransaction(UserDTO currentUser) {
         int id = this.utils.enterId();
-        if (typeService.delete(id, currentUser.getCurrentUser().getId())) {
+        if (typeService.delete(id, currentUser.getId())) {
             System.out.println("Type: " + id + " - deleted");
         } else {
             System.out.println("Type: " + id + " - not found");

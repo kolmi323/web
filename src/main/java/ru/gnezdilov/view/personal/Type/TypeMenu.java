@@ -1,7 +1,7 @@
 package ru.gnezdilov.view.personal.Type;
 
 import org.springframework.stereotype.Component;
-import ru.gnezdilov.view.CurrentUser;
+import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.dao.exception.*;
@@ -11,19 +11,17 @@ public class TypeMenu {
     private final InputRequest inputRequest;
     private final UIUtils utils;
     private final TypeActionMenu typeActionMenu;
-    private final CurrentUser currentUser;
 
     public TypeMenu(InputRequest inputRequest, UIUtils utils,
-                    TypeActionMenu typeActionMenu, CurrentUser currentUser) {
+                    TypeActionMenu typeActionMenu) {
         this.inputRequest = inputRequest;
         this.utils = utils;
         this.typeActionMenu = typeActionMenu;
-        this.currentUser = currentUser;
     }
 
-    public void start() {
+    public void start(UserDTO currentUser) {
         String answer;
-        System.out.println("Welcome to type transaction action menu " + currentUser.getCurrentUser().getName() + "!");
+        System.out.println("Welcome to type transaction action menu " + currentUser.getName() + "!");
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Action menu:" +
@@ -35,13 +33,13 @@ public class TypeMenu {
             );
             try {
                 if (answer.equals("1")) {
-                    typeActionMenu.showAll();
+                    typeActionMenu.showAll(currentUser);
                 } else if (answer.equals("2")) {
-                    typeActionMenu.updateTypeTransaction();
+                    typeActionMenu.updateTypeTransaction(currentUser);
                 } else if (answer.equals("3")) {
-                    typeActionMenu.createTypeTransaction();
+                    typeActionMenu.createTypeTransaction(currentUser);
                 } else if (answer.equals("4")) {
-                    typeActionMenu.removeTypeTransaction();
+                    typeActionMenu.removeTypeTransaction(currentUser);
                 } else if (utils.isExitAction(answer)) {
                     System.out.println("You exit from type transaction action menu!");
                     return;

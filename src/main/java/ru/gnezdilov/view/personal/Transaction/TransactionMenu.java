@@ -3,7 +3,7 @@ package ru.gnezdilov.view.personal.Transaction;
 import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.*;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
-import ru.gnezdilov.view.CurrentUser;
+import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 
@@ -12,19 +12,16 @@ public class TransactionMenu {
     private final InputRequest inputRequest;
     private final UIUtils utils;
     private final TransactionActionMenu transactionActionMenu;
-    private final CurrentUser currentUser;
 
-    public TransactionMenu(InputRequest inputRequest, UIUtils utils, TransactionActionMenu transactionActionMenu,
-                           CurrentUser currentUser) {
+    public TransactionMenu(InputRequest inputRequest, UIUtils utils, TransactionActionMenu transactionActionMenu) {
         this.inputRequest = inputRequest;
         this.utils = utils;
         this.transactionActionMenu = transactionActionMenu;
-        this.currentUser = currentUser;
     }
 
-    public void start() {
+    public void start(UserDTO currentUser) {
         String answer;
-        System.out.println("Welcome to transaction action menu " + currentUser.getCurrentUser().getName() + "!");
+        System.out.println("Welcome to transaction action menu " + currentUser.getName() + "!");
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Action menu:" +
@@ -33,7 +30,7 @@ public class TransactionMenu {
             );
             try {
                 if (answer.equals("1")) {
-                    transactionActionMenu.create();
+                    transactionActionMenu.create(currentUser);
                 } else if (utils.isExitAction(answer)) {
                     System.out.println("You exit from transaction action menu!");
                     return;

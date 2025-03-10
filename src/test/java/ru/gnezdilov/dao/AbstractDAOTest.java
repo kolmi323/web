@@ -3,8 +3,6 @@ package ru.gnezdilov.dao;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.abstractclass.DAO;
 
 import java.sql.PreparedStatement;
@@ -18,7 +16,7 @@ public abstract class AbstractDAOTest <T extends DAO> {
 
     @Before
     public void setUp() throws Exception {
-        subj.setDataSource(context.getBean(DataSourceDAO.class).getDataSource());
+        subj.setDataSource(context.getBean(ConfigurationDAO.class).getDataSource());
     }
 
     @After
@@ -29,7 +27,6 @@ public abstract class AbstractDAOTest <T extends DAO> {
             e.printStackTrace();
         }
         subj.setDataSource(null);
-        context.getBean(DataSourceDAO.class).setDataSource(null);
     }
 
     protected void setPropertyForConnectH2() {

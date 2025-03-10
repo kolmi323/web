@@ -31,7 +31,7 @@ public class CategoryTransactionDAO extends DAO {
             "where us.id = ? and tr.date > ? and tr.date < ?\n" +
             "group by ty.name";
 
-    public CategoryTransactionDAO(DataSourceDAO dataSource) {
+    public CategoryTransactionDAO(DataSource dataSource) {
         super(dataSource);
     }
 

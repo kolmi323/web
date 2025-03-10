@@ -3,25 +3,21 @@ package ru.gnezdilov.dao;
 import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.exception.InsufficientFundsException;
-import ru.gnezdilov.dao.exception.NotFoundException;
-import ru.gnezdilov.dao.model.AccountModel;
 import ru.gnezdilov.dao.model.TransactionModel;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Component
 public class TransactionDAO extends DAO {
     private final CategoryTransactionDAO categoryTransactionDAO;
 
-    public TransactionDAO(DataSourceDAO ds, CategoryTransactionDAO categoryTransactionDAO) {
+    public TransactionDAO(DataSource ds, CategoryTransactionDAO categoryTransactionDAO) {
         super(ds);
         this.categoryTransactionDAO = categoryTransactionDAO;
     }
@@ -97,11 +93,6 @@ public class TransactionDAO extends DAO {
     }
 
     private void linkingTypeAndTransaction(List<Integer> typeIds, int transactionId, Connection con) {
-        Set<Integer> ids = new HashSet<>();
-        for (Integer id : typeIds) {
-            if (ids.add(id)) {
-                categoryTransactionDAO.insert(id, transactionId, con);
-            }
-        }
+        typeIds.stream().collect(Collectors.toSet()).forEach(id -> categoryTransactionDAO.insert(id, transactionId, con));
     }
 }

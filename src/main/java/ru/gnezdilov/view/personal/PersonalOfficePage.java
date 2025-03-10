@@ -1,11 +1,7 @@
 package ru.gnezdilov.view.personal;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
-import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.service.dto.UserDTO;
-import ru.gnezdilov.view.CurrentUser;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.view.personal.Account.AccountMenu;
@@ -21,23 +17,21 @@ public class PersonalOfficePage {
     private final TypeMenu typeMenu;
     private final CategoryTransactionMenu categoryTransactionMenu;
     private final TransactionMenu transactionMenu;
-    private final CurrentUser currentUser;
 
     public PersonalOfficePage(InputRequest inputRequest, UIUtils utils,
                               AccountMenu accountMenu, TypeMenu typeMenu,
-                              CategoryTransactionMenu categoryTransactionMenu, TransactionMenu transactionMenu, CurrentUser currentUser) {
+                              CategoryTransactionMenu categoryTransactionMenu, TransactionMenu transactionMenu) {
         this.inputRequest = inputRequest;
         this.utils = utils;
         this.accountMenu = accountMenu;
         this.typeMenu = typeMenu;
         this.categoryTransactionMenu = categoryTransactionMenu;
         this.transactionMenu = transactionMenu;
-        this.currentUser = currentUser;
     }
 
-    public void start() {
+    public void start(UserDTO currentUser) {
         String answer;
-        System.out.println("Welcome to personal office " + currentUser.getCurrentUser().getName() + "!");
+        System.out.println("Welcome to personal office " + currentUser.getName() + "!");
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Please choice action menu:" +
@@ -48,13 +42,13 @@ public class PersonalOfficePage {
                             "\nexit. Exit"
             );
             if (answer.equals("1")) {
-                accountMenu.start();
+                accountMenu.start(currentUser);
             } else if (answer.equals("2")) {
-                typeMenu.start();
+                typeMenu.start(currentUser);
             } else if (answer.equals("3")) {
-                categoryTransactionMenu.start();
+                categoryTransactionMenu.start(currentUser);
             } else if (answer.equals("4")) {
-                transactionMenu.start();
+                transactionMenu.start(currentUser);
             } else if (utils.isExitAction(answer)) {
                 System.out.println("You exit from person office!");
                 return;

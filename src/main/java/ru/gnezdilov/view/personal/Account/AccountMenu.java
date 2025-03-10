@@ -1,7 +1,7 @@
 package ru.gnezdilov.view.personal.Account;
 
 import org.springframework.stereotype.Component;
-import ru.gnezdilov.view.CurrentUser;
+import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.dao.exception.*;
@@ -11,18 +11,16 @@ public class AccountMenu {
     private final UIUtils utils;
     private final InputRequest inputRequest;
     private final AccountActionMenu accountActionMenu;
-    private final CurrentUser currentUser;
 
-    public AccountMenu(UIUtils utils, InputRequest inputRequest, AccountActionMenu accountActionMenu, CurrentUser currentUser) {
+    public AccountMenu(UIUtils utils, InputRequest inputRequest, AccountActionMenu accountActionMenu) {
         this.utils = utils;
         this.inputRequest = inputRequest;
         this.accountActionMenu = accountActionMenu;
-        this.currentUser = currentUser;
     }
 
-    public void start() {
+    public void start(UserDTO currentUser) {
         String answer;
-        System.out.println("Welcome to account action menu " + currentUser.getCurrentUser().getName() + "!");
+        System.out.println("Welcome to account action menu " + currentUser.getName() + "!");
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Action menu:" +
@@ -33,11 +31,11 @@ public class AccountMenu {
             );
             try {
                 if (answer.equals("1")) {
-                    accountActionMenu.showAll();
+                    accountActionMenu.showAll(currentUser);
                 } else if (answer.equals("2")) {
-                    accountActionMenu.createAccount();
+                    accountActionMenu.createAccount(currentUser);
                 } else if (answer.equals("3")) {
-                    accountActionMenu.removeAccount();
+                    accountActionMenu.removeAccount(currentUser);
                 } else if (this.utils.isExitAction(answer)) {
                     System.out.println("You exit from account action menu!");
                     return;

@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.abstractclass.DAO;
-import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.TypeModel;
 
 import javax.sql.DataSource;
@@ -16,7 +15,7 @@ import java.util.List;
 public class TypeDAO extends DAO {
     private static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
 
-    public TypeDAO(DataSourceDAO ds) {
+    public TypeDAO(DataSource ds) {
         super(ds);
     }
 

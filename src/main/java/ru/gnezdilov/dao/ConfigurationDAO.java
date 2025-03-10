@@ -10,6 +10,8 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.DataSourceException;
@@ -17,11 +19,9 @@ import ru.gnezdilov.dao.exception.DataSourceException;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-@Component
-@Scope("singleton")
-public class DataSourceDAO {
-    private DataSource dataSource;
-
+@Configuration
+public class ConfigurationDAO {
+    @Bean
     public DataSource getDataSource() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(System.getProperty("jdbcUrl", "jdbc:postgresql://localhost:5432/postgres"));
@@ -31,10 +31,6 @@ public class DataSourceDAO {
         DataSource dataSource = new HikariDataSource(config);
         initDataBase(dataSource);
         return dataSource;
-    }
-
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
     }
 
     private static void initDataBase(DataSource dataSource) {
