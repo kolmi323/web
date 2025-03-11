@@ -15,6 +15,15 @@
     </properties>
 
     <dependencies>
+        <!--Spring-->
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.2.0</version>
+        </dependency>
+
+
         <!--Codec utils-->
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>

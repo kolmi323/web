@@ -1,10 +1,12 @@
 package ru.gnezdilov.view.personal.Type;
 
+import org.springframework.stereotype.Component;
+import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.view.ViewFactory;
 import ru.gnezdilov.dao.exception.*;
 
+@Component
 public class TypeMenu {
     private final InputRequest inputRequest;
     private final UIUtils utils;
@@ -17,9 +19,9 @@ public class TypeMenu {
         this.typeActionMenu = typeActionMenu;
     }
 
-    public void start() {
+    public void start(UserDTO currentUser) {
         String answer;
-        System.out.println("Welcome to type transaction action menu " + ViewFactory.getCurrentUser().getName() + "!");
+        System.out.println("Welcome to type transaction action menu " + currentUser.getName() + "!");
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Action menu:" +
@@ -31,13 +33,13 @@ public class TypeMenu {
             );
             try {
                 if (answer.equals("1")) {
-                    typeActionMenu.showAll();
+                    typeActionMenu.showAll(currentUser);
                 } else if (answer.equals("2")) {
-                    typeActionMenu.updateTypeTransaction();
+                    typeActionMenu.updateTypeTransaction(currentUser);
                 } else if (answer.equals("3")) {
-                    typeActionMenu.createTypeTransaction();
+                    typeActionMenu.createTypeTransaction(currentUser);
                 } else if (answer.equals("4")) {
-                    typeActionMenu.removeTypeTransaction();
+                    typeActionMenu.removeTypeTransaction(currentUser);
                 } else if (utils.isExitAction(answer)) {
                     System.out.println("You exit from type transaction action menu!");
                     return;

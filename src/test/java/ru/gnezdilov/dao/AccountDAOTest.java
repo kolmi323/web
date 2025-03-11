@@ -1,6 +1,8 @@
 package ru.gnezdilov.dao;
 
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.AccountModel;
@@ -14,7 +16,8 @@ import static org.junit.Assert.*;
 public class AccountDAOTest extends AbstractDAOTest<AccountDAO> {
     public AccountDAOTest() {
         setPropertyForConnectH2();
-        subj = DaoFactory.getInstance().getAccountDao();
+        context = new AnnotationConfigApplicationContext(MainConfiguration.class);
+        subj = context.getBean(AccountDAO.class);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package ru.gnezdilov.dao;
 
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.model.CategoryTransactionModel;
@@ -11,22 +12,23 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class CategoryTransactionDAO extends DAO {
-    private final String SQL_INCOMING_TRANSACTION = "select ty.name, sum(tr.amount)\n" +
+    private final String SQL_INCOMING_TRANSACTION = "select coalesce(ty.name, 'no type'), sum(tr.amount)\n" +
             "from users as us\n" +
-            "         join type as ty on us.id = ty.user_id\n" +
-            "         join type_transaction as tt on ty.id = tt.type_id\n" +
-            "         join transaction as tr on tt.transaction_id = tr.id\n" +
-            "         join account as ac on tr.to_account_id = ac.id\n" +
-            "where us.id = ? and tr.date > ? and tr.date < ? " +
+            "        join account as ac on us.id = ac.user_id\n" +
+            "        join transaction as tr on ac.id = tr.to_account_id\n" +
+            "        left join type_transaction as tt on tr.id = tt.transaction_id\n" +
+            "        left join type as ty on tt.type_id = ty.id\n" +
+            "where us.id = ? and tr.date > ? and tr.date < ?\n" +
             "group by ty.name";
-    private final String SQL_OUTGOING_TRANSACTION = "select ty.name, sum(tr.amount)\n" +
+    private final String SQL_OUTGOING_TRANSACTION = "select coalesce(ty.name, 'no type'), sum(tr.amount)\n" +
             "from users as us\n" +
-            "         join type as ty on us.id = ty.user_id\n" +
-            "         join type_transaction as tt on ty.id = tt.type_id\n" +
-            "         join transaction as tr on tt.transaction_id = tr.id\n" +
-            "         join account as ac on tr.from_account_id = ac.id\n" +
-            "where us.id = ? and tr.date > ? and tr.date < ? " +
+            "        join account as ac on us.id = ac.user_id\n" +
+            "        join transaction as tr on ac.id = tr.from_account_id\n" +
+            "        left join type_transaction as tt on tr.id = tt.transaction_id\n" +
+            "        left join type as ty on tt.type_id = ty.id\n" +
+            "where us.id = ? and tr.date > ? and tr.date < ?\n" +
             "group by ty.name";
 
     public CategoryTransactionDAO(DataSource dataSource) {

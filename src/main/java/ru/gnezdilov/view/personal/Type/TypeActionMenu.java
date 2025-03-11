@@ -1,13 +1,15 @@
 package ru.gnezdilov.view.personal.Type;
 
 
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.service.dto.TypeDTO;
+import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.service.personal.TypeService;
 import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.view.ViewFactory;
 
 import java.util.List;
 
+@Component
 public class TypeActionMenu {
     private final UIUtils utils;
     private final TypeService typeService;
@@ -17,9 +19,9 @@ public class TypeActionMenu {
         this.typeService = typeService;
     }
 
-    public void showAll() {
+    public void showAll(UserDTO currentUser) {
         List<TypeDTO> types = typeService
-                .getAll(ViewFactory.getCurrentUser().getId());
+                .getAll(currentUser.getId());
         if (types.isEmpty()) {
             System.out.println("No types transaction found");
         } else {
@@ -27,24 +29,24 @@ public class TypeActionMenu {
         }
     }
 
-    public void updateTypeTransaction() {
+    public void updateTypeTransaction(UserDTO currentUser) {
         int typeId = this.utils.enterId();
         String newName = this.utils.enterNameType(true);
-        TypeDTO newType = typeService.edit(typeId, ViewFactory.getCurrentUser().getId(), newName);
+        TypeDTO newType = typeService.edit(typeId, currentUser.getId(), newName);
         System.out.println("New name: " + newType.getName());
     }
 
 
-    public void createTypeTransaction() {
+    public void createTypeTransaction(UserDTO currentUser) {
         String name = this.utils.enterNameType(false);
         TypeDTO typeDTO = typeService
-                .create(ViewFactory.getCurrentUser().getId(), name);
+                .create(currentUser.getId(), name);
         System.out.println("Type create: " + typeDTO.getName());
     }
 
-    public void removeTypeTransaction() {
+    public void removeTypeTransaction(UserDTO currentUser) {
         int id = this.utils.enterId();
-        if (typeService.delete(id, ViewFactory.getCurrentUser().getId())) {
+        if (typeService.delete(id, currentUser.getId())) {
             System.out.println("Type: " + id + " - deleted");
         } else {
             System.out.println("Type: " + id + " - not found");

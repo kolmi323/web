@@ -1,6 +1,8 @@
 package ru.gnezdilov.dao;
 
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.InsufficientFundsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
@@ -19,7 +21,8 @@ public class TransactionDAOTest extends AbstractDAOTest<TransactionDAO> {
 
     public TransactionDAOTest() {
         setPropertyForConnectH2();
-        subj = DaoFactory.getInstance().getTransactionDao();
+        context = new AnnotationConfigApplicationContext(MainConfiguration.class);
+        subj = context.getBean(TransactionDAO.class);
     }
 
     @Test

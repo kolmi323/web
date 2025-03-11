@@ -1,16 +1,18 @@
 package ru.gnezdilov.view.auth;
 
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.service.AuthService;
 import ru.gnezdilov.view.personal.PersonalOfficePage;
 import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.view.ViewFactory;
 import ru.gnezdilov.dao.exception.*;
 
+@Component
 public class LoginWindow {
     private final UIUtils utils;
     private final AuthService authService;
     private final PersonalOfficePage personalOfficePage;
+    private UserDTO currentUser;
 
     public LoginWindow(UIUtils utils, AuthService authService, PersonalOfficePage personalOfficePage) {
         this.utils = utils;
@@ -19,23 +21,26 @@ public class LoginWindow {
     }
 
     public void login() {
-        String email = this.utils.enterEmail();
-        if (this.utils.isExitAction(email)) {
-            return;
-        }
-        String password = this.utils.enterPassword();
-        if (this.utils.isExitAction(password)) {
-            return;
-        }
         try {
-            UserDTO user = authService.authorization(email, password);
+            String email = this.utils.enterEmail();
+            if (this.utils.isExitAction(email)) {
+                return;
+            }
+            String password = this.utils.enterPassword();
+            if (this.utils.isExitAction(password)) {
+                return;
+            }
+            currentUser = authService.authorization(email, password);
             System.out.println("Logged in successfully");
-            ViewFactory.setCurrentUser(user);
-            personalOfficePage.start();
-        } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException | DataSourceException e) {
+            personalOfficePage.start(currentUser);
+        } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException | DataSourceException | ExitException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public UserDTO getCurrentUser() {
+        return currentUser;
     }
 }

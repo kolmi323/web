@@ -1,5 +1,7 @@
 package ru.gnezdilov.dao.abstractclass;
 
+import ru.gnezdilov.dao.ConfigurationDAO;
+
 import javax.sql.DataSource;
 
 public abstract class DAO {

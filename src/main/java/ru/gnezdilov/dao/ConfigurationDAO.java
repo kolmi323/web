@@ -10,44 +10,30 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.DataSourceException;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-public class DataSourceFactory {
-    private static DataSourceFactory instance;
-    private static DataSource dataSource;
-
-    private final String URL = System.getProperty("jdbcUrl", "jdbc:postgresql://localhost:5432/postgres");
-    private final String USER = System.getProperty("jdbcUser", "postgres");
-    private final String PASSWORD = System.getProperty("jdbcPassword", "postgres");
-
-    public static DataSourceFactory getInstance() {
-        if (instance == null) {
-            instance = new DataSourceFactory();
-        }
-        return instance;
-    }
-
+@Configuration
+public class ConfigurationDAO {
+    @Bean
     public DataSource getDataSource() {
-        if (dataSource == null) {
-            HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(URL);
-            config.setUsername(USER);
-            config.setPassword(PASSWORD);
-            config.setMaximumPoolSize(10);
-            dataSource = new HikariDataSource(config);
-            initDataBase();
-        }
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(System.getProperty("jdbcUrl", "jdbc:postgresql://localhost:5432/postgres"));
+        config.setUsername(System.getProperty("jdbcUser", "postgres"));
+        config.setPassword(System.getProperty("jdbcPassword", "postgres"));
+        config.setMaximumPoolSize(10);
+        DataSource dataSource = new HikariDataSource(config);
+        initDataBase(dataSource);
         return dataSource;
     }
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    private static void initDataBase() {
+    private static void initDataBase(DataSource dataSource) {
         try {
             DatabaseConnection connection = new JdbcConnection(dataSource.getConnection());
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);

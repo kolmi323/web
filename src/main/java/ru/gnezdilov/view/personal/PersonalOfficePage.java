@@ -1,13 +1,15 @@
 package ru.gnezdilov.view.personal;
 
+import org.springframework.stereotype.Component;
+import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.view.ViewFactory;
 import ru.gnezdilov.view.personal.Account.AccountMenu;
 import ru.gnezdilov.view.personal.CategoryTransaction.CategoryTransactionMenu;
 import ru.gnezdilov.view.personal.Transaction.TransactionMenu;
 import ru.gnezdilov.view.personal.Type.TypeMenu;
 
+@Component
 public class PersonalOfficePage {
     private final InputRequest inputRequest;
     private final UIUtils utils;
@@ -27,9 +29,9 @@ public class PersonalOfficePage {
         this.transactionMenu = transactionMenu;
     }
 
-    public void start() {
+    public void start(UserDTO currentUser) {
         String answer;
-        System.out.println("Welcome to personal office " + ViewFactory.getCurrentUser().getName() + "!");
+        System.out.println("Welcome to personal office " + currentUser.getName() + "!");
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Please choice action menu:" +
@@ -40,13 +42,13 @@ public class PersonalOfficePage {
                             "\nexit. Exit"
             );
             if (answer.equals("1")) {
-                accountMenu.start();
+                accountMenu.start(currentUser);
             } else if (answer.equals("2")) {
-                typeMenu.start();
+                typeMenu.start(currentUser);
             } else if (answer.equals("3")) {
-                categoryTransactionMenu.start();
+                categoryTransactionMenu.start(currentUser);
             } else if (answer.equals("4")) {
-                transactionMenu.start();
+                transactionMenu.start(currentUser);
             } else if (utils.isExitAction(answer)) {
                 System.out.println("You exit from person office!");
                 return;

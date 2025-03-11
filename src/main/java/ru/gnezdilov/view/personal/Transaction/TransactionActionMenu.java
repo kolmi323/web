@@ -1,10 +1,10 @@
 package ru.gnezdilov.view.personal.Transaction;
 
-import ru.gnezdilov.dao.exception.ExitException;
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.service.dto.TransactionDTO;
+import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.service.personal.TransactionService;
 import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.view.ViewFactory;
 import ru.gnezdilov.view.personal.Account.AccountActionMenu;
 import ru.gnezdilov.view.personal.Type.TypeActionMenu;
 
@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class TransactionActionMenu {
     private final UIUtils utils;
     private final TransactionService transactionService;
@@ -26,9 +27,9 @@ public class TransactionActionMenu {
         this.typeActionMenu = typeActionMenu;
     }
 
-    public void create() {
-        List<Integer> typeIds = returnListTypeIds();
-        accountActionMenu.showAll();
+    public void create(UserDTO currentUser) {
+        List<Integer> typeIds = returnListTypeIds(currentUser);
+        accountActionMenu.showAll(currentUser);
         System.out.println("You need to enter the id of SENDING transaction!");
         int sendingId = utils.enterId();
         System.out.println("You need to enter the id of RECEIVING transaction!");
@@ -39,7 +40,7 @@ public class TransactionActionMenu {
             System.out.println("You need to enter a positive amount!");
             utils.getExitAction();
         }
-        TransactionDTO transaction = this.transactionService.create(typeIds, ViewFactory.getCurrentUser().getId(),
+        TransactionDTO transaction = this.transactionService.create(typeIds, currentUser.getId(),
                 sendingId, receivingId, amount);
         if (transaction == null) {
             System.out.println("Transaction creation failed!");
@@ -53,9 +54,9 @@ public class TransactionActionMenu {
         return amount.compareTo(BigDecimal.ZERO) >= 0;
     }
 
-    private List<Integer> returnListTypeIds() {
+    private List<Integer> returnListTypeIds(UserDTO currentUser) {
         List<Integer> typeIds = new ArrayList<>();
-        typeActionMenu.showAll();
+        typeActionMenu.showAll(currentUser);
         System.out.println("You need to enter the type ids of creating transaction!" +
                 "\nif you enter enough ids - press 0");
         while(true) {

@@ -1,5 +1,6 @@
 package ru.gnezdilov.view;
 
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.ExitException;
 
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+@Component
 public class UIUtils {
     private final InputRequest inputRequest;
 

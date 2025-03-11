@@ -1,5 +1,6 @@
 package ru.gnezdilov.service.personal;
 
+import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.converter.ConverterAccountModelToAccountDTO;
 import ru.gnezdilov.dao.AccountDAO;
 import ru.gnezdilov.dao.model.AccountModel;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class AccountService {
     private AccountDAO accountDAO;
     private final ConverterAccountModelToAccountDTO converter;

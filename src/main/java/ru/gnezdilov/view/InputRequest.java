@@ -1,10 +1,12 @@
 package ru.gnezdilov.view;
 
+import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.ExitException;
 
 import java.util.Scanner;
 import java.util.function.Predicate;
 
+@Component
 public class InputRequest {
     private final Scanner scanner;
 

@@ -1,10 +1,12 @@
 package ru.gnezdilov.view.personal.Account;
 
+import org.springframework.stereotype.Component;
+import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.view.ViewFactory;
 import ru.gnezdilov.dao.exception.*;
 
+@Component
 public class AccountMenu {
     private final UIUtils utils;
     private final InputRequest inputRequest;
@@ -16,9 +18,9 @@ public class AccountMenu {
         this.accountActionMenu = accountActionMenu;
     }
 
-    public void start() {
+    public void start(UserDTO currentUser) {
         String answer;
-        System.out.println("Welcome to account action menu " + ViewFactory.getCurrentUser().getName() + "!");
+        System.out.println("Welcome to account action menu " + currentUser.getName() + "!");
         while (true) {
             answer = this.inputRequest.requestStr(
                     "Action menu:" +
@@ -29,11 +31,11 @@ public class AccountMenu {
             );
             try {
                 if (answer.equals("1")) {
-                    accountActionMenu.showAll();
+                    accountActionMenu.showAll(currentUser);
                 } else if (answer.equals("2")) {
-                    accountActionMenu.createAccount();
+                    accountActionMenu.createAccount(currentUser);
                 } else if (answer.equals("3")) {
-                    accountActionMenu.removeAccount();
+                    accountActionMenu.removeAccount(currentUser);
                 } else if (this.utils.isExitAction(answer)) {
                     System.out.println("You exit from account action menu!");
                     return;

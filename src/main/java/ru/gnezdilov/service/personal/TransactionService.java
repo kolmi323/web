@@ -1,5 +1,6 @@
 package ru.gnezdilov.service.personal;
 
+import org.springframework.stereotype.Service;
 import ru.gnezdilov.dao.TransactionDAO;
 import ru.gnezdilov.dao.exception.*;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
@@ -11,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Service
 public class TransactionService {
     private final TransactionDAO transactionDAO;
     private final AccountService accountService;
@@ -41,16 +43,10 @@ public class TransactionService {
     }
 
     private void validateType(int userId, List<Integer> typeIds) {
-        if (typeIds.isEmpty()) {
-            throw new IllegalArgumentException("Type IDs cannot be empty");
-        }
         Set<Integer> ids = new HashSet<>();
         for (int id : typeIds) {
             if (!typeService.existsById(id, userId)) {
                 throw new NotFoundException("Type " + id + " not found");
-            }
-            if (!ids.add(id)) {
-                throw new IllegalArgumentException("Type " + id + " repeated");
             }
         }
     }

@@ -118,7 +118,7 @@
                 <constraints unique="true" nullable="false" primaryKey="true"/>
             </column>
             <column name="type_id" type="int">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="transaction_id" type="int">
                 <constraints nullable="true"/>
