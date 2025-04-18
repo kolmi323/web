@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.abstractclass.DAO;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.UserModel;
 
 import javax.sql.DataSource;
@@ -55,6 +56,24 @@ public class UserDAO extends DAO {
             throw new DAOException(e);
         }
         return Optional.empty();
+    }
+
+    public UserModel findById(int id) {
+        try (Connection con = getDataSource().getConnection();
+        PreparedStatement psst = con.prepareStatement("SELECT * FROM users WHERE id = ?")) {
+            psst.setInt(1, id);
+            psst.executeQuery();
+            try (ResultSet rs = psst.getResultSet()) {
+                if (rs.next()) {
+                    return new UserModel(rs.getInt("id"), rs.getString("name"),
+                            rs.getString("email"), rs.getString("password"));
+                } else {
+                    throw new NotFoundException("User not found");
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 
     public boolean existsById(int id) {

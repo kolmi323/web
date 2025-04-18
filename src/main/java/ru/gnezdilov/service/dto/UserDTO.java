@@ -42,4 +42,13 @@ public class UserDTO extends DTO {
     public int hashCode() {
         return Objects.hash(this.getId());
     }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
