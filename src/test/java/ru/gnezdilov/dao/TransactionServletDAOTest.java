@@ -16,10 +16,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class TransactionDAOTest extends AbstractDAOTest<TransactionDAO> {
+public class TransactionServletDAOTest extends AbstractDAOTest<TransactionDAO> {
     private List<Integer> LIST_TYPES_ID = new ArrayList<Integer>(Arrays.asList(1));
 
-    public TransactionDAOTest() {
+    public TransactionServletDAOTest() {
         setPropertyForConnectH2();
         context = new AnnotationConfigApplicationContext(MainConfiguration.class);
         subj = context.getBean(TransactionDAO.class);

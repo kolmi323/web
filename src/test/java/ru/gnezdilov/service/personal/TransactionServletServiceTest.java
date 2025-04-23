@@ -27,7 +27,7 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TransactionServiceTest {
+public class TransactionServletServiceTest {
     @InjectMocks private TransactionService subj;
 
     @Mock private TransactionDAO transactionDAO;

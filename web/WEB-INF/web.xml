@@ -3,14 +3,170 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-    
-    <servlet>
-        <servlet-name>Hello</servlet-name>
-        <servlet-class>ru.gnezdilov.web.StartServlet</servlet-class>
-    </servlet>
-    
-    <servlet-mapping>
-        <servlet-name>Hello</servlet-name>
-        <url-pattern>/hello</url-pattern>
-    </servlet-mapping>
+    <!--servlet-->
+        <servlet>
+            <servlet-name>StartPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.StartServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+            <servlet-name>RegisterPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.RegisterServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+            <servlet-name>AuthPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.AuthServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+            <servlet-name>PersonalPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.PersonalServlet</servlet-class>
+        </servlet>
+
+        <!--account-->
+        <servlet>
+            <servlet-name>AccountPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.account.AccountServlet</servlet-class>
+        </servlet>
+        <servlet>
+            <servlet-name>AccountShowPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.account.AccountShowServlet</servlet-class>
+        </servlet>
+        <servlet>
+            <servlet-name>AccountAddPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.account.AccountAddServlet</servlet-class>
+        </servlet>
+        <servlet>
+            <servlet-name>AccountDeletePage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.account.AccountDeleteServlet</servlet-class>
+        </servlet>
+
+        <!--type-->
+        <servlet>
+            <servlet-name>TypePage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.type.TypeServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+            <servlet-name>TypeShowPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.type.TypeShowServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+            <servlet-name>TypeUpdatePage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.type.TypeUpdateServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+            <servlet-name>TypeAddPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.type.TypeAddServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+            <servlet-name>TypeDeletePage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.type.TypeDeleteServlet</servlet-class>
+        </servlet>
+
+        <!--transaction-->
+        <servlet>
+            <servlet-name>TransactionPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.transaction.TransactionServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+            <servlet-name>TransactionAddPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.transaction.TransactionAddServlet</servlet-class>
+        </servlet>
+
+        <!--category-transaction-->
+        <servlet>
+            <servlet-name>CategoryTransactionPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.categorytransaction.CategoryTransactionServlet</servlet-class>
+        </servlet>
+
+    <!--mapping-->
+        <servlet-mapping>
+            <servlet-name>StartPage</servlet-name>
+            <url-pattern>/start</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>RegisterPage</servlet-name>
+            <url-pattern>/register</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>AuthPage</servlet-name>
+            <url-pattern>/login</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>PersonalPage</servlet-name>
+            <url-pattern>/personal</url-pattern>
+        </servlet-mapping>
+
+        <!--account-->
+        <servlet-mapping>
+            <servlet-name>AccountPage</servlet-name>
+            <url-pattern>/account</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>AccountShowPage</servlet-name>
+            <url-pattern>/account/show</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>AccountAddPage</servlet-name>
+            <url-pattern>/account/add</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>AccountDeletePage</servlet-name>
+            <url-pattern>/account/delete</url-pattern>
+        </servlet-mapping>
+
+        <!--type-->
+        <servlet-mapping>
+            <servlet-name>TypePage</servlet-name>
+            <url-pattern>/type</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>TypeShowPage</servlet-name>
+            <url-pattern>/type/show</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>TypeUpdatePage</servlet-name>
+            <url-pattern>/type/update</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>TypeAddPage</servlet-name>
+            <url-pattern>/type/add</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>TypeDeletePage</servlet-name>
+            <url-pattern>/type/delete</url-pattern>
+        </servlet-mapping>
+
+        <!--transaction-->
+        <servlet-mapping>
+            <servlet-name>TransactionPage</servlet-name>
+            <url-pattern>/transaction</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>TransactionAddPage</servlet-name>
+            <url-pattern>/transaction/add</url-pattern>
+        </servlet-mapping>
+
+        <!--category-transaction-->
+        <servlet-mapping>
+            <servlet-name>CategoryTransactionPage</servlet-name>
+            <url-pattern>/reports</url-pattern>
+        </servlet-mapping>
 </web-app>
