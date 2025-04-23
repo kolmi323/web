@@ -53,6 +53,8 @@ public class TypeUpdateServlet extends HttpServlet {
         } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException | IllegalArgumentException |
                  DataSourceException e) {
             writer.println("<p>" + e.getMessage() + "</p>");
+        } catch (Exception e) {
+            writer.write("<p>" + e.getMessage() + "</p>");
         } finally {
             writer.close();
         }
