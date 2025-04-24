@@ -6,83 +6,93 @@
     <!--servlet-->
         <servlet>
             <servlet-name>StartPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.StartServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.auth.StartServlet</servlet-class>
         </servlet>
 
         <servlet>
             <servlet-name>RegisterPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.RegisterServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.auth.RegisterServlet</servlet-class>
         </servlet>
 
         <servlet>
             <servlet-name>AuthPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.AuthServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.auth.AuthServlet</servlet-class>
         </servlet>
 
         <servlet>
             <servlet-name>PersonalPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.PersonalServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.PersonalServlet</servlet-class>
         </servlet>
 
         <!--account-->
         <servlet>
             <servlet-name>AccountPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.account.AccountServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.account.AccountServlet</servlet-class>
         </servlet>
         <servlet>
             <servlet-name>AccountShowPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.account.AccountShowServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.account.AccountShowServlet</servlet-class>
         </servlet>
         <servlet>
             <servlet-name>AccountAddPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.account.AccountAddServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.account.AccountAddServlet</servlet-class>
         </servlet>
         <servlet>
             <servlet-name>AccountDeletePage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.account.AccountDeleteServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.account.AccountDeleteServlet</servlet-class>
         </servlet>
 
         <!--type-->
         <servlet>
             <servlet-name>TypePage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.type.TypeServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.type.TypeServlet</servlet-class>
         </servlet>
 
         <servlet>
             <servlet-name>TypeShowPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.type.TypeShowServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.type.TypeShowServlet</servlet-class>
         </servlet>
 
         <servlet>
             <servlet-name>TypeUpdatePage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.type.TypeUpdateServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.type.TypeUpdateServlet</servlet-class>
         </servlet>
 
         <servlet>
             <servlet-name>TypeAddPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.type.TypeAddServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.type.TypeAddServlet</servlet-class>
         </servlet>
 
         <servlet>
             <servlet-name>TypeDeletePage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.type.TypeDeleteServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.type.TypeDeleteServlet</servlet-class>
         </servlet>
 
         <!--transaction-->
         <servlet>
             <servlet-name>TransactionPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.transaction.TransactionServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.transaction.TransactionServlet</servlet-class>
         </servlet>
 
         <servlet>
             <servlet-name>TransactionAddPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.transaction.TransactionAddServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.transaction.TransactionAddServlet</servlet-class>
         </servlet>
 
         <!--category-transaction-->
         <servlet>
             <servlet-name>CategoryTransactionPage</servlet-name>
-            <servlet-class>ru.gnezdilov.web.categorytransaction.CategoryTransactionServlet</servlet-class>
+            <servlet-class>ru.gnezdilov.web.personal.categorytransaction.CategoryTransactionServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+            <servlet-name>CategoryTransactionIncomingPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.personal.categorytransaction.CategoryTransactionIncomingServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+            <servlet-name>CategoryTransactionOutgoingPage</servlet-name>
+            <servlet-class>ru.gnezdilov.web.personal.categorytransaction.CategoryTransactionOutgoingServlet</servlet-class>
         </servlet>
 
     <!--mapping-->
@@ -168,5 +178,15 @@
         <servlet-mapping>
             <servlet-name>CategoryTransactionPage</servlet-name>
             <url-pattern>/reports</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>CategoryTransactionIncomingPage</servlet-name>
+            <url-pattern>/reports/incoming</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>CategoryTransactionOutgoingPage</servlet-name>
+            <url-pattern>/reports/outgoing</url-pattern>
         </servlet-mapping>
 </web-app>

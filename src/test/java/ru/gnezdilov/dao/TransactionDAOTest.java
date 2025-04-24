@@ -4,8 +4,6 @@ import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.exception.InsufficientFundsException;
-import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.TransactionModel;
 
 import java.math.BigDecimal;
@@ -16,10 +14,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class TransactionServletDAOTest extends AbstractDAOTest<TransactionDAO> {
+public class TransactionDAOTest extends AbstractDAOTest<TransactionDAO> {
     private List<Integer> LIST_TYPES_ID = new ArrayList<Integer>(Arrays.asList(1));
 
-    public TransactionServletDAOTest() {
+    public TransactionDAOTest() {
         setPropertyForConnectH2();
         context = new AnnotationConfigApplicationContext(MainConfiguration.class);
         subj = context.getBean(TransactionDAO.class);

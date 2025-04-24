@@ -20,7 +20,7 @@ import java.sql.SQLException;
 @Configuration
 public class ConfigurationDAO {
     @Bean
-    public DataSource DataSource() {
+    public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(System.getProperty("jdbcUrl", "jdbc:postgresql://localhost:5432/postgres"));
         config.setUsername(System.getProperty("jdbcUser", "postgres"));

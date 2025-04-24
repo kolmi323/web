@@ -14,8 +14,8 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class CategoryTransactionServletDAOTest extends AbstractDAOTest<CategoryTransactionDAO> {
-    public CategoryTransactionServletDAOTest() {
+public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransactionDAO> {
+    public CategoryTransactionDAOTest() {
         setPropertyForConnectH2();
         context = new AnnotationConfigApplicationContext(MainConfiguration.class);
         subj = context.getBean(CategoryTransactionDAO.class);
