@@ -65,7 +65,6 @@ public class TypeDAO extends DAO {
     public boolean delete(int id, int userId) {
         try (Connection con = getDataSource().getConnection();
              PreparedStatement psst = con.prepareStatement("DELETE FROM type WHERE id = ? and user_id = ?")) {
-            deleteFromTypeTransaction(con, id);
             psst.setInt(1, id);
             psst.setInt(2, userId);
             return psst.executeUpdate() == 1;
@@ -102,15 +101,6 @@ public class TypeDAO extends DAO {
                 rs.next();
                 return rs.getBoolean(1);
             }
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-    }
-
-    private void deleteFromTypeTransaction(Connection con, int typeId) {
-        try (PreparedStatement psst = con.prepareStatement("DELETE FROM type_transaction WHERE type_id = ?")) {
-            psst.setInt(1, typeId);
-            psst.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
         }

@@ -63,7 +63,7 @@ public abstract class AbstractServlet extends HttpServlet {
 
     protected String extractString(HttpServletRequest req, String paramName) {
         String value = req.getParameter(paramName);
-        if (value == null || value.isBlank()) {
+        if (value.isEmpty()) {
             throw new MissingRequestParameterException(paramName);
         }
         return value;
@@ -71,7 +71,7 @@ public abstract class AbstractServlet extends HttpServlet {
 
     protected int extractInt(HttpServletRequest req, String paramName) {
         String value = req.getParameter(paramName);
-        if (value == null || value.isBlank()) {
+        if (value.isEmpty()) {
             throw new MissingRequestParameterException(paramName);
         }
         try {
@@ -84,7 +84,7 @@ public abstract class AbstractServlet extends HttpServlet {
 
     protected BigDecimal extractBigDecimal(HttpServletRequest req, String paramName) {
         String value = req.getParameter(paramName);
-        if (value == null || value.isBlank()) {
+        if (value.isEmpty()) {
             throw new MissingRequestParameterException(paramName);
         }
         try {
@@ -97,7 +97,7 @@ public abstract class AbstractServlet extends HttpServlet {
 
     protected LocalDate extractLocalDate(HttpServletRequest req, String paramName) {
         String value = req.getParameter(paramName);
-        if (value == null || value.isBlank()) {
+        if (value.isEmpty()) {
             throw new MissingRequestParameterException(paramName);
         }
         try {
