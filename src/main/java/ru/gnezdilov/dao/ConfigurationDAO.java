@@ -12,8 +12,6 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.DataSourceException;
 
 import javax.sql.DataSource;
@@ -22,7 +20,7 @@ import java.sql.SQLException;
 @Configuration
 public class ConfigurationDAO {
     @Bean
-    public DataSource getDataSource() {
+    public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(System.getProperty("jdbcUrl", "jdbc:postgresql://localhost:5432/postgres"));
         config.setUsername(System.getProperty("jdbcUser", "postgres"));

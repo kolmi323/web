@@ -16,7 +16,7 @@ public abstract class AbstractDAOTest <T extends DAO> {
 
     @Before
     public void setUp() throws Exception {
-        subj.setDataSource(context.getBean(ConfigurationDAO.class).getDataSource());
+        subj.setDataSource(context.getBean(ConfigurationDAO.class).dataSource());
     }
 
     @After
