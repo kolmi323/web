@@ -14,7 +14,7 @@ public class AccountDeleteController implements SecureController<AccountDeleteRe
 
     @Override
     public AccountDeleteResponse handle(AccountDeleteRequest request, int userId) {
-        boolean isDelete = accountService.delete(request.getAccountId(), userId);
+        boolean isDelete = accountService.delete(request.getId(), userId);
         return new AccountDeleteResponse(isDelete);
     }
 

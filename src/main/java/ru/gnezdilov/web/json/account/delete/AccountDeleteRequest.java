@@ -1,8 +1,13 @@
 package ru.gnezdilov.web.json.account.delete;
 
-import lombok.Data;
+import lombok.Getter;
+import ru.gnezdilov.web.AbstractRequest;
 
-@Data
-public class AccountDeleteRequest {
-    private int accountId;
+@Getter
+public class AccountDeleteRequest extends AbstractRequest {
+    private int id;
+
+    public void setId(String id) {
+        this.id = this.extractInt("id", id);
+    }
 }
