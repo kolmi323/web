@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.personal.TypeService;
-import ru.gnezdilov.web.controller.interfaces.SecureController;
+import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.type.add.TypeAddRequest;
 import ru.gnezdilov.web.json.type.add.TypeAddResponse;
 

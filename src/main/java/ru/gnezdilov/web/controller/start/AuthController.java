@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.AuthService;
 import ru.gnezdilov.service.dto.UserDTO;
-import ru.gnezdilov.web.controller.interfaces.Controller;
+import ru.gnezdilov.web.interfaces.Controller;
 import ru.gnezdilov.web.json.auth.AuthRequest;
 import ru.gnezdilov.web.json.auth.AuthResponse;
 

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.service.personal.UserService;
-import ru.gnezdilov.web.controller.interfaces.SecureController;
+import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.navigation.NavigationRequest;
 import ru.gnezdilov.web.json.navigation.NavigationResponse;
 

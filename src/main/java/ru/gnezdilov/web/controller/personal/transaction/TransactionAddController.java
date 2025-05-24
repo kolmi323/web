@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.dto.TransactionDTO;
 import ru.gnezdilov.service.personal.TransactionService;
-import ru.gnezdilov.web.controller.interfaces.SecureController;
+import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.transaction.add.TransactionAddRequest;
 import ru.gnezdilov.web.json.transaction.add.TransactionAddResponse;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @Service("/transaction/add")
 @RequiredArgsConstructor

@@ -3,9 +3,9 @@ package ru.gnezdilov.web.controller.personal.categorytransaction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.personal.CategoryTransactionService;
-import ru.gnezdilov.web.controller.interfaces.SecureController;
-import ru.gnezdilov.web.json.categorytransaction.incoming.CategoryTransactionRequest;
-import ru.gnezdilov.web.json.categorytransaction.incoming.CategoryTransactionResponse;
+import ru.gnezdilov.web.interfaces.SecureController;
+import ru.gnezdilov.web.json.categorytransaction.CategoryTransactionRequest;
+import ru.gnezdilov.web.json.categorytransaction.CategoryTransactionResponse;
 
 import java.math.BigDecimal;
 import java.util.Map;

@@ -3,7 +3,7 @@ package ru.gnezdilov.web.controller.personal.account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.personal.AccountService;
-import ru.gnezdilov.web.controller.interfaces.SecureController;
+import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.account.delete.AccountDeleteRequest;
 import ru.gnezdilov.web.json.account.delete.AccountDeleteResponse;
 

@@ -3,7 +3,7 @@ package ru.gnezdilov.web.controller.personal.type;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.personal.TypeService;
-import ru.gnezdilov.web.controller.interfaces.SecureController;
+import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.type.delete.TypeDeleteRequest;
 import ru.gnezdilov.web.json.type.delete.TypeDeleteResponse;
 

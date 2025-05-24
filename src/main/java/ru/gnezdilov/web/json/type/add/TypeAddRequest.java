@@ -1,8 +1,13 @@
 package ru.gnezdilov.web.json.type.add;
 
-import lombok.Data;
+import lombok.Getter;
+import ru.gnezdilov.web.AbstractRequest;
 
-@Data
-public class TypeAddRequest {
+@Getter
+public class TypeAddRequest extends AbstractRequest {
     private String name;
+
+    public void setName(String name) {
+        this.name = this.extractString("name", name);
+    }
 }

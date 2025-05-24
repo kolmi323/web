@@ -1,4 +1,4 @@
-package ru.gnezdilov.web.controller.interfaces;
+package ru.gnezdilov.web.interfaces;
 
 public interface Controller<REQ, RES> {
     RES handle(REQ request);

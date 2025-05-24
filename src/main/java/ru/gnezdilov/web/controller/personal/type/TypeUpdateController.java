@@ -1,11 +1,10 @@
 package ru.gnezdilov.web.controller.personal.type;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.personal.TypeService;
-import ru.gnezdilov.web.controller.interfaces.SecureController;
+import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.type.update.TypeUpdateRequest;
 import ru.gnezdilov.web.json.type.update.TypeUpdateResponse;
 

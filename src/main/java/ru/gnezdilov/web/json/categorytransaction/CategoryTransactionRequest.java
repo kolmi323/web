@@ -1,4 +1,4 @@
-package ru.gnezdilov.web.json.categorytransaction.incoming;
+package ru.gnezdilov.web.json.categorytransaction;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

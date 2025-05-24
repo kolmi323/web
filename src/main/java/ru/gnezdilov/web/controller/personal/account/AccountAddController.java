@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.personal.AccountService;
-import ru.gnezdilov.web.controller.interfaces.SecureController;
+import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.account.create.AccountAddRequest;
 import ru.gnezdilov.web.json.account.create.AccountAddResponse;
 
