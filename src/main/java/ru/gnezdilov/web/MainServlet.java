@@ -3,7 +3,9 @@ package ru.gnezdilov.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.ApplicationContext;
 import ru.gnezdilov.SpringContext;
+import ru.gnezdilov.dao.exception.*;
 import ru.gnezdilov.web.controller.start.AuthController;
+import ru.gnezdilov.web.exception.MissingRequestParameterException;
 import ru.gnezdilov.web.interfaces.Controller;
 import ru.gnezdilov.web.interfaces.InformationController;
 import ru.gnezdilov.web.interfaces.SecureController;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.lang.IllegalArgumentException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,8 +60,7 @@ public class MainServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
+            managementException(resp, om, e);
         }
     }
 
@@ -111,5 +113,23 @@ public class MainServlet extends HttpServlet {
                     informationController.handle(userId)
             );
         }
+    }
+
+    private void managementException(HttpServletResponse resp, ObjectMapper om, Exception e) throws IOException {
+        if (e instanceof MissingRequestParameterException
+                || e instanceof InsufficientFundsException
+                || e instanceof IllegalArgumentException) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } else if (e instanceof AlreadyExistsException) {
+            resp.setStatus(HttpServletResponse.SC_CONFLICT);
+        } else if (e instanceof NotFoundException) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        } else if (e instanceof DAOException
+                || e instanceof DataSourceException) {
+            resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        } else {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+        om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
     }
 }
