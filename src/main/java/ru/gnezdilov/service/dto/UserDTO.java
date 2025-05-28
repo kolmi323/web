@@ -1,21 +1,20 @@
 package ru.gnezdilov.service.dto;
 
 import lombok.*;
-import ru.gnezdilov.dao.abstractclass.DTO;
-
-import java.util.Objects;
+import ru.gnezdilov.service.custominterface.HasId;
 
 @Getter
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
 @ToString
-public class UserDTO extends DTO {
+public class UserDTO implements HasId {
+    private int id;
     private String name;
     private String email;
 
     public UserDTO(int id, String name, String email) {
-        this.setId(id);
+        this.id = id;
         this.name = name;
         this.email = email;
     }

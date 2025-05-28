@@ -1,4 +1,4 @@
-package ru.gnezdilov.web;
+package ru.gnezdilov.web.abstractcustom;
 
 import ru.gnezdilov.SpringContext;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;

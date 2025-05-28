@@ -1,8 +1,7 @@
 package ru.gnezdilov.web.json.categorytransaction;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import ru.gnezdilov.web.AbstractRequest;
+import ru.gnezdilov.web.abstractcustom.AbstractRequest;
 
 import java.time.LocalDate;
 

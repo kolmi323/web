@@ -1,0 +1,69 @@
+package ru.gnezdilov.web.abstractcustom;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.gnezdilov.SpringContext;
+import ru.gnezdilov.dao.exception.IllegalArgumentException;
+import ru.gnezdilov.dao.exception.*;
+import ru.gnezdilov.view.UIUtils;
+import ru.gnezdilov.web.exception.MissingRequestParameterException;
+import ru.gnezdilov.web.interfaces.Controller;
+import ru.gnezdilov.web.json.ErrorResponse;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public abstract class  AbstractController<REQ extends AbstractRequest, RES extends AbstractResponse> implements Controller<REQ, RES> {
+    private final ObjectMapper om;
+    private final UIUtils utils;
+
+    public AbstractController() {
+        this.om = new ObjectMapper();
+        this.utils = SpringContext.getContext().getBean(UIUtils.class);
+    }
+
+    public RES doHandle(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+        RES response = null;
+        try {
+            response = this.handle(
+                    om.readValue(req.getInputStream(), this.getRequestClass())
+            );
+        } catch (Exception e) {
+            manageExceptions(resp, om, e);
+        }
+        return response;
+    }
+
+    protected String extractEmail(String email) {
+        if (!utils.isEmailCorrect(email)) {
+            throw new IllegalArgumentException("Email is not valid" +
+                    "\nEmail example: vasnecov@yandex.ru");
+        }
+        return email;
+    }
+
+    protected String extractPassword(String password) {
+        if (!utils.isPasswordCorrect(password)) {
+            throw new IllegalArgumentException("Password is too long");
+        }
+        return password;
+    }
+
+    private void manageExceptions(HttpServletResponse resp, ObjectMapper om, Exception e) throws IOException {
+        if (e instanceof MissingRequestParameterException
+                || e instanceof InsufficientFundsException
+                || e instanceof java.lang.IllegalArgumentException) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } else if (e instanceof AlreadyExistsException) {
+            resp.setStatus(HttpServletResponse.SC_CONFLICT);
+        } else if (e instanceof NotFoundException) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        } else if (e instanceof DAOException
+                || e instanceof DataSourceException) {
+            resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        } else {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+        om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
+    }
+}

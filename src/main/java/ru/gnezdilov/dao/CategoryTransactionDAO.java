@@ -1,7 +1,6 @@
 package ru.gnezdilov.dao;
 
 import org.springframework.stereotype.Component;
-import ru.gnezdilov.dao.abstractclass.DAO;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.model.CategoryTransactionModel;
 

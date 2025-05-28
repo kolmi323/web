@@ -1,22 +1,22 @@
 package ru.gnezdilov.dao.model;
 
 import lombok.*;
-import ru.gnezdilov.dao.abstractclass.Model;
+import ru.gnezdilov.service.custominterface.HasId;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @Getter
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class AccountModel extends Model {
+public class AccountModel implements HasId {
     private int userId;
+    private int id;
     private String name;
     private BigDecimal balance;
 
     public AccountModel(int id, int userId, String name, BigDecimal balance) {
-        this.setId(id);
+        this.id = id;
         this.userId = userId;
         this.name = name;
         this.balance = balance;

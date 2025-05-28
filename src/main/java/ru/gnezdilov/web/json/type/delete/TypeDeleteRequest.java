@@ -1,7 +1,7 @@
 package ru.gnezdilov.web.json.type.delete;
 
 import lombok.Getter;
-import ru.gnezdilov.web.AbstractRequest;
+import ru.gnezdilov.web.abstractcustom.AbstractRequest;
 
 @Getter
 public class TypeDeleteRequest extends AbstractRequest {

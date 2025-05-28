@@ -4,18 +4,19 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.gnezdilov.dao.abstractclass.Model;
+import ru.gnezdilov.service.custominterface.HasId;
 
 @Getter
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class CategoryTransactionModel extends Model {
+public class CategoryTransactionModel implements HasId {
     private int typeId;
+    private int id;
     private int transactionId;
 
     public CategoryTransactionModel(int id, int typeId, int transactionId) {
-        this.setId(id);
+        this.id = id;
         this.typeId = typeId;
         this.transactionId = transactionId;
     }

@@ -1,7 +1,7 @@
 package ru.gnezdilov.web.json.account.create;
 
 import lombok.Getter;
-import ru.gnezdilov.web.AbstractRequest;
+import ru.gnezdilov.web.abstractcustom.AbstractRequest;
 
 import java.math.BigDecimal;
 

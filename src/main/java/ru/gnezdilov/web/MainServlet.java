@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.ApplicationContext;
 import ru.gnezdilov.SpringContext;
 import ru.gnezdilov.dao.exception.*;
+import ru.gnezdilov.web.abstractcustom.AbstractController;
 import ru.gnezdilov.web.controller.start.AuthController;
 import ru.gnezdilov.web.exception.MissingRequestParameterException;
 import ru.gnezdilov.web.interfaces.Controller;
@@ -72,8 +73,9 @@ public class MainServlet extends HttpServlet {
     private void managementController(HttpServletRequest req, HttpServletResponse resp, Controller controller) throws IOException {
         if (controller instanceof AuthController) {
             AuthController authController = (AuthController) controller;
-            AuthRequest authRequest = om.readValue(req.getInputStream(), authController.getRequestClass());
-            AuthResponse authResponse = authController.handle(authRequest);
+            AuthResponse authResponse = authController.handle(
+                    om.readValue(req.getInputStream(), authController.getRequestClass())
+            );
             if (authResponse != null) {
                 HttpSession session = req.getSession();
                 session.setAttribute("userId", authResponse.getId());

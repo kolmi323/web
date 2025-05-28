@@ -3,7 +3,6 @@ package ru.gnezdilov.dao;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.context.ApplicationContext;
-import ru.gnezdilov.dao.abstractclass.DAO;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

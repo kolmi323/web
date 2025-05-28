@@ -1,6 +1,4 @@
-package ru.gnezdilov.dao.abstractclass;
-
-import ru.gnezdilov.dao.ConfigurationDAO;
+package ru.gnezdilov.dao;
 
 import javax.sql.DataSource;
 

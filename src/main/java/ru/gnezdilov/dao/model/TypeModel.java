@@ -4,18 +4,19 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.gnezdilov.dao.abstractclass.Model;
+import ru.gnezdilov.service.custominterface.HasId;
 
 @Getter
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class TypeModel extends Model {
+public class TypeModel implements HasId {
     private int userId;
+    private int id;
     private String name;
 
     public TypeModel(int id, int userId, String name) {
-        this.setId(id);
+        this.id = id;
         this.userId = userId;
         this.name = name;
     }
