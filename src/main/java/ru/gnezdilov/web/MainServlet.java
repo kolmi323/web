@@ -26,14 +26,14 @@ import java.util.Map;
 
 public class MainServlet extends HttpServlet {
     private ObjectMapper om = new ObjectMapper();
-    private Map<String, Controller> controllers = new HashMap<>();
+    private Map<String, AbstractController> controllers = new HashMap<>();
     private Map<String, SecureController> secureControllers = new HashMap<>();
     private Map<String, InformationController> informationControllers = new HashMap<>();
 
     public MainServlet() {
         ApplicationContext context = SpringContext.getContext();
-        for (String beanName : context.getBeanNamesForType(Controller.class)) {
-            controllers.put(beanName,context.getBean(beanName, Controller.class));
+        for (String beanName : context.getBeanNamesForType(AbstractController.class)) {
+            controllers.put(beanName,context.getBean(beanName, AbstractController.class));
         }
         for (String beanName : context.getBeanNamesForType(SecureController.class)) {
             secureControllers.put(beanName,context.getBean(beanName, SecureController.class));
@@ -48,7 +48,7 @@ public class MainServlet extends HttpServlet {
         resp.setContentType("application/json");
         String uri = req.getRequestURI();
         try {
-            Controller controller = controllers.get(uri);
+            AbstractController controller = controllers.get(uri);
             SecureController secureController = secureControllers.get(uri);
             InformationController informationController = informationControllers.get(uri);
             if (controller != null) {
@@ -70,12 +70,10 @@ public class MainServlet extends HttpServlet {
         return (Integer) session.getAttribute("userId");
     }
 
-    private void managementController(HttpServletRequest req, HttpServletResponse resp, Controller controller) throws IOException {
+    private void managementController(HttpServletRequest req, HttpServletResponse resp, AbstractController controller) throws IOException {
         if (controller instanceof AuthController) {
             AuthController authController = (AuthController) controller;
-            AuthResponse authResponse = authController.handle(
-                    om.readValue(req.getInputStream(), authController.getRequestClass())
-            );
+            AuthResponse authResponse = authController.doHandle(req, resp);
             if (authResponse != null) {
                 HttpSession session = req.getSession();
                 session.setAttribute("userId", authResponse.getId());
@@ -86,7 +84,7 @@ public class MainServlet extends HttpServlet {
         } else {
             om.writeValue(
                     resp.getWriter(),
-                    controller.handle(om.readValue(req.getInputStream(), controller.getRequestClass()))
+                    controller.doHandle(req, resp)
             );
         }
     }

@@ -14,25 +14,25 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public abstract class  AbstractController<REQ extends AbstractRequest, RES extends AbstractResponse> implements Controller<REQ, RES> {
-    private final ObjectMapper om;
+    protected final ObjectMapper om;
     private final UIUtils utils;
 
     public AbstractController() {
         this.om = new ObjectMapper();
-        this.utils = SpringContext.getContext().getBean(UIUtils.class);
+        this.utils = new UIUtils();
     }
 
-    public RES doHandle(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+    public RES doHandle(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         RES response = null;
         try {
-            response = this.handle(
-                    om.readValue(req.getInputStream(), this.getRequestClass())
-            );
+            response = wrapHandle(req);
         } catch (Exception e) {
             manageExceptions(resp, om, e);
         }
         return response;
     }
+
+    protected abstract RES wrapHandle(HttpServletRequest req) throws IOException;
 
     protected String extractEmail(String email) {
         if (!utils.isEmailCorrect(email)) {
