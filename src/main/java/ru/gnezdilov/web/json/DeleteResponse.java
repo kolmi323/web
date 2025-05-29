@@ -1,4 +1,4 @@
-package ru.gnezdilov.web.json.type.add;
+package ru.gnezdilov.web.json;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,7 +6,6 @@ import ru.gnezdilov.web.abstractcustom.AbstractResponse;
 
 @Data
 @AllArgsConstructor
-public class TypeAddResponse extends AbstractResponse {
-    private int id;
-    private String name;
+public class DeleteResponse extends AbstractResponse {
+    private boolean isDelete;
 }

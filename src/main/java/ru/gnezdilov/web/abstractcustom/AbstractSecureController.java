@@ -1,49 +1,32 @@
 package ru.gnezdilov.web.abstractcustom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.gnezdilov.dao.exception.IllegalArgumentException;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ru.gnezdilov.dao.exception.*;
-import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.web.exception.MissingRequestParameterException;
-import ru.gnezdilov.web.interfaces.Controller;
+import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.ErrorResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public abstract class AbstractController<REQ extends AbstractRequest, RES extends AbstractResponse> implements Controller<REQ, RES> {
+public abstract class AbstractSecureController <REQ extends AbstractRequest, RES extends AbstractResponse> implements SecureController<REQ, RES> {
     private final ObjectMapper om;
-    private final UIUtils utils;
 
-    public AbstractController() {
+    public AbstractSecureController() {
         this.om = new ObjectMapper();
-        this.utils = new UIUtils();
+        om.registerModule(new JavaTimeModule());
     }
 
-    public RES doHandle(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public RES doHandle(HttpServletRequest req, HttpServletResponse resp, int userId) throws IOException {
         RES response = null;
         try {
-            response = handle(om.readValue(req.getInputStream(), getRequestClass()));
+            response = handle(om.readValue(req.getInputStream(), getRequestClass()), userId);
         } catch (Exception e) {
             manageExceptions(resp, om, e);
         }
         return response;
-    }
-
-    protected String extractEmail(String email) {
-        if (!utils.isEmailCorrect(email)) {
-            throw new IllegalArgumentException("Email is not valid" +
-                    "\nEmail example: vasnecov@yandex.ru");
-        }
-        return email;
-    }
-
-    protected String extractPassword(String password) {
-        if (!utils.isPasswordCorrect(password)) {
-            throw new IllegalArgumentException("Password is too long");
-        }
-        return password;
     }
 
     private void manageExceptions(HttpServletResponse resp, ObjectMapper om, Exception e) throws IOException {
@@ -64,3 +47,4 @@ public abstract class AbstractController<REQ extends AbstractRequest, RES extend
         om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
     }
 }
+

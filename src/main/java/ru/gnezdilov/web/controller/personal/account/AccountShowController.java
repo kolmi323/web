@@ -4,22 +4,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.personal.AccountService;
-import ru.gnezdilov.web.interfaces.InformationController;
+import ru.gnezdilov.web.abstractcustom.AbstractSecureController;
+import ru.gnezdilov.web.json.EmptyRequest;
 import ru.gnezdilov.web.json.account.show.AccountShowResponse;
 
 import java.util.List;
 
 @Service("/account/show")
 @RequiredArgsConstructor
-public class AccountShowController implements InformationController<AccountShowResponse> {
+public class AccountShowController extends AbstractSecureController<EmptyRequest, AccountShowResponse> {
     private final AccountService accountService;
 
     @Override
-    public AccountShowResponse handle(int userId) {
+    public AccountShowResponse handle(EmptyRequest request, int userId) {
         List<AccountDTO> accounts = accountService.getAll(userId);
-        if (!accounts.isEmpty()) {
-            return new AccountShowResponse(accounts);
-        }
-        return null;
+        return new AccountShowResponse(accounts);
+    }
+
+    @Override
+    public Class<EmptyRequest> getRequestClass() {
+        return EmptyRequest.class;
     }
 }

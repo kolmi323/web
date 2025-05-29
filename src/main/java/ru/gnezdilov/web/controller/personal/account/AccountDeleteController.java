@@ -3,19 +3,19 @@ package ru.gnezdilov.web.controller.personal.account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.personal.AccountService;
-import ru.gnezdilov.web.interfaces.SecureController;
+import ru.gnezdilov.web.abstractcustom.AbstractSecureController;
+import ru.gnezdilov.web.json.DeleteResponse;
 import ru.gnezdilov.web.json.account.delete.AccountDeleteRequest;
-import ru.gnezdilov.web.json.account.delete.AccountDeleteResponse;
 
 @Service("/account/delete")
 @RequiredArgsConstructor
-public class AccountDeleteController implements SecureController<AccountDeleteRequest, AccountDeleteResponse> {
+public class AccountDeleteController extends AbstractSecureController<AccountDeleteRequest, DeleteResponse> {
     private final AccountService accountService;
 
     @Override
-    public AccountDeleteResponse handle(AccountDeleteRequest request, int userId) {
+    public DeleteResponse handle(AccountDeleteRequest request, int userId) {
         boolean isDelete = accountService.delete(request.getId(), userId);
-        return new AccountDeleteResponse(isDelete);
+        return new DeleteResponse(isDelete);
     }
 
     @Override

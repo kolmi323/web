@@ -5,14 +5,12 @@ import org.springframework.context.ApplicationContext;
 import ru.gnezdilov.SpringContext;
 import ru.gnezdilov.dao.exception.*;
 import ru.gnezdilov.web.abstractcustom.AbstractController;
+import ru.gnezdilov.web.abstractcustom.AbstractSecureController;
 import ru.gnezdilov.web.controller.start.AuthController;
 import ru.gnezdilov.web.exception.MissingRequestParameterException;
-import ru.gnezdilov.web.interfaces.Controller;
-import ru.gnezdilov.web.interfaces.InformationController;
 import ru.gnezdilov.web.interfaces.SecureController;
-import ru.gnezdilov.web.json.auth.AuthRequest;
-import ru.gnezdilov.web.json.auth.AuthResponse;
 import ru.gnezdilov.web.json.ErrorResponse;
+import ru.gnezdilov.web.json.auth.AuthResponse;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,19 +25,15 @@ import java.util.Map;
 public class MainServlet extends HttpServlet {
     private ObjectMapper om = new ObjectMapper();
     private Map<String, AbstractController> controllers = new HashMap<>();
-    private Map<String, SecureController> secureControllers = new HashMap<>();
-    private Map<String, InformationController> informationControllers = new HashMap<>();
+    private Map<String, AbstractSecureController> secureControllers = new HashMap<>();
 
     public MainServlet() {
         ApplicationContext context = SpringContext.getContext();
         for (String beanName : context.getBeanNamesForType(AbstractController.class)) {
             controllers.put(beanName,context.getBean(beanName, AbstractController.class));
         }
-        for (String beanName : context.getBeanNamesForType(SecureController.class)) {
-            secureControllers.put(beanName,context.getBean(beanName, SecureController.class));
-        }
-        for (String beanName : context.getBeanNamesForType(InformationController.class)) {
-            informationControllers.put(beanName,context.getBean(beanName, InformationController.class));
+        for (String beanName : context.getBeanNamesForType(AbstractSecureController.class)) {
+            secureControllers.put(beanName,context.getBean(beanName, AbstractSecureController.class));
         }
     }
 
@@ -50,18 +44,16 @@ public class MainServlet extends HttpServlet {
         try {
             AbstractController controller = controllers.get(uri);
             SecureController secureController = secureControllers.get(uri);
-            InformationController informationController = informationControllers.get(uri);
             if (controller != null) {
                 managementController(req, resp, controller);
             } else if (secureController != null) {
                 managementSecureController(req, resp, secureControllers.get(uri));
-            } else if (informationController != null) {
-                managementInformationController(req, resp, informationControllers.get(uri));
             } else {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         } catch (Exception e) {
-            managementException(resp, om, e);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
         }
     }
 
@@ -89,47 +81,15 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void managementSecureController(HttpServletRequest req, HttpServletResponse resp, SecureController secureController) throws IOException {
+    private void managementSecureController(HttpServletRequest req, HttpServletResponse resp, AbstractSecureController secureController) throws IOException {
         Integer userId = extractUserId(req);
         if (userId == null) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
             om.writeValue(
                     resp.getWriter(),
-                    secureController.handle(
-                            om.readValue(req.getInputStream(),secureController.getRequestClass()), userId
-                    )
+                    secureController.doHandle(req, resp, userId)
             );
         }
-    }
-
-    private void managementInformationController(HttpServletRequest req, HttpServletResponse resp, InformationController informationController) throws IOException {
-        Integer userId = extractUserId(req);
-        if (userId == null) {
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        } else {
-            om.writeValue(
-                    resp.getWriter(),
-                    informationController.handle(userId)
-            );
-        }
-    }
-
-    private void managementException(HttpServletResponse resp, ObjectMapper om, Exception e) throws IOException {
-        if (e instanceof MissingRequestParameterException
-                || e instanceof InsufficientFundsException
-                || e instanceof IllegalArgumentException) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        } else if (e instanceof AlreadyExistsException) {
-            resp.setStatus(HttpServletResponse.SC_CONFLICT);
-        } else if (e instanceof NotFoundException) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        } else if (e instanceof DAOException
-                || e instanceof DataSourceException) {
-            resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-        om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
     }
 }

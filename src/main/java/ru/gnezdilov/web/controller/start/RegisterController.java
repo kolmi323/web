@@ -31,9 +31,4 @@ public class RegisterController extends AbstractController<RegisterRequest, Regi
     public Class<RegisterRequest> getRequestClass() {
         return RegisterRequest.class;
     }
-
-    @Override
-    protected RegisterResponse wrapHandle(HttpServletRequest req) throws IOException {
-        return handle(this.om.readValue(req.getInputStream(), getRequestClass()));
-    }
 }
