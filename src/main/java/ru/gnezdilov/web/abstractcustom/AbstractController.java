@@ -47,9 +47,8 @@ public abstract class AbstractController<REQ extends AbstractRequest, RES extend
     }
 
     private void manageExceptions(HttpServletResponse resp, ObjectMapper om, Exception e) throws IOException {
-        if (e instanceof MissingRequestParameterException
-                || e instanceof InsufficientFundsException
-                || e instanceof java.lang.IllegalArgumentException) {
+        if (e instanceof InsufficientFundsException
+                || e instanceof NumberFormatException) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else if (e instanceof AlreadyExistsException) {
             resp.setStatus(HttpServletResponse.SC_CONFLICT);

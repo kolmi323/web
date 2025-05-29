@@ -2,6 +2,8 @@ package ru.gnezdilov.web.controller.personal.account;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.gnezdilov.SpringContext;
+import ru.gnezdilov.service.converter.ConverterAccountDTOToAccountAddResponse;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.personal.AccountService;
 import ru.gnezdilov.web.abstractcustom.AbstractSecureController;
@@ -17,7 +19,8 @@ public class AccountAddController extends AbstractSecureController<AccountAddReq
     @Override
     public AccountAddResponse handle(AccountAddRequest request, int userId) {
         AccountDTO accountDTO = accountService.create(userId, request.getName(), request.getBalance());
-        return new AccountAddResponse(accountDTO.getId(), accountDTO.getName(), accountDTO.getBalance());
+        ConverterAccountDTOToAccountAddResponse converter = SpringContext.getContext().getBean(ConverterAccountDTOToAccountAddResponse.class);
+        return converter.convert(accountDTO);
     }
 
     @Override

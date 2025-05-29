@@ -45,9 +45,9 @@ public class MainServlet extends HttpServlet {
             AbstractController controller = controllers.get(uri);
             SecureController secureController = secureControllers.get(uri);
             if (controller != null) {
-                managementController(req, resp, controller);
+                manageController(req, resp, controller);
             } else if (secureController != null) {
-                managementSecureController(req, resp, secureControllers.get(uri));
+                manageSecureController(req, resp, secureControllers.get(uri));
             } else {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -62,7 +62,7 @@ public class MainServlet extends HttpServlet {
         return (Integer) session.getAttribute("userId");
     }
 
-    private void managementController(HttpServletRequest req, HttpServletResponse resp, AbstractController controller) throws IOException {
+    private void manageController(HttpServletRequest req, HttpServletResponse resp, AbstractController controller) throws IOException {
         if (controller instanceof AuthController) {
             AuthController authController = (AuthController) controller;
             AuthResponse authResponse = authController.doHandle(req, resp);
@@ -81,7 +81,7 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void managementSecureController(HttpServletRequest req, HttpServletResponse resp, AbstractSecureController secureController) throws IOException {
+    private void manageSecureController(HttpServletRequest req, HttpServletResponse resp, AbstractSecureController secureController) throws IOException {
         Integer userId = extractUserId(req);
         if (userId == null) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
