@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.personal.TypeService;
 import ru.gnezdilov.web.abstractcustom.AbstractSecureController;
-import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.DeleteResponse;
 import ru.gnezdilov.web.json.type.delete.TypeDeleteRequest;
-import ru.gnezdilov.web.json.type.delete.TypeDeleteResponse;
 
 @Service("/type/delete")
 @RequiredArgsConstructor

@@ -1,6 +1,6 @@
 package ru.gnezdilov.web.json;
 
-import ru.gnezdilov.web.abstractcustom.AbstractRequest;
+import ru.gnezdilov.web.interfaces.AbstractRequest;
 
-public class EmptyRequest extends AbstractRequest {
+public class EmptyRequest implements AbstractRequest {
 }

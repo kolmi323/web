@@ -2,14 +2,13 @@ package ru.gnezdilov.web.json.transaction.add;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.gnezdilov.web.abstractcustom.AbstractRequest;
+import ru.gnezdilov.web.interfaces.AbstractRequest;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 @Getter
 @Setter
-public class TransactionAddRequest extends AbstractRequest {
+public class TransactionAddRequest implements AbstractRequest {
     private Integer[] typesIds;
     private int sendingId;
     private int receivingId;

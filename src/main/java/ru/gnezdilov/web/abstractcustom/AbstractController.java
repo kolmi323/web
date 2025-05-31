@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.dao.exception.*;
 import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.web.exception.MissingRequestParameterException;
+import ru.gnezdilov.web.interfaces.AbstractRequest;
+import ru.gnezdilov.web.interfaces.AbstractResponse;
 import ru.gnezdilov.web.interfaces.Controller;
 import ru.gnezdilov.web.json.ErrorResponse;
 
@@ -16,7 +17,7 @@ public abstract class AbstractController<REQ extends AbstractRequest, RES extend
     private final ObjectMapper om;
     private final UIUtils utils;
 
-    public AbstractController() {
+    public AbstractController(ObjectMapper om, UIUtils utils) {
         this.om = new ObjectMapper();
         this.utils = new UIUtils();
     }
@@ -25,8 +26,21 @@ public abstract class AbstractController<REQ extends AbstractRequest, RES extend
         RES response = null;
         try {
             response = handle(om.readValue(req.getInputStream(), getRequestClass()));
+        } catch (InsufficientFundsException | NumberFormatException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
+        } catch (AlreadyExistsException e) {
+            resp.setStatus(HttpServletResponse.SC_CONFLICT);
+            om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
+        } catch(NotFoundException e) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
+        } catch (DAOException | DataSourceException e) {
+            resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
-            manageExceptions(resp, om, e);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
         }
         return response;
     }
@@ -44,22 +58,5 @@ public abstract class AbstractController<REQ extends AbstractRequest, RES extend
             throw new IllegalArgumentException("Password is too long");
         }
         return password;
-    }
-
-    private void manageExceptions(HttpServletResponse resp, ObjectMapper om, Exception e) throws IOException {
-        if (e instanceof InsufficientFundsException
-                || e instanceof NumberFormatException) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        } else if (e instanceof AlreadyExistsException) {
-            resp.setStatus(HttpServletResponse.SC_CONFLICT);
-        } else if (e instanceof NotFoundException) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        } else if (e instanceof DAOException
-                || e instanceof DataSourceException) {
-            resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-        om.writeValue(resp.getWriter(), new ErrorResponse(e.getMessage()));
     }
 }

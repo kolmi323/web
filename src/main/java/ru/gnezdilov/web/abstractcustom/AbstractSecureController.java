@@ -3,7 +3,8 @@ package ru.gnezdilov.web.abstractcustom;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ru.gnezdilov.dao.exception.*;
-import ru.gnezdilov.web.exception.MissingRequestParameterException;
+import ru.gnezdilov.web.interfaces.AbstractRequest;
+import ru.gnezdilov.web.interfaces.AbstractResponse;
 import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.ErrorResponse;
 
