@@ -1,11 +1,16 @@
 package ru.gnezdilov.dao;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Component;
+import ru.gnezdilov.dao.entities.User;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.UserModel;
 
+import javax.persistence.*;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.Optional;
@@ -13,9 +18,14 @@ import java.util.Optional;
 @Component
 public class UserDAO extends DAO {
     private static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
+    @PersistenceUnit
+    private final EntityManagerFactory emf;
+    private final EntityManager em;
 
-    public UserDAO(DataSource ds) {
+    public UserDAO(DataSource ds, EntityManagerFactory emf) {
         super(ds);
+        this.emf = emf;
+        this.em = emf.createEntityManager();
     }
 
     public UserModel insert(String name, String email, String password) {
@@ -42,6 +52,15 @@ public class UserDAO extends DAO {
     }
 
     public Optional<UserModel> findByEmailAndPassword(String email, String password) {
+        User user = em.createNamedQuery("User.findByEmailAndPassword", User.class)
+                .setParameter("email", email)
+                .setParameter("password", password)
+                .getSingleResult();
+
+        return Optional.of(new UserModel(user.getId(), user.getName(), user.getEmail(), user.getPassword()));
+    }
+
+    /*public Optional<UserModel> findByEmailAndPassword(String email, String password) {
         try (PreparedStatement psst = getDataSource().getConnection().prepareStatement
                 ("SELECT * FROM users WHERE email = ? AND password = ?")) {
             psst.setString(1, email);
@@ -55,7 +74,7 @@ public class UserDAO extends DAO {
             throw new DAOException(e);
         }
         return Optional.empty();
-    }
+    }*/
 
     public UserModel findById(int id) {
         try (Connection con = getDataSource().getConnection();
