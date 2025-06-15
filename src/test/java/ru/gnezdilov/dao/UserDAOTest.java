@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.model.UserModel;
 
 import java.util.Optional;
@@ -43,6 +44,18 @@ public class UserDAOTest extends AbstractDAOTest<UserDAO> {
         Optional<UserModel> userOptional = subj.findByEmailAndPassword("john@mail.ru", null);
 
         assertFalse(userOptional.isPresent());
+    }
+
+    @Test
+    public void findById_returnUserModel_whenCalledWithValidArguments() {
+        UserModel user = subj.findById(1);
+
+        assertEquals(user.getEmail(), "john@mail.ru");
+    }
+
+    @Test (expected = NotFoundException.class)
+    public void findById_returnNotFoundException_whenCalledWithInvalidArguments() {
+        UserModel user = subj.findById(3);
     }
 
     @Test
