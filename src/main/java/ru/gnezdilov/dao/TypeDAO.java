@@ -5,6 +5,7 @@ import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.model.TypeModel;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import java.util.List;
 
 @Component
 public class TypeDAO extends DAO {
-    private static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
 
     public TypeDAO(DataSource ds) {
         super(ds);

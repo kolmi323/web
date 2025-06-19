@@ -5,7 +5,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
-import ru.gnezdilov.dao.model.UserModel;
+import ru.gnezdilov.dao.entities.UserModel;
 
 import java.util.Optional;
 
@@ -20,7 +20,11 @@ public class UserDAOTest extends AbstractDAOTest<UserDAO> {
 
     @Test
     public void insert_successCreateAndReturnUserModel_whenCalledWithValidArguments() {
-        UserModel userModel = new UserModel(3, "anton", "anton@mail.ru", "784742a66a3a0c271feced5b149ff8db");
+        UserModel userModel = new UserModel();
+        userModel.setId(3);
+        userModel.setName("anton");
+        userModel.setEmail("anton@mail.ru");
+        userModel.setPassword("784742a66a3a0c271feced5b149ff8db");
         UserModel user = subj.insert("anton", "anton@mail.ru", "784742a66a3a0c271feced5b149ff8db");
 
         assertEquals(userModel, user);

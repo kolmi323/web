@@ -3,7 +3,7 @@ package ru.gnezdilov.service.personal;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.converter.ConverterAccountModelToAccountDTO;
 import ru.gnezdilov.dao.AccountDAO;
-import ru.gnezdilov.dao.model.AccountModel;
+import ru.gnezdilov.dao.entities.AccountModel;
 import ru.gnezdilov.service.dto.AccountDTO;
 
 import java.math.BigDecimal;

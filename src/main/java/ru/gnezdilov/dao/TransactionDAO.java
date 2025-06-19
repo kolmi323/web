@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.model.TransactionModel;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;

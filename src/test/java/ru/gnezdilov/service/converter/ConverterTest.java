@@ -1,10 +1,10 @@
 package ru.gnezdilov.service.converter;
 
 import org.junit.Test;
-import ru.gnezdilov.dao.model.AccountModel;
+import ru.gnezdilov.dao.entities.AccountModel;
 import ru.gnezdilov.dao.model.TransactionModel;
 import ru.gnezdilov.dao.model.TypeModel;
-import ru.gnezdilov.dao.model.UserModel;
+import ru.gnezdilov.dao.entities.UserModel;
 import ru.gnezdilov.service.custominterface.Converter;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.dto.TransactionDTO;
@@ -36,7 +36,11 @@ public class ConverterTest {
     @Test
     public void convert_returnUserDTO_whenCalledWithValidArguments() {
         ConverterUserModelToUserDTO converter = new ConverterUserModelToUserDTO();
-        UserModel userModel = new UserModel(1, "Anton", "anton@mail.ru", "hash");
+        UserModel userModel = new UserModel();
+        userModel.setId(1);
+        userModel.setName("Anton");
+        userModel.setEmail("anton@mail.ru");
+        userModel.setPassword("hash");
         UserDTO userDTO = new UserDTO(1, "Anton", "anton@mail.ru");
         returnDTO(converter, userModel, userDTO);
     }

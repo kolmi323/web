@@ -5,7 +5,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
-import ru.gnezdilov.dao.model.AccountModel;
+import ru.gnezdilov.dao.entities.AccountModel;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,6 +33,10 @@ public class AccountDAOTest extends AbstractDAOTest<AccountDAO> {
     @Test
     public void findById_returnAccount_whenCalledWithValidArguments() {
         AccountModel accountModel = new AccountModel(1, 1, "sber", new BigDecimal("1000.00"));
+        accountModel.setId(1);
+        accountModel.setUserId(1);
+        accountModel.setName("sber");
+        accountModel.setBalance(new BigDecimal("1000.00"));
 
         assertEquals(accountModel, subj.findById(1, 1));
     }
@@ -45,8 +49,13 @@ public class AccountDAOTest extends AbstractDAOTest<AccountDAO> {
     @Test
     public void getAll_returnListAccountModel_whenCalledWithValidArguments() {
         List<AccountModel> accountModels = new ArrayList<>();
-        accountModels.add(new AccountModel(1, 1, "sber", new BigDecimal("1000.00")));
-        accountModels.add(new AccountModel(2, 1, "T", new BigDecimal("500.00")));
+
+        AccountModel accountModelFirst = new AccountModel(1, 1, "sber", new BigDecimal("1000.00"));
+
+        AccountModel accountModelSecond = new AccountModel(2, 1, "T", new BigDecimal("500.00"));
+
+        accountModels.add(accountModelFirst);
+        accountModels.add(accountModelSecond);
 
         assertEquals(accountModels, subj.getAll(1));
     }
