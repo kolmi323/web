@@ -3,7 +3,7 @@ package ru.gnezdilov.service.converter;
 import org.junit.Test;
 import ru.gnezdilov.dao.entities.AccountModel;
 import ru.gnezdilov.dao.model.TransactionModel;
-import ru.gnezdilov.dao.model.TypeModel;
+import ru.gnezdilov.dao.entities.TypeModel;
 import ru.gnezdilov.dao.entities.UserModel;
 import ru.gnezdilov.service.custominterface.Converter;
 import ru.gnezdilov.service.dto.AccountDTO;

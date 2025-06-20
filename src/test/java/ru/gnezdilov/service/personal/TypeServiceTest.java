@@ -8,8 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.TypeDAO;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.exception.NotFoundException;
-import ru.gnezdilov.dao.model.TypeModel;
+import ru.gnezdilov.dao.entities.TypeModel;
 import ru.gnezdilov.service.converter.ConverterTypeModelToTypeDTO;
 import ru.gnezdilov.service.dto.TypeDTO;
 

@@ -3,57 +3,63 @@ package ru.gnezdilov.dao;
 import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.model.TypeModel;
+import ru.gnezdilov.dao.entities.TypeModel;
+import java.lang.IllegalArgumentException;
 
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.sql.DataSource;
-import java.sql.*;
-import java.util.ArrayList;
+import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class TypeDAO extends DAO {
 
-    public TypeDAO(DataSource ds) {
-        super(ds);
+    public TypeDAO(DataSource ds, EntityManagerFactory emf) {
+        super(ds, emf);
     }
 
+    @Transactional
     public TypeModel update(int id, int userId, String newName) {
-        try (Connection con = getDataSource().getConnection();
-             PreparedStatement psst = con.prepareStatement("UPDATE type SET name = ? WHERE id = ? AND user_id = ?",
-                     Statement.RETURN_GENERATED_KEYS)) {
-            psst.setString(1, newName);
-            psst.setInt(2, id);
-            psst.setInt(3, userId);
-            psst.executeUpdate();
-            try (ResultSet rs = psst.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return new TypeModel(rs.getInt(1), userId, newName);
-                } else {
-                    throw new DAOException("Not found type");
-                }
-            }
-        } catch (SQLException e) {
+        try {
+            TypeModel typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
+                    .setParameter("id", id)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+            typeModel.setName(newName);
+            EntityTransaction tx = em.getTransaction();
+            tx.begin();
+            em.merge(typeModel);
+            tx.commit();
+            return typeModel;
+        } catch (NoResultException e) {
+            throw new DAOException("Type with id " + id + " not found");
+        } catch (PersistenceException e) {
             throw new DAOException(e);
         }
     }
 
+    @Transactional
     public TypeModel insert(int userId, String name) {
-        try (Connection con = getDataSource().getConnection();
-             PreparedStatement psst = con.prepareStatement("INSERT INTO type (user_id, name) VALUES (?, ?)",
-                     Statement.RETURN_GENERATED_KEYS)) {
-            psst.setInt(1, userId);
-            psst.setString(2, name);
-            psst.executeUpdate();
-            try (ResultSet rs = psst.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return new TypeModel(rs.getInt(1), userId, name);
-                } else {
-                    throw new DAOException("Insert Type Error");
-                }
+        try {
+            TypeModel typeModel = new TypeModel();
+            typeModel.setUserId(userId);
+            typeModel.setName(name);
+            EntityTransaction tx = em.getTransaction();
+            tx.begin();
+            em.persist(typeModel);
+            tx.commit();
+            if (typeModel.getId() != 0) {
+                return typeModel;
+            } else {
+                throw new DAOException("Insert Type Error");
             }
-        } catch (SQLException e) {
-            if (UNIQUE_CONSTRAINT_VIOLATION.equals(e.getSQLState())) {
+        } catch (PersistenceException e) {
+            if (isUniqueSQLState(e)) {
                 throw new AlreadyExistsException("Type already exists");
             } else {
                 throw new DAOException(e);
@@ -61,46 +67,45 @@ public class TypeDAO extends DAO {
         }
     }
 
+    @Transactional
     public boolean delete(int id, int userId) {
-        try (Connection con = getDataSource().getConnection();
-             PreparedStatement psst = con.prepareStatement("DELETE FROM type WHERE id = ? and user_id = ?")) {
-            psst.setInt(1, id);
-            psst.setInt(2, userId);
-            return psst.executeUpdate() == 1;
-        } catch (SQLException e) {
+        try {
+            TypeModel typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
+                    .setParameter("id", id)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+            EntityTransaction tx = em.getTransaction();
+            tx.begin();
+            em.remove(typeModel);
+            tx.commit();
+            return true;
+        } catch (NoResultException e) {
+           return false;
+        } catch (PersistenceException e) {
             throw new DAOException(e);
         }
     }
 
     public List<TypeModel> getAll(int userId) {
-        List<TypeModel> types = new ArrayList<>();
-        try (Connection con = getDataSource().getConnection();
-             PreparedStatement psst = con.prepareStatement("SELECT * FROM type WHERE user_id = ?")) {
-            psst.setInt(1, userId);
-            psst.executeQuery();
-            try (ResultSet rs = psst.getResultSet()) {
-                while (rs.next()) {
-                    types.add(new TypeModel
-                            (rs.getInt("id"), rs.getInt("user_id"), rs.getString("name")));
-                }
-            }
-        } catch (SQLException e) {
+        try {
+           return em.createNamedQuery("Type.findByUserId", TypeModel.class)
+                   .setParameter("userId", userId)
+                   .getResultList();
+        } catch (PersistenceException e) {
             throw new DAOException(e);
         }
-        return types;
     }
 
     public boolean existsById(int userId, int id) {
-        try (Connection con = getDataSource().getConnection();
-             PreparedStatement psst = con.prepareStatement("SELECT EXISTS(SELECT FROM type WHERE id = ? AND user_id = ?)")) {
-            psst.setInt(1, id);
-            psst.setInt(2, userId);
-            psst.executeQuery();
-            try (ResultSet rs = psst.getResultSet()) {
-                rs.next();
-                return rs.getBoolean(1);
-            }
-        } catch (SQLException e) {
+        try {
+            TypeModel typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
+                    .setParameter("id", id)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+            return true;
+        } catch (NoResultException e) {
+          return false;
+        } catch (PersistenceException e) {
             throw new DAOException(e);
         }
     }

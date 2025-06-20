@@ -5,8 +5,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.exception.NotFoundException;
-import ru.gnezdilov.dao.model.TypeModel;
+import ru.gnezdilov.dao.entities.TypeModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,6 @@
 package ru.gnezdilov.dao.entities;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,6 +9,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 @NamedQueries({
         @NamedQuery(name = "User.findByEmailAndPassword",
                 query = "SELECT u FROM UserModel AS u WHERE u.email LIKE :email AND u.password LIKE :password")

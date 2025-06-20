@@ -10,8 +10,6 @@ import javax.persistence.*;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -50,7 +48,7 @@ public class AccountDAO extends DAO {
 
     public List<AccountModel> getAll(int userId) {
         try {
-            return em.createNamedQuery("Account.getAllByUserId", AccountModel.class)
+            return em.createNamedQuery("Account.findByUserId", AccountModel.class)
                     .setParameter("userId", userId)
                     .getResultList();
         } catch (PersistenceException e) {
