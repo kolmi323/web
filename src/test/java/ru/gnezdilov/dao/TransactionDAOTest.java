@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.model.TransactionModel;
+import ru.gnezdilov.dao.entities.TransactionModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

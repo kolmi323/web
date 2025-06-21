@@ -10,7 +10,7 @@ import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.dao.exception.InsufficientFundsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
-import ru.gnezdilov.dao.model.TransactionModel;
+import ru.gnezdilov.dao.entities.TransactionModel;
 import ru.gnezdilov.service.converter.ConverterTransactionModelToTransactionDTO;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.dto.TransactionDTO;

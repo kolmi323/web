@@ -2,10 +2,11 @@ package ru.gnezdilov.dao;
 
 import org.springframework.stereotype.Component;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.model.CategoryTransactionModel;
+import ru.gnezdilov.dao.entities.CategoryTransactionModel;
 
-import javax.persistence.EntityManagerFactory;
+import javax.persistence.*;
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
@@ -31,24 +32,21 @@ public class CategoryTransactionDAO extends DAO {
             "where us.id = ? and tr.date > ? and tr.date < ?\n" +
             "group by ty.name";
 
-    public CategoryTransactionDAO(DataSource dataSource) {
-        super(dataSource);
+    public CategoryTransactionDAO(DataSource dataSource, EntityManagerFactory emf) {
+        super(dataSource, emf);
+        this.em.setFlushMode(FlushModeType.COMMIT);
     }
 
-    public CategoryTransactionModel insert(int typeId, int transactionId, Connection con) {
-        try (PreparedStatement psst = con.prepareStatement("INSERT INTO type_transaction " +
-                "(type_id, transaction_id) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
-            psst.setInt(1, typeId);
-            psst.setInt(2, transactionId);
-            psst.executeUpdate();
-            try (ResultSet rs = psst.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return new CategoryTransactionModel(rs.getInt(1), typeId, transactionId);
-                } else {
-                    throw new DAOException("Failed to insert category transaction");
-                }
-            }
-        } catch (SQLException e) {
+    @Transactional()
+    public CategoryTransactionModel insert(int typeId, int transactionId, EntityManager mainEM) {
+        try {
+            CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel();
+            categoryTransactionModel.setTypeId(typeId);
+            categoryTransactionModel.setTransactionId(transactionId);
+            mainEM.persist(categoryTransactionModel);
+            mainEM.flush();
+            return categoryTransactionModel;
+        } catch (PersistenceException e) {
             throw new DAOException(e);
         }
     }

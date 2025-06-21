@@ -17,7 +17,9 @@ import java.math.BigDecimal;
         @NamedQuery(name = "Account.findByIdAndUserId",
                 query = "SELECT a FROM AccountModel AS a WHERE a.id = :id AND a.userId = :userId"),
         @NamedQuery(name = "Account.findByUserId",
-                query = "SELECT a FROM AccountModel AS a WHERE a.userId = :userId")
+                query = "SELECT a FROM AccountModel AS a WHERE a.userId = :userId"),
+        @NamedQuery(name = "Account.findByIdAndUserIdWhereBalanceGreater",
+                query = "SELECT a FROM AccountModel AS a WHERE a.id = :id AND a.userId = :userId AND a.balance >= :balance")
 })
 public class AccountModel implements HasId {
     @Id

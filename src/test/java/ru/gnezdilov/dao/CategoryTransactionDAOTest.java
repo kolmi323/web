@@ -4,10 +4,10 @@ import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.model.CategoryTransactionModel;
+import ru.gnezdilov.dao.entities.CategoryTransactionModel;
 
+import javax.persistence.EntityTransaction;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,28 +59,19 @@ public class CategoryTransactionDAOTest extends AbstractDAOTest<CategoryTransact
     @Test
     public void insert_successAndReturnCategoryTransactionModel_whenCalledWithValidArguments() {
         CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel(2, 1, 2);
-        try {
-            assertEquals(categoryTransactionModel, subj.insert(1, 2, subj.getDataSource().getConnection()));
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        subj.getEm().getTransaction().begin();
+        assertEquals(categoryTransactionModel, subj.insert(1, 2, subj.getEm()));
     }
 
     @Test (expected = DAOException.class)
     public void insert_failedAndThrowDAOException_whenCalledWithInvalidArgumentsTransactionNotExists() {
-        try {
-            CategoryTransactionModel categoryTransactionModel = subj.insert(1, 3, subj.getDataSource().getConnection());
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        subj.getEm().getTransaction().begin();
+        CategoryTransactionModel categoryTransactionModel = subj.insert(1, 3, subj.getEm());
     }
 
     @Test (expected = DAOException.class)
     public void insert_failedAndThrowDAOException_whenCalledWithInvalidArgumentsTypeNotExists() {
-        try {
-            CategoryTransactionModel categoryTransactionModel = subj.insert(2, 2, subj.getDataSource().getConnection());
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        subj.getEm().getTransaction().begin();
+        CategoryTransactionModel categoryTransactionModel = subj.insert(2, 2, subj.getEm());
     }
 }

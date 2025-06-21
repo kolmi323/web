@@ -1,11 +1,14 @@
 package ru.gnezdilov.dao;
 
 import org.springframework.stereotype.Component;
+import ru.gnezdilov.dao.entities.AccountModel;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.model.TransactionModel;
+import ru.gnezdilov.dao.entities.TransactionModel;
+import ru.gnezdilov.web.controller.personal.type.TypeUpdateController;
 
-import javax.persistence.EntityManagerFactory;
+import javax.persistence.*;
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
@@ -16,83 +19,89 @@ import java.util.stream.Collectors;
 @Component
 public class TransactionDAO extends DAO {
     private final CategoryTransactionDAO categoryTransactionDAO;
+    private final TypeUpdateController update;
 
-    public TransactionDAO(DataSource ds, CategoryTransactionDAO categoryTransactionDAO) {
-        super(ds);
+    public TransactionDAO(DataSource ds, EntityManagerFactory emf, CategoryTransactionDAO categoryTransactionDAO, TypeUpdateController update) {
+        super(ds, emf);
         this.categoryTransactionDAO = categoryTransactionDAO;
+        this.update = update;
+        this.em.setFlushMode(FlushModeType.COMMIT);
     }
 
+    @Transactional
     public TransactionModel insert(List<Integer> typeIds, int userId, int fromAccountId, int toAccountId, BigDecimal amount) {
-        try (Connection con = getDataSource().getConnection()) {
-            con.setAutoCommit(false);
+        try {
+            EntityTransaction tx = em.getTransaction();
             try {
-                updateFromAccount(userId, fromAccountId, amount, con);
-                updateToAccount(userId, toAccountId, amount, con);
-                try (ResultSet rs = createTransaction(fromAccountId, toAccountId, amount, con)) {
-                    if(rs.next()) {
-                        int transactionId = rs.getInt(1);
-                        linkingTypeAndTransaction(typeIds, transactionId, con);
-                        con.commit();
-                        return new TransactionModel(transactionId, fromAccountId, toAccountId, amount, LocalDate.now());
-                    } else {
-                        throw new DAOException("Insert transaction failed");
-                    }
-                }
+                tx.begin();
+                updateFromAccount(userId, fromAccountId, amount);
+                updateToAccount(userId, toAccountId, amount);
+                TransactionModel transactionModel = createTransaction(fromAccountId, toAccountId, amount);
+                linkingTypeAndTransaction(typeIds, transactionModel.getId(), this.em);
+                tx.commit();
+                return transactionModel;
             } catch (Exception e) {
-                con.rollback();
+                tx.rollback();
                 throw e;
             }
-        } catch (SQLException e) {
+        } catch (PersistenceException e) {
             throw new DAOException(e);
         }
     }
 
-    private void updateFromAccount(int userId, int fromAccountId, BigDecimal amount, Connection con) {
+    @Transactional
+    protected void updateFromAccount(int userId, int fromAccountId, BigDecimal amount) throws PersistenceException {
         try {
-            PreparedStatement psst = con.prepareStatement("UPDATE account SET balance = balance - ? " +
-                    "WHERE id = ? AND user_id = ? AND balance >= ?");
-            psst.setBigDecimal(1, amount);
-            psst.setInt(2, fromAccountId);
-            psst.setInt(3, userId);
-            psst.setBigDecimal(4, amount);
-            if (psst.executeUpdate() == 0) {
-                throw new DAOException("Insert transaction failed");
-            }
-        } catch (SQLException e) {
+            AccountModel accountModel = em.createNamedQuery("Account.findByIdAndUserIdWhereBalanceGreater", AccountModel.class)
+                    .setParameter("id", fromAccountId)
+                    .setParameter("userId", userId)
+                    .setParameter("balance", amount)
+                    .getSingleResult();
+            accountModel.setBalance(accountModel.getBalance().subtract(amount));
+            em.merge(accountModel);
+            em.flush();
+        } catch (NoResultException e) {
+            throw new DAOException("Insert transaction failed");
+        } catch (PersistenceException e) {
             throw new DAOException(e);
         }
     }
 
-    private void updateToAccount(int userId, int toAccountId, BigDecimal amount, Connection con) {
+    @Transactional
+    protected void updateToAccount(int userId, int toAccountId, BigDecimal amount) throws PersistenceException {
         try {
-            PreparedStatement psst = con.prepareStatement("UPDATE account SET balance = balance + ? WHERE id = ? " +
-                    "AND user_id = ?");
-            psst.setBigDecimal(1, amount);
-            psst.setInt(2, toAccountId);
-            psst.setInt(3, userId);
-            if (psst.executeUpdate() == 0) {
-                throw new DAOException("Insert transaction failed");
-            }
-        } catch (SQLException e) {
+            AccountModel accountModel = em.createNamedQuery("Account.findByIdAndUserIdWhereBalanceGreater", AccountModel.class)
+                    .setParameter("id", toAccountId)
+                    .setParameter("userId", userId)
+                    .setParameter("balance", amount)
+                    .getSingleResult();
+            accountModel.setBalance(accountModel.getBalance().add(amount));
+            em.merge(accountModel);
+            em.flush();
+        } catch (NoResultException e) {
+            throw new DAOException("Insert transaction failed");
+        } catch (PersistenceException e) {
             throw new DAOException(e);
         }
     }
 
-    private ResultSet createTransaction(int fromAccountId, int toAccountId, BigDecimal amount, Connection con) {
+    @Transactional
+    protected TransactionModel createTransaction(int fromAccountId, int toAccountId, BigDecimal amount) {
         try {
-            PreparedStatement psst = con.prepareStatement("INSERT INTO transaction (from_account_id, to_account_id, amount, date) " +
-                    "VALUES (?, ?, ?, CURRENT_DATE)", Statement.RETURN_GENERATED_KEYS);
-            psst.setInt(1, fromAccountId);
-            psst.setInt(2, toAccountId);
-            psst.setBigDecimal(3, amount);
-            psst.executeUpdate();
-            return psst.getGeneratedKeys();
-        } catch (SQLException e) {
+            TransactionModel transactionModel = new TransactionModel();
+            transactionModel.setSenderAccountId(fromAccountId);
+            transactionModel.setReceiverAccountId(toAccountId);
+            transactionModel.setAmount(amount);
+            transactionModel.setDate(LocalDate.now());
+            em.persist(transactionModel);
+            em.flush();
+            return transactionModel;
+        } catch (PersistenceException e) {
             throw new DAOException(e);
         }
     }
 
-    private void linkingTypeAndTransaction(List<Integer> typeIds, int transactionId, Connection con) {
-        typeIds.stream().collect(Collectors.toSet()).forEach(id -> categoryTransactionDAO.insert(id, transactionId, con));
+    private void linkingTypeAndTransaction(List<Integer> typeIds, int transactionId, EntityManager transactionEM) {
+        typeIds.stream().collect(Collectors.toSet()).forEach(id -> categoryTransactionDAO.insert(id, transactionId, transactionEM));
     }
 }
