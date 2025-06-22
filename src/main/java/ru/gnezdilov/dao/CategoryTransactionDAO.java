@@ -79,31 +79,4 @@ public class CategoryTransactionDAO extends DAO {
         }
 
     }
-
-/*    public Map<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
-        return getAllInTimeFrame(userId, startDate, endDate, SQL_INCOMING_TRANSACTION);
-    }
-
-    public Map<String, BigDecimal> getOutgoingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
-        return getAllInTimeFrame(userId, startDate, endDate, SQL_OUTGOING_TRANSACTION);
-    }
-
-    private Map<String, BigDecimal> getAllInTimeFrame(int userId, LocalDate startDate, LocalDate endDate, String sqlCode) {
-        Map<String, BigDecimal> transactions = new HashMap<>();
-        try(Connection con = getDataSource().getConnection();
-            PreparedStatement psst = con.prepareStatement(sqlCode)) {
-            psst.setInt(1, userId);
-            psst.setObject(2, startDate);
-            psst.setObject(3, endDate);
-            psst.executeQuery();
-            try (ResultSet rs = psst.getResultSet() ) {
-                while (rs.next()) {
-                    transactions.put(rs.getString(1), rs.getBigDecimal(2));
-                }
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        return transactions;
-    }*/
 }
