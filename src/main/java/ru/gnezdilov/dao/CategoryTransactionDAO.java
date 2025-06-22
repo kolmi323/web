@@ -11,7 +11,10 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class CategoryTransactionDAO extends DAO {
@@ -52,6 +55,32 @@ public class CategoryTransactionDAO extends DAO {
     }
 
     public Map<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
+        return getAllInTimeFrame(userId, startDate, endDate, "Report.getOutgoingTransaction");
+    }
+
+    public Map<String, BigDecimal> getOutgoingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
+        return getAllInTimeFrame(userId, startDate, endDate, "Report.getIncomingTransaction");
+    }
+
+    protected Map<String, BigDecimal> getAllInTimeFrame(int userId, LocalDate startDate, LocalDate endDate, String nameQuery) {
+        try {
+            Map<String, BigDecimal> result = new HashMap<>();
+            List<Object[]> storageReport = em.createNamedQuery(nameQuery)
+                    .setParameter("id", userId)
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate)
+                    .getResultList();
+            for (Object[] row : storageReport) {
+                result.put((String) row[0], (BigDecimal) row[1]);
+            }
+            return result;
+        } catch (PersistenceException e) {
+            throw new DAOException(e);
+        }
+
+    }
+
+/*    public Map<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
         return getAllInTimeFrame(userId, startDate, endDate, SQL_INCOMING_TRANSACTION);
     }
 
@@ -76,5 +105,5 @@ public class CategoryTransactionDAO extends DAO {
             throw new DAOException(e);
         }
         return transactions;
-    }
+    }*/
 }

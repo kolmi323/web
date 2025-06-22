@@ -3,13 +3,16 @@ package ru.gnezdilov.dao;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.gnezdilov.MainConfiguration;
+import ru.gnezdilov.dao.entities.TransactionModel;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.entities.CategoryTransactionModel;
 
 import javax.persistence.EntityTransaction;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
