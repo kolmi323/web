@@ -6,22 +6,19 @@ import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.entities.TypeModel;
 import java.lang.IllegalArgumentException;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceException;
+import javax.persistence.*;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
-public class TypeDAO extends DAO {
-
-    public TypeDAO(DataSource ds, EntityManagerFactory emf) {
-        super(ds, emf);
-    }
+public class TypeDAO {
+    @PersistenceContext
+    private EntityManager em;
 
     @Transactional
     public TypeModel update(int id, int userId, String newName) {
@@ -31,10 +28,7 @@ public class TypeDAO extends DAO {
                     .setParameter("userId", userId)
                     .getSingleResult();
             typeModel.setName(newName);
-            EntityTransaction tx = em.getTransaction();
-            tx.begin();
             em.merge(typeModel);
-            tx.commit();
             return typeModel;
         } catch (NoResultException e) {
             throw new DAOException("Type with id " + id + " not found");
@@ -45,44 +39,34 @@ public class TypeDAO extends DAO {
 
     @Transactional
     public TypeModel insert(int userId, String name) {
-        try {
+        Optional<TypeModel> typeCheck = em.createNamedQuery("Type.findByUserIdAndName", TypeModel.class)
+                .setParameter("userId", userId)
+                .setParameter("name", name)
+                .getResultStream()
+                .findFirst();
+        if (!typeCheck.isPresent()) {
             TypeModel typeModel = new TypeModel();
             typeModel.setUserId(userId);
             typeModel.setName(name);
-            EntityTransaction tx = em.getTransaction();
-            tx.begin();
             em.persist(typeModel);
-            tx.commit();
-            if (typeModel.getId() != 0) {
-                return typeModel;
-            } else {
-                throw new DAOException("Insert Type Error");
-            }
-        } catch (PersistenceException e) {
-            if (isUniqueSQLState(e)) {
-                throw new AlreadyExistsException("Type already exists");
-            } else {
-                throw new DAOException(e);
-            }
+            return typeModel;
+        } else {
+            throw new AlreadyExistsException("Type already exists");
         }
     }
 
     @Transactional
     public boolean delete(int id, int userId) {
-        try {
-            TypeModel typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
-                    .setParameter("id", id)
-                    .setParameter("userId", userId)
-                    .getSingleResult();
-            EntityTransaction tx = em.getTransaction();
-            tx.begin();
-            em.remove(typeModel);
-            tx.commit();
+        Optional<TypeModel> typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
+                .setParameter("id", id)
+                .setParameter("userId", userId)
+                .getResultStream()
+                .findFirst();
+        if (typeModel.isPresent()) {
+            em.remove(typeModel.get());
             return true;
-        } catch (NoResultException e) {
-           return false;
-        } catch (PersistenceException e) {
-            throw new DAOException(e);
+        } else {
+            return false;
         }
     }
 
@@ -97,16 +81,11 @@ public class TypeDAO extends DAO {
     }
 
     public boolean existsById(int userId, int id) {
-        try {
-            TypeModel typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
-                    .setParameter("id", id)
-                    .setParameter("userId", userId)
-                    .getSingleResult();
-            return true;
-        } catch (NoResultException e) {
-          return false;
-        } catch (PersistenceException e) {
-            throw new DAOException(e);
-        }
+        Optional<TypeModel> typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
+                .setParameter("id", id)
+                .setParameter("userId", userId)
+                .getResultStream()
+                .findFirst();
+        return typeModel.isPresent();
     }
 }

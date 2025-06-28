@@ -4,10 +4,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.springframework.context.ApplicationContext;
 
+import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public abstract class AbstractDAOTest <T extends DAO> {
+public abstract class AbstractDAOTest <T> {
     protected T subj;
     protected ApplicationContext context;
 
@@ -15,17 +16,16 @@ public abstract class AbstractDAOTest <T extends DAO> {
 
     @Before
     public void setUp() throws Exception {
-        subj.setDataSource(context.getBean(ConfigurationDAO.class).dataSource());
+
     }
 
     @After
     public void tearDown() throws Exception {
-        try (PreparedStatement psst =  subj.getDataSource().getConnection().prepareStatement(CLEAN_H2_SQL)) {
+        try (PreparedStatement psst =  context.getBean(DataSource.class).getConnection().prepareStatement(CLEAN_H2_SQL)) {
             psst.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        subj.setDataSource(null);
     }
 
     protected void setPropertyForConnectH2() {
