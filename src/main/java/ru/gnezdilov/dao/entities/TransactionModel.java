@@ -14,9 +14,6 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedQueries({
-
-})
 public class TransactionModel implements HasId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,13 +10,10 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.AbstractApplicationContext;
 import ru.gnezdilov.dao.exception.DataSourceException;
 
-import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 

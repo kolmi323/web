@@ -5,7 +5,6 @@ import ru.gnezdilov.dao.entities.CategoryTransactionModel;
 import ru.gnezdilov.dao.exception.DAOException;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -35,8 +34,6 @@ public class CategoryTransactionDAO {
             "        left join type as ty on tt.type_id = ty.id\n" +
             "where us.id = ? and tr.date > ? and tr.date < ?\n" +
             "group by ty.name";
-    @PersistenceContext
-    private EntityManager em;
     private final DataSource dataSource;
 
     public CategoryTransactionDAO(DataSource dataSource) {

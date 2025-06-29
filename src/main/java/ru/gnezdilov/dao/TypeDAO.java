@@ -1,18 +1,16 @@
 package ru.gnezdilov.dao;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import ru.gnezdilov.dao.entities.TypeModel;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.entities.TypeModel;
-import java.lang.IllegalArgumentException;
 
-import javax.persistence.*;
-import javax.sql.DataSource;
-import javax.transaction.Transactional;
-import java.lang.reflect.Type;
-import java.util.HashMap;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Component

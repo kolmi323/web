@@ -8,7 +8,6 @@ import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
@@ -39,9 +38,8 @@ public class AccountDAO {
             return em.createNamedQuery("Account.findByIdAndUserId", AccountModel.class)
                     .setParameter("id", id)
                     .setParameter("userId", userId)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            throw new NotFoundException("Account with id " + id + " not found");
+                    .getResultStream()
+                    .findFirst().orElseThrow(() -> new NotFoundException("Account with id " + id + " not found"));
         } catch (PersistenceException e) {
             throw new DAOException(e);
         }
