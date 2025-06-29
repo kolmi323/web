@@ -14,12 +14,9 @@ public abstract class DAO {
     protected static final String UNIQUE_CONSTRAINT_VIOLATION = "23505";
     protected EntityManager em;
     private DataSource dataSource;
-    @PersistenceUnit
-    private EntityManagerFactory emf;
 
     protected DAO(DataSource dataSource, EntityManagerFactory emf) {
         this.dataSource = dataSource;
-        this.emf = emf;
         this.em = emf.createEntityManager();
     }
 

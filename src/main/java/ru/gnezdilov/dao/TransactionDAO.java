@@ -7,8 +7,10 @@ import ru.gnezdilov.dao.entities.TransactionModel;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.web.controller.personal.type.TypeUpdateController;
 
-import javax.persistence.*;
-import javax.sql.DataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;

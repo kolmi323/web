@@ -5,18 +5,20 @@ import ru.gnezdilov.dao.entities.CategoryTransactionModel;
 import ru.gnezdilov.dao.exception.DAOException;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.FlushModeType;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
-public class CategoryTransactionDAO extends DAO {
+public class CategoryTransactionDAO {
     private final String SQL_INCOMING_TRANSACTION = "select coalesce(ty.name, 'no type'), sum(tr.amount)\n" +
             "from users as us\n" +
             "        join account as ac on us.id = ac.user_id\n" +
@@ -33,10 +35,12 @@ public class CategoryTransactionDAO extends DAO {
             "        left join type as ty on tt.type_id = ty.id\n" +
             "where us.id = ? and tr.date > ? and tr.date < ?\n" +
             "group by ty.name";
+    @PersistenceContext
+    private EntityManager em;
+    private final DataSource dataSource;
 
-    public CategoryTransactionDAO(DataSource dataSource, EntityManagerFactory emf) {
-        super(dataSource, emf);
-        this.em.setFlushMode(FlushModeType.COMMIT);
+    public CategoryTransactionDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public CategoryTransactionModel insert(int typeId, int transactionId, EntityManager em) {
@@ -52,28 +56,29 @@ public class CategoryTransactionDAO extends DAO {
     }
 
     public Map<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
-        return getAllInTimeFrame(userId, startDate, endDate, "Report.getOutgoingTransaction");
+        return getAllInTimeFrame(userId, startDate, endDate, SQL_INCOMING_TRANSACTION);
     }
 
     public Map<String, BigDecimal> getOutgoingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
-        return getAllInTimeFrame(userId, startDate, endDate, "Report.getIncomingTransaction");
+        return getAllInTimeFrame(userId, startDate, endDate, SQL_OUTGOING_TRANSACTION);
     }
 
-    protected Map<String, BigDecimal> getAllInTimeFrame(int userId, LocalDate startDate, LocalDate endDate, String nameQuery) {
-        try {
-            Map<String, BigDecimal> result = new HashMap<>();
-            List<Object[]> storageReport = em.createNamedQuery(nameQuery)
-                    .setParameter("id", userId)
-                    .setParameter("startDate", startDate)
-                    .setParameter("endDate", endDate)
-                    .getResultList();
-            for (Object[] row : storageReport) {
-                result.put((String) row[0], (BigDecimal) row[1]);
+    private Map<String, BigDecimal> getAllInTimeFrame(int userId, LocalDate startDate, LocalDate endDate, String sqlCode) {
+        Map<String, BigDecimal> transactions = new HashMap<>();
+        try(Connection con = this.dataSource.getConnection();
+            PreparedStatement psst = con.prepareStatement(sqlCode)) {
+            psst.setInt(1, userId);
+            psst.setObject(2, startDate);
+            psst.setObject(3, endDate);
+            psst.executeQuery();
+            try (ResultSet rs = psst.getResultSet() ) {
+                while (rs.next()) {
+                    transactions.put(rs.getString(1), rs.getBigDecimal(2));
+                }
             }
-            return result;
-        } catch (PersistenceException e) {
+        } catch (SQLException e) {
             throw new DAOException(e);
         }
-
+        return transactions;
     }
 }
