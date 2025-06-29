@@ -33,6 +33,7 @@ public class AccountDAO {
         }
     }
 
+    @Transactional
     public AccountModel findById(int id, int userId) {
         try {
             return em.createNamedQuery("Account.findByIdAndUserId", AccountModel.class)
