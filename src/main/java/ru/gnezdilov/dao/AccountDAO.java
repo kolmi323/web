@@ -1,32 +1,34 @@
 package ru.gnezdilov.dao;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import ru.gnezdilov.dao.entities.AccountModel;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.entities.AccountModel;
 import ru.gnezdilov.dao.exception.NotFoundException;
 
-import javax.persistence.*;
-import javax.sql.DataSource;
-import javax.transaction.Transactional;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Component
-public class AccountDAO extends DAO {
-    public AccountDAO(DataSource ds, EntityManagerFactory emf) {
-        super(ds, emf);
-    }
+public class AccountDAO {
+    @PersistenceContext
+    private EntityManager em;
 
+    @Transactional
     public boolean existsById(int id, int userId) {
         try {
-            AccountModel accountModel = em.createNamedQuery("Account.findByIdAndUserId", AccountModel.class)
+            Optional<AccountModel> accountModel = em.createNamedQuery("Account.findByIdAndUserId", AccountModel.class)
                     .setParameter("id", id)
                     .setParameter("userId", userId)
-                    .getSingleResult();
-            return accountModel != null;
-        } catch (NoResultException e) {
-            return false;
+                    .getResultStream()
+                    .findFirst();
+            return accountModel.isPresent();
         } catch (PersistenceException e) {
             throw new DAOException(e);
         }
@@ -34,11 +36,10 @@ public class AccountDAO extends DAO {
 
     public AccountModel findById(int id, int userId) {
         try {
-            AccountModel accountModel = em.createNamedQuery("Account.findByIdAndUserId", AccountModel.class)
+            return em.createNamedQuery("Account.findByIdAndUserId", AccountModel.class)
                     .setParameter("id", id)
                     .setParameter("userId", userId)
                     .getSingleResult();
-            return accountModel;
         } catch (NoResultException e) {
             throw new NotFoundException("Account with id " + id + " not found");
         } catch (PersistenceException e) {
@@ -59,39 +60,44 @@ public class AccountDAO extends DAO {
     @Transactional
     public AccountModel insert(int userId, String name, BigDecimal balance) {
         try {
-            AccountModel accountModel = new AccountModel();
-            accountModel.setUserId(userId);
-            accountModel.setName(name);
-            accountModel.setBalance(balance);
-            EntityTransaction tx = em.getTransaction();
-            tx.begin();
-            em.persist(accountModel);
-            tx.commit();
-            if (accountModel.getId() != 0) {
-                return accountModel;
+            Optional<AccountModel> accountCheck = em.createNamedQuery("Account.findByUserIdAndName", AccountModel.class)
+                    .setParameter("userId", userId)
+                    .setParameter("name", name)
+                    .getResultStream()
+                    .findFirst();
+            if (!accountCheck.isPresent()) {
+                AccountModel account = new AccountModel();
+                account.setUserId(userId);
+                account.setName(name);
+                account.setBalance(balance);
+                em.persist(account);
+                if (account.getId() != 0) {
+                    return account;
+                } else {
+                    throw new DAOException("Insert account failed");
+                }
             } else {
-                throw new DAOException("Insert account failed");
+                throw new AlreadyExistsException("Account already exists");
             }
         } catch (PersistenceException e) {
-            if (isUniqueSQLState(e)) {
-                throw new AlreadyExistsException("Account already exists");
-            } else {
-                throw new DAOException(e);
-            }
+            throw new DAOException(e);
         }
     }
 
     @Transactional
     public boolean delete(int id, int userId) {
         try {
-            AccountModel accountModel = findById(id, userId);
-            EntityTransaction tx = em.getTransaction();
-            tx.begin();
-            em.remove(accountModel);
-            tx.commit();
-            return true;
-        } catch (NotFoundException e) {
-            return false;
+            Optional<AccountModel> typeModel = em.createNamedQuery("Account.findByIdAndUserId", AccountModel.class)
+                    .setParameter("id", id)
+                    .setParameter("userId", userId)
+                    .getResultStream()
+                    .findFirst();
+            if (typeModel.isPresent()) {
+                em.remove(typeModel.get());
+                return true;
+            } else {
+                return false;
+            }
         } catch (PersistenceException e) {
             throw new DAOException(e);
         }

@@ -46,11 +46,15 @@ public class TypeDAO {
                     .getResultStream()
                     .findFirst();
             if (!typeCheck.isPresent()) {
-                TypeModel typeModel = new TypeModel();
-                typeModel.setUserId(userId);
-                typeModel.setName(name);
-                em.persist(typeModel);
-                return typeModel;
+                TypeModel type = new TypeModel();
+                type.setUserId(userId);
+                type.setName(name);
+                em.persist(type);
+                if (type.getId() != 0) {
+                    return type;
+                } else {
+                    throw new DAOException("Insert Type failed");
+                }
             } else {
                 throw new AlreadyExistsException("Type already exists");
             }
