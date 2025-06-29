@@ -80,6 +80,7 @@ public class TypeDAO {
         }
     }
 
+    @Transactional
     public boolean existsById(int userId, int id) {
         Optional<TypeModel> typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
                 .setParameter("id", id)
