@@ -13,7 +13,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @NamedQueries({
         @NamedQuery(name = "User.findByEmailAndPassword",
-                query = "SELECT u FROM UserModel AS u WHERE u.email LIKE :email AND u.password LIKE :password")
+                query = "SELECT u FROM UserModel AS u WHERE u.email LIKE :email AND u.password LIKE :password"),
+        @NamedQuery(name = "User.findByNameAndEmail",
+                query = "SELECT u FROM UserModel AS u WHERE u.name LIKE :name AND u.email LIKE :email")
 })
 public class UserModel {
     @Id

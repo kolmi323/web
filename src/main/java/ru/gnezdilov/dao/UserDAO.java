@@ -1,48 +1,43 @@
 package ru.gnezdilov.dao;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.gnezdilov.dao.entities.UserModel;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.sql.DataSource;
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Component
-public class UserDAO extends DAO {
-
-    public UserDAO(DataSource ds, EntityManagerFactory emf) {
-        super(ds, emf);
-    }
+public class UserDAO {
+    @PersistenceContext
+    private EntityManager em;
 
     @Transactional
     public UserModel insert(String name, String email, String password) {
         try {
-            EntityTransaction tx = em.getTransaction();
-            tx.begin();
-            UserModel user = new UserModel();
-            user.setName(name);
-            user.setEmail(email);
-            user.setPassword(password);
-            em.persist(user);
-            tx.commit();
-            if (user.getId() != 0) {
+            Optional<UserModel> userCheck = em.createNamedQuery("User.findByNameAndEmail", UserModel.class)
+                    .setParameter("name", name)
+                    .setParameter("email", email)
+                    .getResultStream()
+                    .findFirst();
+            if (!userCheck.isPresent()) {
+                UserModel user = new UserModel();
+                user.setName(name);
+                user.setEmail(email);
+                user.setPassword(password);
+                em.persist(user);
                 return user;
             } else {
-                throw new DAOException("Insert user failed");
+                throw new AlreadyExistsException("Email already exists");
             }
         } catch (PersistenceException e) {
-            if (isUniqueSQLState(e)) {
-                throw new AlreadyExistsException("Email already exists");
-            } else {
-                throw new DAOException(e);
-            }
+            throw new DAOException(e);
         }
     }
 

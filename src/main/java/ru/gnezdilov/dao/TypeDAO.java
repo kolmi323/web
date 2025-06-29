@@ -39,34 +39,42 @@ public class TypeDAO {
 
     @Transactional
     public TypeModel insert(int userId, String name) {
-        Optional<TypeModel> typeCheck = em.createNamedQuery("Type.findByUserIdAndName", TypeModel.class)
-                .setParameter("userId", userId)
-                .setParameter("name", name)
-                .getResultStream()
-                .findFirst();
-        if (!typeCheck.isPresent()) {
-            TypeModel typeModel = new TypeModel();
-            typeModel.setUserId(userId);
-            typeModel.setName(name);
-            em.persist(typeModel);
-            return typeModel;
-        } else {
-            throw new AlreadyExistsException("Type already exists");
+        try {
+            Optional<TypeModel> typeCheck = em.createNamedQuery("Type.findByUserIdAndName", TypeModel.class)
+                    .setParameter("userId", userId)
+                    .setParameter("name", name)
+                    .getResultStream()
+                    .findFirst();
+            if (!typeCheck.isPresent()) {
+                TypeModel typeModel = new TypeModel();
+                typeModel.setUserId(userId);
+                typeModel.setName(name);
+                em.persist(typeModel);
+                return typeModel;
+            } else {
+                throw new AlreadyExistsException("Type already exists");
+            }
+        } catch (PersistenceException e) {
+            throw new DAOException(e);
         }
     }
 
     @Transactional
     public boolean delete(int id, int userId) {
-        Optional<TypeModel> typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
-                .setParameter("id", id)
-                .setParameter("userId", userId)
-                .getResultStream()
-                .findFirst();
-        if (typeModel.isPresent()) {
-            em.remove(typeModel.get());
-            return true;
-        } else {
-            return false;
+        try {
+            Optional<TypeModel> typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
+                    .setParameter("id", id)
+                    .setParameter("userId", userId)
+                    .getResultStream()
+                    .findFirst();
+            if (typeModel.isPresent()) {
+                em.remove(typeModel.get());
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PersistenceException e) {
+            throw new DAOException(e);
         }
     }
 
@@ -82,11 +90,15 @@ public class TypeDAO {
 
     @Transactional
     public boolean existsById(int userId, int id) {
-        Optional<TypeModel> typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
-                .setParameter("id", id)
-                .setParameter("userId", userId)
-                .getResultStream()
-                .findFirst();
-        return typeModel.isPresent();
+        try {
+            Optional<TypeModel> typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
+                    .setParameter("id", id)
+                    .setParameter("userId", userId)
+                    .getResultStream()
+                    .findFirst();
+            return typeModel.isPresent();
+        } catch (PersistenceException e) {
+            throw new DAOException(e);
+        }
     }
 }
