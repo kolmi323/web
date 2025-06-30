@@ -10,7 +10,7 @@ import ru.gnezdilov.dao.UserDAO;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.NotFoundException;
-import ru.gnezdilov.dao.model.UserModel;
+import ru.gnezdilov.dao.entities.UserModel;
 import ru.gnezdilov.service.converter.ConverterUserModelToUserDTO;
 import ru.gnezdilov.service.custominterface.DigestService;
 import ru.gnezdilov.service.dto.UserDTO;
@@ -32,8 +32,12 @@ public class AuthServiceTest {
     public void authorization_returnUserDTO_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
 
-        Optional<UserModel> userModel = Optional
-                .of(new UserModel(1, "Anton", "anton@mail.ru", "hash"));
+        UserModel userBuffer = new UserModel();
+        userBuffer.setId(1);
+        userBuffer.setName("Anton");
+        userBuffer.setEmail("anton@mail.ru");
+        userBuffer.setPassword("hash");
+        Optional<UserModel> userModel = Optional.of(userBuffer);
         when(userDAO.findByEmailAndPassword("anton@mail.ru", "hash")).thenReturn(userModel);
 
         UserDTO userDTO = new UserDTO(1, "Anton", "anton@mail.ru");
@@ -75,7 +79,11 @@ public class AuthServiceTest {
     public void createNewUser_returnUserDTO_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
 
-        UserModel userModel = new UserModel(1, "Anton", "anton@mail.ru", "hash");
+        UserModel userModel = new UserModel();
+        userModel.setName("Anton");
+        userModel.setEmail("anton@mail.ru");
+        userModel.setPassword("hash");
+
         when(userDAO.insert("Anton", "anton@mail.ru", "hash")).thenReturn(userModel);
 
         UserDTO userDTO = new UserDTO(1, "Anton", "anton@mail.ru");

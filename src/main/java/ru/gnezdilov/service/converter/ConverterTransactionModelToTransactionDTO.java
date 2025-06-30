@@ -1,7 +1,7 @@
 package ru.gnezdilov.service.converter;
 
 import org.springframework.stereotype.Service;
-import ru.gnezdilov.dao.model.TransactionModel;
+import ru.gnezdilov.dao.entities.TransactionModel;
 import ru.gnezdilov.service.custominterface.Converter;
 import ru.gnezdilov.service.dto.TransactionDTO;
 

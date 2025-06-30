@@ -9,7 +9,7 @@ import ru.gnezdilov.dao.AccountDAO;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.NotFoundException;
-import ru.gnezdilov.dao.model.AccountModel;
+import ru.gnezdilov.dao.entities.AccountModel;
 import ru.gnezdilov.service.converter.ConverterAccountModelToAccountDTO;
 import ru.gnezdilov.service.dto.AccountDTO;
 

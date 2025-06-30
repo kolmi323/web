@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.gnezdilov.MainConfiguration;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.model.TransactionModel;
+import ru.gnezdilov.dao.entities.TransactionModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,7 +27,12 @@ public class TransactionDAOTest extends AbstractDAOTest<TransactionDAO> {
     public void insert_successAndReturnTransactionModel_whenCalledWithValidArguments() {
         TransactionModel transactionModel = new TransactionModel(3, 1, 2, new BigDecimal("500.00"),
                 LocalDate.now());
-        assertEquals(transactionModel, subj.insert(LIST_TYPES_ID,1, 1, 2, new BigDecimal("500.00")));
+        try {
+            LIST_TYPES_ID.add(1);
+            assertEquals(transactionModel, subj.insert(LIST_TYPES_ID,1, 1, 2, new BigDecimal("500.00")));
+        } finally {
+            LIST_TYPES_ID.remove(1);
+        }
     }
 
     @Test (expected = DAOException.class)

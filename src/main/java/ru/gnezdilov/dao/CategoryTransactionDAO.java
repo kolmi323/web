@@ -1,18 +1,23 @@
 package ru.gnezdilov.dao;
 
 import org.springframework.stereotype.Component;
+import ru.gnezdilov.dao.entities.CategoryTransactionModel;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.dao.model.CategoryTransactionModel;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class CategoryTransactionDAO extends DAO {
+public class CategoryTransactionDAO {
     private final String SQL_INCOMING_TRANSACTION = "select coalesce(ty.name, 'no type'), sum(tr.amount)\n" +
             "from users as us\n" +
             "        join account as ac on us.id = ac.user_id\n" +
@@ -29,25 +34,20 @@ public class CategoryTransactionDAO extends DAO {
             "        left join type as ty on tt.type_id = ty.id\n" +
             "where us.id = ? and tr.date > ? and tr.date < ?\n" +
             "group by ty.name";
+    private final DataSource dataSource;
 
     public CategoryTransactionDAO(DataSource dataSource) {
-        super(dataSource);
+        this.dataSource = dataSource;
     }
 
-    public CategoryTransactionModel insert(int typeId, int transactionId, Connection con) {
-        try (PreparedStatement psst = con.prepareStatement("INSERT INTO type_transaction " +
-                "(type_id, transaction_id) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
-            psst.setInt(1, typeId);
-            psst.setInt(2, transactionId);
-            psst.executeUpdate();
-            try (ResultSet rs = psst.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return new CategoryTransactionModel(rs.getInt(1), typeId, transactionId);
-                } else {
-                    throw new DAOException("Failed to insert category transaction");
-                }
-            }
-        } catch (SQLException e) {
+    public CategoryTransactionModel insert(int typeId, int transactionId, EntityManager em) {
+        try {
+            CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel();
+            categoryTransactionModel.setTypeId(typeId);
+            categoryTransactionModel.setTransactionId(transactionId);
+            em.persist(categoryTransactionModel);
+            return categoryTransactionModel;
+        } catch (PersistenceException e) {
             throw new DAOException(e);
         }
     }
@@ -62,7 +62,7 @@ public class CategoryTransactionDAO extends DAO {
 
     private Map<String, BigDecimal> getAllInTimeFrame(int userId, LocalDate startDate, LocalDate endDate, String sqlCode) {
         Map<String, BigDecimal> transactions = new HashMap<>();
-        try(Connection con = getDataSource().getConnection();
+        try(Connection con = this.dataSource.getConnection();
             PreparedStatement psst = con.prepareStatement(sqlCode)) {
             psst.setInt(1, userId);
             psst.setObject(2, startDate);
