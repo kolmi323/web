@@ -41,9 +41,9 @@ public class UserDAO {
         }
     }
 
-    public Optional<UserModel> findByEmailAndPassword(String email, String password) {
+    public Optional<UserModel> findUserByEmailAndPassword(String email, String password) {
         try {
-            return Optional.of(em.createNamedQuery("User.findByEmailAndPassword", UserModel.class)
+            return Optional.of(em.createNamedQuery("User.findUserByEmailAndPassword", UserModel.class)
                     .setParameter("email", email)
                     .setParameter("password", password)
                     .getSingleResult());

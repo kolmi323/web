@@ -21,7 +21,7 @@ public class AuthService {
     }
 
     public UserDTO authorization(String email, String password) {
-        return userDAO.findByEmailAndPassword(email, digestService.hashPassword(password))
+        return userDAO.findUserByEmailAndPassword(email, digestService.hashPassword(password))
                 .map(converter::convert)
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }

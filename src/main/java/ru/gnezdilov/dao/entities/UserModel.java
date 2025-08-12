@@ -12,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @NamedQueries({
-        @NamedQuery(name = "User.findByEmailAndPassword",
+        @NamedQuery(name = "User.findUserByEmailAndPassword",
                 query = "SELECT u FROM UserModel AS u WHERE u.email LIKE :email AND u.password LIKE :password"),
         @NamedQuery(name = "User.findByNameAndEmail",
                 query = "SELECT u FROM UserModel AS u WHERE u.name LIKE :name AND u.email LIKE :email")

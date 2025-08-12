@@ -38,7 +38,7 @@ public class AuthServiceTest {
         userBuffer.setEmail("anton@mail.ru");
         userBuffer.setPassword("hash");
         Optional<UserModel> userModel = Optional.of(userBuffer);
-        when(userDAO.findByEmailAndPassword("anton@mail.ru", "hash")).thenReturn(userModel);
+        when(userDAO.findUserByEmailAndPassword("anton@mail.ru", "hash")).thenReturn(userModel);
 
         UserDTO userDTO = new UserDTO(1, "Anton", "anton@mail.ru");
         when(converter.convert(userModel.get())).thenReturn(userDTO);
@@ -47,31 +47,31 @@ public class AuthServiceTest {
         assertEquals(userDTO, user);
 
         verify(digestService, times(1)).hashPassword("password");
-        verify(userDAO, times(1)).findByEmailAndPassword("anton@mail.ru", "hash");
+        verify(userDAO, times(1)).findUserByEmailAndPassword("anton@mail.ru", "hash");
         verify(converter, times(1)).convert(userModel.get());
     }
 
     @Test
     public void authorization_acceptNotFoundException_whenCalledWithInvalidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
-        when(userDAO.findByEmailAndPassword("anton@mail.ru", "hash")).thenReturn(Optional.empty());
+        when(userDAO.findUserByEmailAndPassword("anton@mail.ru", "hash")).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> subj.authorization("anton@mail.ru", "password"));
 
         verify(digestService, times(1)).hashPassword("password");
-        verify(userDAO, times(1)).findByEmailAndPassword("anton@mail.ru", "hash");
+        verify(userDAO, times(1)).findUserByEmailAndPassword("anton@mail.ru", "hash");
         verifyNoInteractions(converter);
     }
 
     @Test
     public void authorization_acceptDAOException_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
-        when(userDAO.findByEmailAndPassword("anton@mail.ru", "hash")).thenThrow(DAOException.class);
+        when(userDAO.findUserByEmailAndPassword("anton@mail.ru", "hash")).thenThrow(DAOException.class);
 
         assertThrows(DAOException.class, () -> subj.authorization("anton@mail.ru", "password"));
 
         verify(digestService, times(1)).hashPassword("password");
-        verify(userDAO, times(1)).findByEmailAndPassword("anton@mail.ru", "hash");
+        verify(userDAO, times(1)).findUserByEmailAndPassword("anton@mail.ru", "hash");
         verifyNoInteractions(converter);
     }
 
