@@ -1,25 +1,25 @@
 package ru.gnezdilov.service.personal;
 
 import org.springframework.stereotype.Service;
-import ru.gnezdilov.dao.UserDAO;
+import ru.gnezdilov.dao.UserRepository;
 import ru.gnezdilov.service.converter.ConverterUserModelToUserDTO;
 import ru.gnezdilov.service.dto.UserDTO;
 
 @Service
 public class UserService {
-    private UserDAO userDAO;
+    private UserRepository userRepository;
     private ConverterUserModelToUserDTO converter;
 
-    public UserService(UserDAO userDAO, ConverterUserModelToUserDTO converter) {
-        this.userDAO = userDAO;
+    public UserService(UserRepository userRepository, ConverterUserModelToUserDTO converter) {
+        this.userRepository = userRepository;
         this.converter = converter;
     }
 
     public UserDTO getUserById(int id) {
-        return converter.convert(userDAO.findById(id));
+        return converter.convert(userRepository.getOne(id));
     }
 
     public boolean existsById(int id) {
-        return userDAO.existsById(id);
+        return userRepository.existsById(id);
     }
 }

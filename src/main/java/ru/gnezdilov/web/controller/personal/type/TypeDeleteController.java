@@ -7,7 +7,6 @@ import ru.gnezdilov.web.abstractcustom.AbstractSecureController;
 import ru.gnezdilov.web.json.DeleteResponse;
 import ru.gnezdilov.web.json.type.delete.TypeDeleteRequest;
 
-@Service("/type/delete")
 @RequiredArgsConstructor
 public class TypeDeleteController extends AbstractSecureController<TypeDeleteRequest, DeleteResponse> {
     private final TypeService typeService;

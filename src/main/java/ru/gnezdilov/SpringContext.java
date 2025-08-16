@@ -14,7 +14,7 @@ public class SpringContext {
             } catch (ClassNotFoundException e) {
                 throw new NotFoundException(e);
             }
-            context = new AnnotationConfigApplicationContext(MainConfiguration.class);
+            context = new AnnotationConfigApplicationContext();
         }
         return context;
     }

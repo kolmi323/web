@@ -1,5 +1,6 @@
 package ru.gnezdilov.service.personal;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.service.converter.ConverterAccountModelToAccountDTO;
 import ru.gnezdilov.dao.AccountDAO;

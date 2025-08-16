@@ -11,7 +11,7 @@ import ru.gnezdilov.web.json.categorytransaction.CategoryTransactionResponse;
 import java.math.BigDecimal;
 import java.util.Map;
 
-@Service("/report/outgoing")
+
 @RequiredArgsConstructor
 public class CategoryTransactionOutgoingController extends AbstractSecureController<CategoryTransactionRequest, CategoryTransactionResponse> {
     private final CategoryTransactionService categoryTransactionService;

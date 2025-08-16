@@ -1,40 +1,44 @@
 package ru.gnezdilov.web.controller.start;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import ru.gnezdilov.service.AuthService;
+import ru.gnezdilov.service.converter.ConverterUserDTOToRegisterResponse;
 import ru.gnezdilov.service.dto.UserDTO;
-import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.web.abstractcustom.AbstractController;
-import ru.gnezdilov.web.interfaces.Controller;
 import ru.gnezdilov.web.json.register.RegisterRequest;
 import ru.gnezdilov.web.json.register.RegisterResponse;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.util.Objects;
 
-@Service("/register")
-public class RegisterController extends AbstractController<RegisterRequest, RegisterResponse> {
+import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.http.ResponseEntity.status;
+
+@RequiredArgsConstructor
+@RestController
+public class RegisterController {
     private final AuthService authService;
+    private final ConverterUserDTOToRegisterResponse converter;
 
-    public RegisterController(AuthService authService, ObjectMapper om, UIUtils utils) {
-        super(om, utils);
-        this.authService = authService;
-    }
+    @PostMapping("/register")
+    public @ResponseBody ResponseEntity<RegisterResponse> register(@RequestBody @Valid RegisterRequest registerRequest,
+                                                                   HttpServletRequest httpServletRequest) {
+        UserDTO user = authService.createNewUser(registerRequest.getName(), registerRequest.getEmail(), registerRequest.getPassword());
 
-    @Override
-    public RegisterResponse handle(RegisterRequest request) {
-        UserDTO userDTO = authService.createNewUser(
-                request.getName(),
-                this.extractEmail(request.getEmail()),
-                this.extractPassword(request.getPassword())
-        );
-        return new RegisterResponse(userDTO.getId(), userDTO.getEmail());
-    }
+        if (user == null) {
+            return status(HttpStatus.UNAUTHORIZED).build();
+        }
 
-    @Override
-    public Class<RegisterRequest> getRequestClass() {
-        return RegisterRequest.class;
+        HttpSession session = httpServletRequest.getSession();
+        session.setAttribute("userId", user.getId());
+
+        return ok(Objects.requireNonNull(converter.convert(user)));
     }
 }

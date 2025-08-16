@@ -2,7 +2,7 @@ package ru.gnezdilov.service.converter;
 
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.dao.entities.CategoryTransactionModel;
-import ru.gnezdilov.service.custominterface.Converter;
+import org.springframework.core.convert.converter.Converter;
 import ru.gnezdilov.service.dto.CategoryTransactionDTO;
 
 @Service

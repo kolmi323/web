@@ -11,7 +11,7 @@ import ru.gnezdilov.web.json.ListResponse;
 
 import java.util.List;
 
-@Service("/account/show")
+
 @RequiredArgsConstructor
 public class AccountShowController extends AbstractSecureController<EmptyRequest, ListResponse<AccountDTO>> {
     private final AccountService accountService;

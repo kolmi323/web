@@ -9,7 +9,7 @@ import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.type.add.TypeAddRequest;
 import ru.gnezdilov.web.json.type.add.TypeAddResponse;
 
-@Service("/type/add")
+
 @RequiredArgsConstructor
 public class TypeAddController extends AbstractSecureController<TypeAddRequest, TypeAddResponse> {
     private final TypeService typeService;

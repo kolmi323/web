@@ -9,7 +9,6 @@ import ru.gnezdilov.web.interfaces.SecureController;
 import ru.gnezdilov.web.json.type.update.TypeUpdateRequest;
 import ru.gnezdilov.web.json.type.update.TypeUpdateResponse;
 
-@Service("/type/update")
 @RequiredArgsConstructor
 public class TypeUpdateController extends AbstractSecureController<TypeUpdateRequest, TypeUpdateResponse> {
     private final TypeService typeService;

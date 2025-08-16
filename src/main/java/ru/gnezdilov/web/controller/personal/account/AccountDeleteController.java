@@ -7,7 +7,7 @@ import ru.gnezdilov.web.abstractcustom.AbstractSecureController;
 import ru.gnezdilov.web.json.DeleteResponse;
 import ru.gnezdilov.web.json.account.delete.AccountDeleteRequest;
 
-@Service("/account/delete")
+
 @RequiredArgsConstructor
 public class AccountDeleteController extends AbstractSecureController<AccountDeleteRequest, DeleteResponse> {
     private final AccountService accountService;

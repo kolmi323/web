@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import ru.gnezdilov.dao.UserDAO;
+import ru.gnezdilov.dao.UserRepository;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.NotFoundException;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 public class AuthServiceTest {
     @InjectMocks private AuthService subj;
 
-    @Mock private UserDAO userDAO;
+    @Mock private UserRepository userRepository;
     @Mock private DigestService digestService;
     @Mock private ConverterUserModelToUserDTO converter;
 
@@ -38,7 +38,7 @@ public class AuthServiceTest {
         userBuffer.setEmail("anton@mail.ru");
         userBuffer.setPassword("hash");
         Optional<UserModel> userModel = Optional.of(userBuffer);
-        when(userDAO.findUserByEmailAndPassword("anton@mail.ru", "hash")).thenReturn(userModel);
+        when(userRepository.findByEmailAndPassword("anton@mail.ru", "hash")).thenReturn(userModel);
 
         UserDTO userDTO = new UserDTO(1, "Anton", "anton@mail.ru");
         when(converter.convert(userModel.get())).thenReturn(userDTO);
@@ -47,31 +47,31 @@ public class AuthServiceTest {
         assertEquals(userDTO, user);
 
         verify(digestService, times(1)).hashPassword("password");
-        verify(userDAO, times(1)).findUserByEmailAndPassword("anton@mail.ru", "hash");
+        verify(userRepository, times(1)).findByEmailAndPassword("anton@mail.ru", "hash");
         verify(converter, times(1)).convert(userModel.get());
     }
 
     @Test
     public void authorization_acceptNotFoundException_whenCalledWithInvalidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
-        when(userDAO.findUserByEmailAndPassword("anton@mail.ru", "hash")).thenReturn(Optional.empty());
+        when(userRepository.findByEmailAndPassword("anton@mail.ru", "hash")).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> subj.authorization("anton@mail.ru", "password"));
 
         verify(digestService, times(1)).hashPassword("password");
-        verify(userDAO, times(1)).findUserByEmailAndPassword("anton@mail.ru", "hash");
+        verify(userRepository, times(1)).findByEmailAndPassword("anton@mail.ru", "hash");
         verifyNoInteractions(converter);
     }
 
     @Test
     public void authorization_acceptDAOException_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
-        when(userDAO.findUserByEmailAndPassword("anton@mail.ru", "hash")).thenThrow(DAOException.class);
+        when(userRepository.findByEmailAndPassword("anton@mail.ru", "hash")).thenThrow(DAOException.class);
 
         assertThrows(DAOException.class, () -> subj.authorization("anton@mail.ru", "password"));
 
         verify(digestService, times(1)).hashPassword("password");
-        verify(userDAO, times(1)).findUserByEmailAndPassword("anton@mail.ru", "hash");
+        verify(userRepository, times(1)).findByEmailAndPassword("anton@mail.ru", "hash");
         verifyNoInteractions(converter);
     }
 
@@ -79,12 +79,17 @@ public class AuthServiceTest {
     public void createNewUser_returnUserDTO_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
 
+        UserModel userRequest = new UserModel();
+        userRequest.setName("Anton");
+        userRequest.setEmail("anton@mail.ru");
+        userRequest.setPassword("password");
+
         UserModel userModel = new UserModel();
         userModel.setName("Anton");
         userModel.setEmail("anton@mail.ru");
         userModel.setPassword("hash");
 
-        when(userDAO.insert("Anton", "anton@mail.ru", "hash")).thenReturn(userModel);
+        when(userRepository.save(userRequest)).thenReturn(userModel);
 
         UserDTO userDTO = new UserDTO(1, "Anton", "anton@mail.ru");
         when(converter.convert(userModel)).thenReturn(userDTO);
@@ -93,7 +98,7 @@ public class AuthServiceTest {
         assertEquals(userDTO, user);
 
         verify(digestService, times(1)).hashPassword("password");
-        verify(userDAO, times(1)).insert("Anton", "anton@mail.ru", "hash");
+        verify(userRepository, times(1)).save(userRequest);
         verify(converter, times(1)).convert(userModel);
     }
 
@@ -101,15 +106,20 @@ public class AuthServiceTest {
     public void createNewUser_acceptDAOExceptionWithMessageAboutFailedCreated_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
 
+        UserModel userRequest = new UserModel();
+        userRequest.setName("Anton");
+        userRequest.setEmail("anton@mail.ru");
+        userRequest.setPassword("password");
+
         DAOException daoException = new DAOException("Insert user failed");
-        when(userDAO.insert("Anton", "anton@mail.ru", "hash")).thenThrow(daoException);
+        when(userRepository.save(userRequest)).thenThrow(daoException);
 
         DAOException exception = assertThrows(DAOException.class,
                 () -> subj.createNewUser("Anton", "anton@mail.ru", "password"));
         assertEquals("Insert user failed", exception.getMessage());
 
         verify(digestService, times(1)).hashPassword("password");
-        verify(userDAO, times(1)).insert("Anton", "anton@mail.ru", "hash");
+        verify(userRepository, times(1)).save(userRequest);
         verifyNoInteractions(converter);
     }
 
@@ -117,26 +127,37 @@ public class AuthServiceTest {
     public void createNewUser_acceptAlreadyExistsException_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
 
-        when(userDAO.insert("Anton", "anton@mail.ru", "hash"))
+        UserModel userRequest = new UserModel();
+        userRequest.setName("Anton");
+        userRequest.setEmail("anton@mail.ru");
+        userRequest.setPassword("password");
+
+        when(userRepository.save(userRequest))
                 .thenThrow(AlreadyExistsException.class);
 
         assertThrows(AlreadyExistsException.class,
                 () -> subj.createNewUser("Anton", "anton@mail.ru", "password"));
 
         verify(digestService, times(1)).hashPassword("password");
-        verify(userDAO, times(1)).insert("Anton", "anton@mail.ru", "hash");
+        verify(userRepository, times(1)).save(userRequest);
         verifyNoInteractions(converter);
     }
 
     @Test
     public void createNewUser_acceptDAOException_whenCalledWithValidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
-        when(userDAO.insert("Anton", "anton@mail.ru", "hash")).thenThrow(DAOException.class);
+
+        UserModel userRequest = new UserModel();
+        userRequest.setName("Anton");
+        userRequest.setEmail("anton@mail.ru");
+        userRequest.setPassword("password");
+
+        when(userRepository.save(userRequest)).thenThrow(DAOException.class);
 
         assertThrows(DAOException.class, () -> subj.createNewUser("Anton", "anton@mail.ru", "password"));
 
         verify(digestService, times(1)).hashPassword("password");
-        verify(userDAO, times(1)).insert("Anton", "anton@mail.ru", "hash");
+        verify(userRepository, times(1)).save(userRequest);
         verifyNoInteractions(converter);
     }
 }

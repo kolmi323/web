@@ -11,7 +11,7 @@ import ru.gnezdilov.web.json.transaction.add.TransactionAddResponse;
 
 import java.util.Arrays;
 
-@Service("/transaction/add")
+
 @RequiredArgsConstructor
 public class TransactionAddController extends AbstractSecureController<TransactionAddRequest, TransactionAddResponse> {
     private final TransactionService transactionService;

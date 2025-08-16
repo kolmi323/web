@@ -22,11 +22,9 @@ public class TransactionDAO {
     @PersistenceContext
     private EntityManager em;
     private final CategoryTransactionDAO categoryTransactionDAO;
-    private final TypeUpdateController update;
 
-    public TransactionDAO(CategoryTransactionDAO categoryTransactionDAO, TypeUpdateController update) {
+    public TransactionDAO(CategoryTransactionDAO categoryTransactionDAO) {
         this.categoryTransactionDAO = categoryTransactionDAO;
-        this.update = update;
     }
 
     @Transactional

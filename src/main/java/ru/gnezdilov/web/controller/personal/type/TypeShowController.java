@@ -10,7 +10,6 @@ import ru.gnezdilov.web.json.ListResponse;
 
 import java.util.List;
 
-@Service("/type/show")
 @RequiredArgsConstructor
 public class TypeShowController extends AbstractSecureController<EmptyRequest, ListResponse<TypeDTO>> {
     private final TypeService typeService;

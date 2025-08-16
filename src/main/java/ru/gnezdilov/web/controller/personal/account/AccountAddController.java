@@ -9,7 +9,7 @@ import ru.gnezdilov.web.abstractcustom.AbstractSecureController;
 import ru.gnezdilov.web.json.account.create.AccountAddRequest;
 import ru.gnezdilov.web.json.account.create.AccountAddResponse;
 
-@Service("/account/add")
+
 @RequiredArgsConstructor
 public class AccountAddController extends AbstractSecureController<AccountAddRequest, AccountAddResponse> {
     private final AccountService accountService;
