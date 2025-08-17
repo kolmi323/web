@@ -1,25 +1,28 @@
 package ru.gnezdilov.dao;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.gnezdilov.dao.entities.AccountModel;
 import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-@Component
-public class AccountDAO {
-    @PersistenceContext
-    private EntityManager em;
-
+@Repository
+public interface AccountRepository extends JpaRepository<AccountModel, Integer> {
+    boolean existsByIdAndUserId(Integer id, Integer userId);
+    AccountModel findByIdAndUserId(Integer id, Integer userId);
+    List<AccountModel> findAllByUserId(Integer userId);
     @Transactional
+    Integer deleteByIdAndUserId(Integer id, Integer userId);
+    /*@Transactional
     public boolean existsById(int id, int userId) {
         try {
             Optional<AccountModel> accountModel = em.createNamedQuery("Account.findByIdAndUserId", AccountModel.class)
@@ -100,5 +103,5 @@ public class AccountDAO {
         } catch (PersistenceException e) {
             throw new DAOException(e);
         }
-    }
+    }*/
 }
