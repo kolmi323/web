@@ -1,24 +1,30 @@
 package ru.gnezdilov.dao;
 
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.gnezdilov.dao.entities.TypeModel;
-import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import java.util.List;
-import java.util.Optional;
 
-@Component
-public class TypeDAO {
-    @PersistenceContext
-    private EntityManager em;
-
+@Repository
+public interface TypeRepository extends JpaRepository<TypeModel, Integer> {
     @Transactional
+    @Modifying
+    @Query("UPDATE TypeModel t SET t.name = :newName WHERE t.id = :id AND t.userId = :userId")
+    int updateName(@Param(value = "id") Integer id, @Param(value = "userId") Integer userId,
+                         @Param(value = "newName") String newName) throws DAOException;
+    @Transactional
+    Integer deleteByIdAndUserId(Integer id, Integer userId) throws DAOException;
+    List<TypeModel> getAllByUserId(Integer userId) throws DAOException;
+    boolean existsByIdAndUserId(Integer id, Integer userId) throws DAOException;
+    TypeModel findByIdAndUserId(Integer id, Integer userId) throws DAOException;
+
+    /*@Transactional
     public TypeModel update(int id, int userId, String newName) {
         try {
             TypeModel typeModel = em.createNamedQuery("Type.findByIdAndUserId", TypeModel.class)
@@ -102,5 +108,5 @@ public class TypeDAO {
         } catch (PersistenceException e) {
             throw new DAOException(e);
         }
-    }
+    }*/
 }

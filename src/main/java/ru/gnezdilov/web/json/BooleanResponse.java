@@ -6,6 +6,6 @@ import ru.gnezdilov.web.interfaces.AbstractResponse;
 
 @Data
 @AllArgsConstructor
-public class DeleteResponse implements AbstractResponse {
-    private boolean isDelete;
+public class BooleanResponse implements AbstractResponse {
+    private boolean isTrue;
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.gnezdilov.service.AuthService;
-import ru.gnezdilov.service.converter.ConverterUserDTOToAuthResponse;
+import ru.gnezdilov.service.converter.web.ConverterUserDTOToAuthResponse;
 import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.web.json.auth.AuthRequest;
 import ru.gnezdilov.web.json.auth.AuthResponse;

@@ -5,16 +5,17 @@ import ru.gnezdilov.dao.entities.AccountModel;
 import ru.gnezdilov.dao.entities.TransactionModel;
 import ru.gnezdilov.dao.entities.TypeModel;
 import ru.gnezdilov.dao.entities.UserModel;
-import ru.gnezdilov.service.custominterface.Converter;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.dto.TransactionDTO;
 import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.dto.UserDTO;
+import org.springframework.core.convert.converter.Converter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ConverterTest {
     @Test
@@ -55,26 +56,26 @@ public class ConverterTest {
         returnDTO(converter, transactionModel, transactionDTO);
     }
 
-    @Test
+    @Test (expected = NullPointerException.class)
     public void convert_accountThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterAccountModelToAccountDTO converter = new ConverterAccountModelToAccountDTO();
         throwNullPointerException(converter);
     }
 
-    @Test
+    @Test (expected = NullPointerException.class)
     public void converter_typeThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterTypeModelToTypeDTO converter
                 = new ConverterTypeModelToTypeDTO();
         throwNullPointerException(converter);
     }
 
-    @Test
+    @Test (expected = NullPointerException.class)
     public void converter_userThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterUserModelToUserDTO converter = new ConverterUserModelToUserDTO();
         throwNullPointerException(converter);
     }
 
-    @Test
+    @Test (expected = NullPointerException.class)
     public void converter_transactionThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterTransactionModelToTransactionDTO converter = new ConverterTransactionModelToTransactionDTO();
         throwNullPointerException(converter);

@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.gnezdilov.dao.entities.AccountModel;
 import ru.gnezdilov.dao.entities.TransactionModel;
 import ru.gnezdilov.dao.exception.DAOException;
-import ru.gnezdilov.web.controller.personal.type.TypeUpdateController;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;

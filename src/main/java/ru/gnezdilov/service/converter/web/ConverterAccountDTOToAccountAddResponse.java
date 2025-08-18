@@ -1,4 +1,4 @@
-package ru.gnezdilov.service.converter;
+package ru.gnezdilov.service.converter.web;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;

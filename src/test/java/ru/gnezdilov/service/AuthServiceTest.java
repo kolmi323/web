@@ -82,9 +82,10 @@ public class AuthServiceTest {
         UserModel userRequest = new UserModel();
         userRequest.setName("Anton");
         userRequest.setEmail("anton@mail.ru");
-        userRequest.setPassword("password");
+        userRequest.setPassword("hash");
 
         UserModel userModel = new UserModel();
+        userModel.setId(1);
         userModel.setName("Anton");
         userModel.setEmail("anton@mail.ru");
         userModel.setPassword("hash");
@@ -109,7 +110,7 @@ public class AuthServiceTest {
         UserModel userRequest = new UserModel();
         userRequest.setName("Anton");
         userRequest.setEmail("anton@mail.ru");
-        userRequest.setPassword("password");
+        userRequest.setPassword("hash");
 
         DAOException daoException = new DAOException("Insert user failed");
         when(userRepository.save(userRequest)).thenThrow(daoException);
@@ -130,7 +131,7 @@ public class AuthServiceTest {
         UserModel userRequest = new UserModel();
         userRequest.setName("Anton");
         userRequest.setEmail("anton@mail.ru");
-        userRequest.setPassword("password");
+        userRequest.setPassword("hash");
 
         when(userRepository.save(userRequest))
                 .thenThrow(AlreadyExistsException.class);
@@ -150,7 +151,7 @@ public class AuthServiceTest {
         UserModel userRequest = new UserModel();
         userRequest.setName("Anton");
         userRequest.setEmail("anton@mail.ru");
-        userRequest.setPassword("password");
+        userRequest.setPassword("hash");
 
         when(userRepository.save(userRequest)).thenThrow(DAOException.class);
 

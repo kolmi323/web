@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.gnezdilov.service.converter.ConverterAccountDTOToAccountAddResponse;
+import ru.gnezdilov.service.converter.web.ConverterAccountDTOToAccountAddResponse;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.personal.AccountService;
 import ru.gnezdilov.web.json.DeleteRequest;
-import ru.gnezdilov.web.json.DeleteResponse;
+import ru.gnezdilov.web.json.BooleanResponse;
 import ru.gnezdilov.web.json.ListResponse;
 import ru.gnezdilov.web.json.account.create.AccountAddRequest;
 import ru.gnezdilov.web.json.account.create.AccountAddResponse;
@@ -41,14 +41,14 @@ public class AccountController {
     }
 
     @PostMapping("/delete")
-    public @ResponseBody ResponseEntity<DeleteResponse> delete(@RequestBody @Valid DeleteRequest request,
-                                                               HttpServletRequest httpServletRequest) {
+    public @ResponseBody ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
+                                                                HttpServletRequest httpServletRequest) {
         HttpSession session = httpServletRequest.getSession();
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ok(new DeleteResponse(accountService.delete(request.getId(), userId)));
+        return ok(new BooleanResponse(accountService.delete(request.getId(), userId)));
     }
 
     @PostMapping("/add")
