@@ -12,14 +12,6 @@ import javax.persistence.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedQueries({
-        @NamedQuery(name = "Type.findByUserId",
-                query = "SELECT t FROM TypeModel AS t WHERE t.userId = :userId"),
-        @NamedQuery(name = "Type.findByIdAndUserId",
-                query = "SELECT t FROM TypeModel AS t WHERE t.id = :id AND t.userId = :userId"),
-        @NamedQuery(name = "Type.findByUserIdAndName",
-                query = "SELECT t FROM TypeModel AS t WHERE t.userId = :userId AND t.name = :name")
-})
 public class TypeModel implements HasId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
