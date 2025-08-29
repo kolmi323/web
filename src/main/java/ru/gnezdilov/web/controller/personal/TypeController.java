@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.gnezdilov.service.converter.web.ConverterTypeDTOToTypeResponse;
 import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.personal.TypeService;
+import ru.gnezdilov.web.interfaces.AuthorizationSessionTool;
 import ru.gnezdilov.web.json.DeleteRequest;
 import ru.gnezdilov.web.json.BooleanResponse;
 import ru.gnezdilov.web.json.ListResponse;
@@ -26,14 +27,13 @@ import static org.springframework.http.ResponseEntity.status;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/type")
-public class TypeController {
+public class TypeController implements AuthorizationSessionTool {
     private final TypeService typeService;
     private final ConverterTypeDTOToTypeResponse converter;
 
     @GetMapping("/show")
     public @ResponseBody ResponseEntity<ListResponse<TypeDTO>> show(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
+        Integer userId = this.getUserIdFromSession(request);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -44,8 +44,7 @@ public class TypeController {
     @PostMapping("/add")
     public @ResponseBody ResponseEntity<TypeResponse> add(@RequestBody @Valid TypeAddRequest request,
                                                           HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
+        Integer userId = this.getUserIdFromSession(httpServletRequest);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -59,8 +58,7 @@ public class TypeController {
     @PostMapping("/delete")
     public @ResponseBody ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
                                                                 HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
+        Integer userId = this.getUserIdFromSession(httpServletRequest);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -70,8 +68,7 @@ public class TypeController {
     @PostMapping("/update")
     public @ResponseBody ResponseEntity<BooleanResponse> update(@RequestBody @Valid TypeUpdateRequest request,
                                                                    HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
+        Integer userId = this.getUserIdFromSession(httpServletRequest);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }

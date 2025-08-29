@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.gnezdilov.service.converter.web.ConverterTransactionDTOToTransactionAddResponse;
 import ru.gnezdilov.service.dto.TransactionDTO;
 import ru.gnezdilov.service.personal.TransactionService;
+import ru.gnezdilov.web.interfaces.AuthorizationSessionTool;
 import ru.gnezdilov.web.json.transaction.add.TransactionAddRequest;
 import ru.gnezdilov.web.json.transaction.add.TransactionAddResponse;
 
@@ -23,15 +24,14 @@ import static org.springframework.http.ResponseEntity.status;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/transaction")
-public class TransactionController {
+public class TransactionController implements AuthorizationSessionTool {
     private final TransactionService transactionService;
     private final ConverterTransactionDTOToTransactionAddResponse converter;
 
     @PostMapping("/add")
     public @ResponseBody ResponseEntity<TransactionAddResponse> add(@RequestBody @Valid TransactionAddRequest request,
                                                                     HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
+        Integer userId = this.getUserIdFromSession(httpServletRequest);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }

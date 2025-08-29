@@ -32,14 +32,11 @@ public class AuthController {
     public @ResponseBody ResponseEntity<AuthResponse> auth(@RequestBody @Valid AuthRequest authRequest,
                                                            HttpServletRequest httpServletRequest) {
         UserDTO user = authService.authorization(authRequest.getEmail(), authRequest.getPassword());
-
         if (user == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
-
         HttpSession session = httpServletRequest.getSession();
         session.setAttribute("userId", user.getId());
-
         return ok(Objects.requireNonNull(converter.convert(user)));
     }
 }

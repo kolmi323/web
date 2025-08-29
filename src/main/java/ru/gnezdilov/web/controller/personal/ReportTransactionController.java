@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.gnezdilov.service.personal.CategoryTransactionService;
+import ru.gnezdilov.web.interfaces.AuthorizationSessionTool;
 import ru.gnezdilov.web.json.categorytransaction.CategoryTransactionRequest;
 import ru.gnezdilov.web.json.categorytransaction.CategoryTransactionResponse;
 
@@ -21,14 +22,13 @@ import static org.springframework.http.ResponseEntity.status;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/report")
-public class ReportTransactionController {
+public class ReportTransactionController implements AuthorizationSessionTool {
     private final CategoryTransactionService categoryTransactionService;
 
     @GetMapping("/incoming")
     public @ResponseBody ResponseEntity<CategoryTransactionResponse> getIncomingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
                                                                                             HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
+        Integer userId = this.getUserIdFromSession(httpServletRequest);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -40,8 +40,7 @@ public class ReportTransactionController {
     @GetMapping("/outgoing")
     public @ResponseBody ResponseEntity<CategoryTransactionResponse> getOutgoingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
                                                                                             HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
+        Integer userId = this.getUserIdFromSession(httpServletRequest);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }

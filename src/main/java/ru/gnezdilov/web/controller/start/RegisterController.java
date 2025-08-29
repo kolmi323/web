@@ -31,14 +31,11 @@ public class RegisterController {
     public @ResponseBody ResponseEntity<RegisterResponse> register(@RequestBody @Valid RegisterRequest registerRequest,
                                                                    HttpServletRequest httpServletRequest) {
         UserDTO user = authService.createNewUser(registerRequest.getName(), registerRequest.getEmail(), registerRequest.getPassword());
-
         if (user == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
-
         HttpSession session = httpServletRequest.getSession();
         session.setAttribute("userId", user.getId());
-
         return ok(Objects.requireNonNull(converter.convert(user)));
     }
 }

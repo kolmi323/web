@@ -168,52 +168,40 @@ public class TypeServiceTest {
         verify(typeRepository, times(1)).updateName(1, 1, "work");
     }
 
-    /*@Test
-    public void edit_acceptDAOExceptionWithMessageAboutNotFoundType_whenCalledWithValidException() {
-        when(typeRepository.findByIdAndUserId(1, 1)).thenThrow(new DAOException("Not found type"));
-
-        DAOException exception = assertThrows(DAOException.class, () -> subj.edit(1, 1, "work"));
-        assertEquals("Not found type", exception.getMessage());
-
-        verify(typeRepository, times(1)).update(1, 1, "work");
-        verifyNoInteractions(converter);
-    }
-
     @Test
-    public void edit_acceptDAOException_whenCalledWithValidException() {
-        when(typeRepository.update(1, 1, "work")).thenThrow(DAOException.class);
+    public void edit_returnFalse_whenCalledWithInvalidException() {
+        when(typeRepository.updateName(1, 2, "work")).thenReturn(0);
 
-        assertThrows(DAOException.class, () -> subj.edit(1, 1, "work"));
+        assertFalse(subj.edit(1, 2, "work"));
 
-        verify(typeRepository, times(1)).update(1, 1, "work");
-        verifyNoInteractions(converter);
+        verify(typeRepository, times(1)).updateName(1, 2, "work");
     }
 
     @Test
     public void existsById_returnTrue_whenCalledWithValidException() {
-        when(typeRepository.existsById(1, 1)).thenReturn(true);
+        when(typeRepository.existsByIdAndUserId(1, 1)).thenReturn(true);
 
         assertTrue(subj.existsById(1, 1));
 
-        verify(typeRepository, times(1)).existsById(1, 1);
+        verify(typeRepository, times(1)).existsByIdAndUserId(1, 1);
         verifyNoInteractions(converter);
     }
 
     @Test
     public void existsById_returnFalse_whenCalledWithInvalidException() {
-        when(typeRepository.existsById(1, 2)).thenReturn(false);
-        assertFalse(subj.existsById(2, 1));
+        when(typeRepository.existsByIdAndUserId(1, 2)).thenReturn(false);
+        assertFalse(subj.existsById(1, 2));
 
-        verify(typeRepository, times(1)).existsById(1, 2);
+        verify(typeRepository, times(1)).existsByIdAndUserId(1, 2);
         verifyNoInteractions(converter);
     }
 
     @Test
     public void existsById_acceptDAOException_whenCalledWithValidException() {
-        when(typeRepository.existsById(1, 1)).thenThrow(DAOException.class);
+        when(typeRepository.existsByIdAndUserId(1, 1)).thenThrow(DAOException.class);
         assertThrows(DAOException.class, () -> subj.existsById(1, 1));
 
-        verify(typeRepository, times(1)).existsById(1, 1);
+        verify(typeRepository, times(1)).existsByIdAndUserId(1, 1);
         verifyNoInteractions(converter);
-    }*/
+    }
 }

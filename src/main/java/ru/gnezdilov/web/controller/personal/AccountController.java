@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.gnezdilov.service.converter.web.ConverterAccountDTOToAccountAddResponse;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.personal.AccountService;
+import ru.gnezdilov.web.interfaces.AuthorizationSessionTool;
 import ru.gnezdilov.web.json.DeleteRequest;
 import ru.gnezdilov.web.json.BooleanResponse;
 import ru.gnezdilov.web.json.ListResponse;
@@ -25,14 +26,13 @@ import static org.springframework.http.ResponseEntity.status;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/account")
-public class AccountController {
+public class AccountController implements AuthorizationSessionTool {
     private final AccountService accountService;
     private final ConverterAccountDTOToAccountAddResponse converter;
 
     @GetMapping("/show")
     public @ResponseBody ResponseEntity<ListResponse<AccountDTO>> show(HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
+        Integer userId = this.getUserIdFromSession(httpServletRequest);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -43,8 +43,7 @@ public class AccountController {
     @PostMapping("/delete")
     public @ResponseBody ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
                                                                 HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
+        Integer userId = this.getUserIdFromSession(httpServletRequest);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -55,8 +54,7 @@ public class AccountController {
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody ResponseEntity<AccountAddResponse> add(@RequestBody @Valid AccountAddRequest request,
                                                                 HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
+        Integer userId = this.getUserIdFromSession(httpServletRequest);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
