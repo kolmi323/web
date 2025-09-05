@@ -16,7 +16,7 @@ public class ReportController extends WebController {
     private final CategoryTransactionService categoryTransactionService;
 
     @GetMapping()
-    public String account(HttpServletRequest request) {
+    public String report(HttpServletRequest request) {
         Integer userId = this.pullUserIdFromSession(request);
         if (userId == null) {
             return "redirect:/start";
