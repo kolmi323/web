@@ -1,78 +1,141 @@
 package ru.gnezdilov.web.controller.personal;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import ru.gnezdilov.service.converter.web.ConverterTypeDTOToTypeResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.personal.TypeService;
-import ru.gnezdilov.web.interfaces.AuthorizationSessionTool;
-import ru.gnezdilov.web.json.DeleteRequest;
-import ru.gnezdilov.web.json.BooleanResponse;
-import ru.gnezdilov.web.json.ListResponse;
-import ru.gnezdilov.web.json.type.TypeResponse;
-import ru.gnezdilov.web.json.type.add.TypeAddRequest;
-import ru.gnezdilov.web.json.type.update.TypeUpdateRequest;
+import ru.gnezdilov.web.WebController;
+import ru.gnezdilov.web.form.DeleteForm;
+import ru.gnezdilov.web.form.type.TypeAddForm;
+import ru.gnezdilov.web.form.type.TypeUpdateForm;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.http.ResponseEntity.status;
-
+@Controller
 @RequiredArgsConstructor
-@RestController
-@RequestMapping("/type")
-public class TypeController implements AuthorizationSessionTool {
+@RequestMapping("type")
+public class TypeController extends WebController {
     private final TypeService typeService;
-    private final ConverterTypeDTOToTypeResponse converter;
+
+    @GetMapping()
+    public String type(HttpServletRequest request) {
+        Integer userId = this.pullUserIdFromSession(request);
+        if (userId == null) {
+            return "redirect:/start";
+        }
+        return "personal/type/type_main";
+    }
 
     @GetMapping("/show")
-    public @ResponseBody ResponseEntity<ListResponse<TypeDTO>> show(HttpServletRequest request) {
-        Integer userId = this.getUserIdFromSession(request);
+    public String showTypes(HttpServletRequest request,
+                            Model model) {
+        Integer userId = this.pullUserIdFromSession(request);
         if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
+            return "redirect:/start";
         }
         List<TypeDTO> types = typeService.getAll(userId);
-        return ok(new ListResponse<>(types));
+        model.addAttribute("types", types);
+        return "personal/type/type_show";
+    }
+
+    @GetMapping("/add")
+    public String addType(Model model) {
+        model.addAttribute("form", new TypeAddForm());
+        model.addAttribute("message", " ");
+        return "personal/type/type_add";
     }
 
     @PostMapping("/add")
-    public @ResponseBody ResponseEntity<TypeResponse> add(@RequestBody @Valid TypeAddRequest request,
-                                                          HttpServletRequest httpServletRequest) {
-        Integer userId = this.getUserIdFromSession(httpServletRequest);
+    public String addType(@ModelAttribute("form") @Valid TypeAddForm form,
+                          BindingResult result,
+                          Model model,
+                          HttpServletRequest request) {
+        Integer userId = this.pullUserIdFromSession(request);
         if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
+            return "redirect:/start";
         }
-        TypeDTO type = typeService.create(userId, request.getName());
-        if (type == null) {
-            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        if (!result.hasErrors()) {
+            try {
+                TypeDTO type = typeService.create(userId, form.getName());
+                if (type != null) {
+                    model.addAttribute("message", "Account " + type.getId() + " - created");
+                }
+            } catch (Exception e) {
+                result.addError(new FieldError("form", "name", e.getMessage()));
+            }
         }
-        return ok(Objects.requireNonNull(converter.convert(type)));
+        model.addAttribute("form", form);
+        return "personal/type/type_add";
     }
 
-    @PostMapping("/delete")
-    public @ResponseBody ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
-                                                                HttpServletRequest httpServletRequest) {
-        Integer userId = this.getUserIdFromSession(httpServletRequest);
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
-        }
-        return ok(new BooleanResponse(typeService.delete(request.getId(), userId)));
+    @GetMapping("/update")
+    public String updateType(Model model) {
+        model.addAttribute("form", new TypeUpdateForm());
+        model.addAttribute("message", " ");
+        return "personal/type/type_update";
     }
 
     @PostMapping("/update")
-    public @ResponseBody ResponseEntity<BooleanResponse> update(@RequestBody @Valid TypeUpdateRequest request,
-                                                                   HttpServletRequest httpServletRequest) {
-        Integer userId = this.getUserIdFromSession(httpServletRequest);
+    public String updateType(@ModelAttribute("form") @Valid TypeUpdateForm form,
+                             BindingResult result,
+                             Model model,
+                             HttpServletRequest request) {
+        Integer userId = this.pullUserIdFromSession(request);
         if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
+            return "redirect:/start";
         }
+        if (!result.hasErrors()) {
+            try {
+                if (typeService.edit(form.getId(), userId, form.getNewName())) {
+                    model.addAttribute("message", "Type successfully update");
+                } else {
+                    model.addAttribute("message", "Update failed");
+                }
+            } catch (Exception e) {
+                result.addError(new FieldError("form", "name", e.getMessage()));
+            }
+        }
+        model.addAttribute("form", form);
+        return "personal/type/type_update";
+    }
 
-        return ok(new BooleanResponse(typeService.edit(request.getId(), userId, request.getNewName())));
+    @GetMapping("/delete")
+    public String deleteType(Model model) {
+        model.addAttribute("form", new DeleteForm());
+        model.addAttribute("message", " ");
+        return "personal/type/type_delete";
+    }
+
+    @PostMapping("/delete")
+    public String deleteType(@ModelAttribute("form") @Valid DeleteForm form,
+                             BindingResult result,
+                             Model model,
+                             HttpServletRequest request) {
+        Integer userId = this.pullUserIdFromSession(request);
+        if (userId == null) {
+            return "redirect:/start";
+        }
+        if (!result.hasErrors()) {
+            try {
+                if (typeService.delete(form.getId(), userId)) {
+                    model.addAttribute("message", "Type " + form.getId() + " - successfully deleted");
+                } else {
+                    model.addAttribute("message", "Delete failed");
+                }
+            } catch (Exception e) {
+                result.addError(new FieldError("form", "id", e.getMessage()));
+            }
+        }
+        model.addAttribute("form", form);
+        return "personal/type/type_delete";
     }
 }

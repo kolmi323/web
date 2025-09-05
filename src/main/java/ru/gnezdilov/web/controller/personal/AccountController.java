@@ -1,67 +1,109 @@
 package ru.gnezdilov.web.controller.personal;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import ru.gnezdilov.service.converter.web.ConverterAccountDTOToAccountAddResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.personal.AccountService;
-import ru.gnezdilov.web.interfaces.AuthorizationSessionTool;
-import ru.gnezdilov.web.json.DeleteRequest;
-import ru.gnezdilov.web.json.BooleanResponse;
-import ru.gnezdilov.web.json.ListResponse;
-import ru.gnezdilov.web.json.account.create.AccountAddRequest;
-import ru.gnezdilov.web.json.account.create.AccountAddResponse;
+import ru.gnezdilov.web.WebController;
+import ru.gnezdilov.web.form.account.AccountAddForm;
+import ru.gnezdilov.web.form.DeleteForm;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.http.ResponseEntity.status;
-
+@Controller
 @RequiredArgsConstructor
-@RestController
 @RequestMapping("/account")
-public class AccountController implements AuthorizationSessionTool {
+public class AccountController extends WebController {
     private final AccountService accountService;
-    private final ConverterAccountDTOToAccountAddResponse converter;
 
-    @GetMapping("/show")
-    public @ResponseBody ResponseEntity<ListResponse<AccountDTO>> show(HttpServletRequest httpServletRequest) {
-        Integer userId = this.getUserIdFromSession(httpServletRequest);
+    @GetMapping()
+    public String account(HttpServletRequest request) {
+        Integer userId = this.pullUserIdFromSession(request);
         if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
+            return "redirect:/start";
         }
-        List<AccountDTO> accounts = accountService.getAll(userId);
-        return ok(new ListResponse<>(accounts));
+        return "personal/account/account_main";
     }
 
-    @PostMapping("/delete")
-    public @ResponseBody ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
-                                                                HttpServletRequest httpServletRequest) {
-        Integer userId = this.getUserIdFromSession(httpServletRequest);
+    @GetMapping("/show")
+    public String showAccount(HttpServletRequest request,
+                              Model model) {
+        Integer userId = this.pullUserIdFromSession(request);
         if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
+            return "redirect:/start";
         }
-        return ok(new BooleanResponse(accountService.delete(request.getId(), userId)));
+        List<AccountDTO> accounts = accountService.getAll(userId);
+        model.addAttribute("accounts", accounts);
+        return "personal/account/account_show";
+    }
+
+    @GetMapping("/add")
+    public String addAccount(Model model) {
+        model.addAttribute("form", new AccountAddForm());
+        model.addAttribute("message", " ");
+        return "personal/account/account_add";
     }
 
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody ResponseEntity<AccountAddResponse> add(@RequestBody @Valid AccountAddRequest request,
-                                                                HttpServletRequest httpServletRequest) {
-        Integer userId = this.getUserIdFromSession(httpServletRequest);
+    public String addAccount(@ModelAttribute("form") @Valid AccountAddForm form,
+                             BindingResult result,
+                             Model model,
+                             HttpServletRequest request) {
+        Integer userId = this.pullUserIdFromSession(request);
         if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
+            return "redirect:/start";
         }
-        AccountDTO account = accountService.create(userId, request.getName(), request.getBalance());
-        if (account == null) {
-            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        if (!result.hasErrors()) {
+            try {
+                AccountDTO account = accountService.create(userId, form.getName(), form.getBalance());
+                if (account != null) {
+                    model.addAttribute("message", "Account " + account.getId() + " - created");
+                }
+            } catch (Exception e) {
+                result.addError(new FieldError("form", "name", e.getMessage()));
+            }
         }
-        return ok(Objects.requireNonNull(converter.convert(account)));
+        model.addAttribute("form", form);
+        return "personal/account/account_add";
+    }
+
+    @GetMapping("/delete")
+    public String deleteAccount(Model model) {
+        model.addAttribute("form", new DeleteForm());
+        model.addAttribute("message", " ");
+        return "personal/account/account_delete";
+    }
+
+    @PostMapping("/delete")
+    public String deleteAccount(@ModelAttribute("form") @Valid DeleteForm form,
+                             BindingResult result,
+                             Model model,
+                             HttpServletRequest request) {
+        Integer userId = this.pullUserIdFromSession(request);
+        if (userId == null) {
+            return "redirect:/start";
+        }
+        if (!result.hasErrors()) {
+            try {
+                if (accountService.delete(form.getId(), userId)) {
+                    model.addAttribute("message", "Account " + form.getId() + " - deleted");
+                } else {
+                    model.addAttribute("message", "Deleted failed");
+                }
+            } catch (Exception e) {
+                result.addError(new FieldError("form", "id", e.getMessage()));
+            }
+        }
+        model.addAttribute("form", form);
+        return "personal/account/account_delete";
     }
 }

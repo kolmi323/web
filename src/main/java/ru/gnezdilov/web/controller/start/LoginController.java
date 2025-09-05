@@ -8,42 +8,43 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.service.AuthService;
 import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.web.WebController;
-import ru.gnezdilov.web.form.RegisterForm;
+import ru.gnezdilov.web.form.LoginForm;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
-public class RegisterController extends WebController {
+public class LoginController extends WebController {
     private final AuthService authService;
 
-    @GetMapping("/register")
-    public String register(Model model) {
-        model.addAttribute("form", new RegisterForm());
-        return "register";
+    @GetMapping("/login")
+    public String login(Model model) {
+        model.addAttribute("form", new LoginForm());
+        return "login";
     }
 
-    @PostMapping("/register")
-    public String register(@ModelAttribute("form") @Valid RegisterForm form,
-                           BindingResult result,
-                           Model model,
-                           HttpServletRequest request) {
-        try {
-            if (!result.hasErrors()) {
-                UserDTO user = authService.createNewUser(form.getName(), form.getEmail(), form.getPassword());
+    @PostMapping("/login")
+    public String login(@ModelAttribute("form") @Valid LoginForm form,
+                        BindingResult result,
+                        Model model,
+                        HttpServletRequest request) {
+        if (!result.hasErrors()) {
+            try {
+                 UserDTO user = authService.authorization(form.getEmail(), form.getPassword());
                 if (user != null) {
                     this.putUserIdToSession(request, user.getId());
-                    return "redirect:/";
+                    return "redirect:/personal";
                 }
+            } catch (NotFoundException e) {
+                result.addError(new FieldError("form", "email", "Invalid email or password"));
             }
-        } catch (Exception e) {
-            result.addError(new FieldError("form", "name", e.getMessage()));
         }
         model.addAttribute("form", form);
-        return "register";
+        return "login";
     }
 }
