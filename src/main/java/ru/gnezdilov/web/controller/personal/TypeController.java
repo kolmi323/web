@@ -68,6 +68,8 @@ public class TypeController extends WebController {
                 TypeDTO type = typeService.create(userId, form.getName());
                 if (type != null) {
                     model.addAttribute("message", "Account " + type.getId() + " - created");
+                } else {
+                    model.addAttribute("message", " ");
                 }
             } catch (Exception e) {
                 result.addError(new FieldError("form", "name", e.getMessage()));
