@@ -27,7 +27,7 @@ public class TransactionApiController extends ApiController {
     private final ConverterTransactionDTOToTransactionAddResponse converter;
 
     @PostMapping("/add")
-    public @ResponseBody ResponseEntity<TransactionAddResponse> add(@RequestBody @Valid TransactionAddRequest request,
+    public ResponseEntity<TransactionAddResponse> add(@RequestBody @Valid TransactionAddRequest request,
                                                                     HttpServletRequest httpServletRequest) {
         Integer userId = this.pullUserIdFromSession(httpServletRequest);
         if (userId == null) {

@@ -30,7 +30,7 @@ public class AccountApiController extends ApiController {
     private final ConverterAccountDTOToAccountAddResponse converter;
 
     @GetMapping("/show")
-    public @ResponseBody ResponseEntity<ListResponse<AccountDTO>> show(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<ListResponse<AccountDTO>> show(HttpServletRequest httpServletRequest) {
         Integer userId = this.pullUserIdFromSession(httpServletRequest);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
@@ -40,7 +40,7 @@ public class AccountApiController extends ApiController {
     }
 
     @PostMapping("/delete")
-    public @ResponseBody ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
+    public ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
                                                                 HttpServletRequest httpServletRequest) {
         Integer userId = this.pullUserIdFromSession(httpServletRequest);
         if (userId == null) {
@@ -51,7 +51,7 @@ public class AccountApiController extends ApiController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody ResponseEntity<AccountAddResponse> add(@RequestBody @Valid AccountAddRequest request,
+    public ResponseEntity<AccountAddResponse> add(@RequestBody @Valid AccountAddRequest request,
                                                                 HttpServletRequest httpServletRequest) {
         Integer userId = this.pullUserIdFromSession(httpServletRequest);
         if (userId == null) {

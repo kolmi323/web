@@ -18,18 +18,6 @@ import java.util.Map;
 public class CategoryTransactionDAO {
     private final CategoryTransactionRepository categoryTransactionRepository;
 
-    public CategoryTransactionModel insert(int typeId, int transactionId, EntityManager em) {
-        try {
-            CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel();
-            categoryTransactionModel.setTypeId(typeId);
-            categoryTransactionModel.setTransactionId(transactionId);
-            categoryTransactionRepository.save(categoryTransactionModel);
-            return categoryTransactionModel;
-        } catch (PersistenceException e) {
-            throw new DAOException(e);
-        }
-    }
-
     public Map<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
         List<Object[]> resultIncoming = categoryTransactionRepository.getIncomingTransaction(userId, startDate, endDate);
         return handleResultAndReturnMapReport(resultIncoming);

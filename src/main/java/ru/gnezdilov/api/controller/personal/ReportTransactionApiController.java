@@ -24,7 +24,7 @@ public class ReportTransactionApiController extends ApiController {
     private final CategoryTransactionService categoryTransactionService;
 
     @GetMapping("/incoming")
-    public @ResponseBody ResponseEntity<CategoryTransactionResponse> getIncomingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
+    public ResponseEntity<CategoryTransactionResponse> getIncomingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
                                                                                             HttpServletRequest httpServletRequest) {
         Integer userId = this.pullUserIdFromSession(httpServletRequest);
         if (userId == null) {
@@ -36,7 +36,7 @@ public class ReportTransactionApiController extends ApiController {
     }
 
     @GetMapping("/outgoing")
-    public @ResponseBody ResponseEntity<CategoryTransactionResponse> getOutgoingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
+    public ResponseEntity<CategoryTransactionResponse> getOutgoingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
                                                                                             HttpServletRequest httpServletRequest) {
         Integer userId = this.pullUserIdFromSession(httpServletRequest);
         if (userId == null) {

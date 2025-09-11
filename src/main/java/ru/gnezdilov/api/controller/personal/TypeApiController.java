@@ -31,7 +31,7 @@ public class TypeApiController extends ApiController {
     private final ConverterTypeDTOToTypeResponse converter;
 
     @GetMapping("/show")
-    public @ResponseBody ResponseEntity<ListResponse<TypeDTO>> show(HttpServletRequest request) {
+    public ResponseEntity<ListResponse<TypeDTO>> show(HttpServletRequest request) {
         Integer userId = this.pullUserIdFromSession(request);
         if (userId == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
@@ -41,7 +41,7 @@ public class TypeApiController extends ApiController {
     }
 
     @PostMapping("/add")
-    public @ResponseBody ResponseEntity<TypeResponse> add(@RequestBody @Valid TypeAddRequest request,
+    public ResponseEntity<TypeResponse> add(@RequestBody @Valid TypeAddRequest request,
                                                           HttpServletRequest httpServletRequest) {
         Integer userId = this.pullUserIdFromSession(httpServletRequest);
         if (userId == null) {
@@ -55,7 +55,7 @@ public class TypeApiController extends ApiController {
     }
 
     @PostMapping("/delete")
-    public @ResponseBody ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
+    public ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
                                                                 HttpServletRequest httpServletRequest) {
         Integer userId = this.pullUserIdFromSession(httpServletRequest);
         if (userId == null) {
@@ -65,7 +65,7 @@ public class TypeApiController extends ApiController {
     }
 
     @PostMapping("/update")
-    public @ResponseBody ResponseEntity<BooleanResponse> update(@RequestBody @Valid TypeUpdateRequest request,
+    public ResponseEntity<BooleanResponse> update(@RequestBody @Valid TypeUpdateRequest request,
                                                                    HttpServletRequest httpServletRequest) {
         Integer userId = this.pullUserIdFromSession(httpServletRequest);
         if (userId == null) {

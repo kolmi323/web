@@ -28,7 +28,7 @@ public class AuthApiController extends ApiController {
     private final ConverterUserDTOToAuthResponse converter;
 
     @PostMapping("/login")
-    public @ResponseBody ResponseEntity<AuthResponse> auth(@RequestBody @Valid AuthRequest authRequest,
+    public ResponseEntity<AuthResponse> auth(@RequestBody @Valid AuthRequest authRequest,
                                                            HttpServletRequest httpServletRequest) {
         UserDTO user = authService.authorization(authRequest.getEmail(), authRequest.getPassword());
         if (user == null) {

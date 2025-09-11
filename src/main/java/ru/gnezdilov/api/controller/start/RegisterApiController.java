@@ -28,7 +28,7 @@ public class RegisterApiController extends ApiController {
     private final ConverterUserDTOToRegisterResponse converter;
 
     @PostMapping("/register")
-    public @ResponseBody ResponseEntity<RegisterResponse> register(@RequestBody @Valid RegisterRequest registerRequest,
+    public ResponseEntity<RegisterResponse> register(@RequestBody @Valid RegisterRequest registerRequest,
                                                                    HttpServletRequest httpServletRequest) {
         UserDTO user = authService.createNewUser(registerRequest.getName(), registerRequest.getEmail(), registerRequest.getPassword());
         if (user == null) {
