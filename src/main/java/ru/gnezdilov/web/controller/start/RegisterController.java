@@ -36,8 +36,8 @@ public class RegisterController extends WebController {
             if (!result.hasErrors()) {
                 UserDTO user = authService.createNewUser(form.getName(), form.getEmail(), form.getPassword());
                 if (user != null) {
-                    this.putUserIdToSession(request, user.getId());
-                    return "redirect:/";
+                    this.wrapUserId(request, user.getId());
+                    return "redirect:/personal";
                 }
             }
         } catch (Exception e) {

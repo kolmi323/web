@@ -27,20 +27,14 @@ public class AccountController extends WebController {
 
     @GetMapping()
     public String account(HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        this.extractUserId(request);
         return "personal/account/account_main";
     }
 
     @GetMapping("/show")
     public String showAccount(HttpServletRequest request,
                               Model model) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        Integer userId = this.extractUserId(request);
         List<AccountDTO> accounts = accountService.getAll(userId);
         model.addAttribute("accounts", accounts);
         return "personal/account/account_show";
@@ -58,10 +52,7 @@ public class AccountController extends WebController {
                              BindingResult result,
                              Model model,
                              HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
             try {
                 AccountDTO account = accountService.create(userId, form.getName(), form.getBalance());
@@ -88,10 +79,7 @@ public class AccountController extends WebController {
                              BindingResult result,
                              Model model,
                              HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
             try {
                 if (accountService.delete(form.getId(), userId)) {

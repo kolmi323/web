@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.gnezdilov.api.ApiController;
+import ru.gnezdilov.api.AbstractController;
+import ru.gnezdilov.api.controller.ApiController;
 import ru.gnezdilov.api.converter.ConverterTypeDTOToTypeResponse;
 import ru.gnezdilov.api.json.BooleanResponse;
 import ru.gnezdilov.api.json.DeleteRequest;
@@ -32,10 +33,7 @@ public class TypeApiController extends ApiController {
 
     @GetMapping("/show")
     public ResponseEntity<ListResponse<TypeDTO>> show(HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Integer userId = this.extractUserId(request);
         List<TypeDTO> types = typeService.getAll(userId);
         return ok(new ListResponse<>(types));
     }
@@ -43,10 +41,7 @@ public class TypeApiController extends ApiController {
     @PostMapping("/add")
     public ResponseEntity<TypeResponse> add(@RequestBody @Valid TypeAddRequest request,
                                                           HttpServletRequest httpServletRequest) {
-        Integer userId = this.pullUserIdFromSession(httpServletRequest);
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Integer userId = this.extractUserId(httpServletRequest);
         TypeDTO type = typeService.create(userId, request.getName());
         if (type == null) {
             return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -57,21 +52,14 @@ public class TypeApiController extends ApiController {
     @PostMapping("/delete")
     public ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
                                                                 HttpServletRequest httpServletRequest) {
-        Integer userId = this.pullUserIdFromSession(httpServletRequest);
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Integer userId = this.extractUserId(httpServletRequest);
         return ok(new BooleanResponse(typeService.delete(request.getId(), userId)));
     }
 
     @PostMapping("/update")
     public ResponseEntity<BooleanResponse> update(@RequestBody @Valid TypeUpdateRequest request,
                                                                    HttpServletRequest httpServletRequest) {
-        Integer userId = this.pullUserIdFromSession(httpServletRequest);
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
-        }
-
+        Integer userId = this.extractUserId(httpServletRequest);
         return ok(new BooleanResponse(typeService.edit(request.getId(), userId, request.getNewName())));
     }
 }

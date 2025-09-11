@@ -28,20 +28,14 @@ public class TypeController extends WebController {
 
     @GetMapping()
     public String type(HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        this.extractUserId(request);
         return "personal/type/type_main";
     }
 
     @GetMapping("/show")
     public String showTypes(HttpServletRequest request,
                             Model model) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        Integer userId = this.extractUserId(request);
         List<TypeDTO> types = typeService.getAll(userId);
         model.addAttribute("types", types);
         return "personal/type/type_show";
@@ -59,10 +53,7 @@ public class TypeController extends WebController {
                           BindingResult result,
                           Model model,
                           HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
             try {
                 TypeDTO type = typeService.create(userId, form.getName());
@@ -91,10 +82,7 @@ public class TypeController extends WebController {
                              BindingResult result,
                              Model model,
                              HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
             try {
                 if (typeService.edit(form.getId(), userId, form.getNewName())) {
@@ -122,10 +110,7 @@ public class TypeController extends WebController {
                              BindingResult result,
                              Model model,
                              HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
             try {
                 if (typeService.delete(form.getId(), userId)) {

@@ -31,10 +31,7 @@ public class ReportController extends WebController {
 
     @GetMapping()
     public String report(HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        this.extractUserId(request);
         return "personal/report/report_main";
     }
 
@@ -67,10 +64,7 @@ public class ReportController extends WebController {
     @GetMapping("/show")
     public String showReport(Model model,
                               HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        Integer userId = this.extractUserId(request);
         Map<String, BigDecimal> transactions = new HashMap<>();
         String typeReport = getDataFromSession(request, "typeReport");
         if (typeReport.equals(NAME_INCOMING)) {
@@ -98,10 +92,7 @@ public class ReportController extends WebController {
                               Model model,
                               HttpServletRequest request,
                               String typeReport) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        this.extractUserId(request);
         if (!result.hasErrors()) {
             try {
                 HttpSession session = request.getSession();

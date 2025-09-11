@@ -29,10 +29,7 @@ public class TransactionController extends WebController {
 
     @GetMapping()
     public String transaction(HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        this.extractUserId(request);
         return "personal/transaction/transaction_main";
     }
 
@@ -48,10 +45,7 @@ public class TransactionController extends WebController {
                                  BindingResult result,
                                  Model model,
                                  HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
             try {
                 List<Integer> typeIds = getIds(form.getTypeIds());

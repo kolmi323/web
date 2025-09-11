@@ -1,10 +1,13 @@
 package ru.gnezdilov.api.controller.personal;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import ru.gnezdilov.api.ApiController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ru.gnezdilov.api.AbstractController;
+import ru.gnezdilov.api.controller.ApiController;
 import ru.gnezdilov.api.json.categorytransaction.CategoryTransactionRequest;
 import ru.gnezdilov.api.json.categorytransaction.CategoryTransactionResponse;
 import ru.gnezdilov.service.personal.CategoryTransactionService;
@@ -15,7 +18,6 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.http.ResponseEntity.status;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,10 +28,7 @@ public class ReportTransactionApiController extends ApiController {
     @GetMapping("/incoming")
     public ResponseEntity<CategoryTransactionResponse> getIncomingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
                                                                                             HttpServletRequest httpServletRequest) {
-        Integer userId = this.pullUserIdFromSession(httpServletRequest);
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Integer userId = this.extractUserId(httpServletRequest);
         Map<String, BigDecimal> transactions = categoryTransactionService.getIncomingTransactions(userId,
                 request.getDateAfter(), request.getDateBefore());
         return ok(new CategoryTransactionResponse(transactions));
@@ -38,10 +37,7 @@ public class ReportTransactionApiController extends ApiController {
     @GetMapping("/outgoing")
     public ResponseEntity<CategoryTransactionResponse> getOutgoingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
                                                                                             HttpServletRequest httpServletRequest) {
-        Integer userId = this.pullUserIdFromSession(httpServletRequest);
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Integer userId = this.extractUserId(httpServletRequest);
         Map<String, BigDecimal> transactions =  categoryTransactionService.getOutgoingTransactions(userId,
                 request.getDateAfter(), request.getDateBefore());
         return ok(new CategoryTransactionResponse(transactions));

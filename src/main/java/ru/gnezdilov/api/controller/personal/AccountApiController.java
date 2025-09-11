@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.gnezdilov.api.ApiController;
+import ru.gnezdilov.api.AbstractController;
+import ru.gnezdilov.api.controller.ApiController;
 import ru.gnezdilov.api.converter.ConverterAccountDTOToAccountAddResponse;
 import ru.gnezdilov.api.json.BooleanResponse;
 import ru.gnezdilov.api.json.DeleteRequest;
-import ru.gnezdilov.api.json.ListResponse;
 import ru.gnezdilov.api.json.account.create.AccountAddRequest;
 import ru.gnezdilov.api.json.account.create.AccountAddResponse;
 import ru.gnezdilov.service.dto.AccountDTO;
@@ -30,22 +30,15 @@ public class AccountApiController extends ApiController {
     private final ConverterAccountDTOToAccountAddResponse converter;
 
     @GetMapping("/show")
-    public ResponseEntity<ListResponse<AccountDTO>> show(HttpServletRequest httpServletRequest) {
-        Integer userId = this.pullUserIdFromSession(httpServletRequest);
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
-        }
-        List<AccountDTO> accounts = accountService.getAll(userId);
-        return ok(new ListResponse<>(accounts));
+    public List<AccountDTO> show(HttpServletRequest httpServletRequest) {
+        Integer userId = this.extractUserId(httpServletRequest);
+        return accountService.getAll(userId);
     }
 
     @PostMapping("/delete")
     public ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
                                                                 HttpServletRequest httpServletRequest) {
-        Integer userId = this.pullUserIdFromSession(httpServletRequest);
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Integer userId = this.extractUserId(httpServletRequest);
         return ok(new BooleanResponse(accountService.delete(request.getId(), userId)));
     }
 
@@ -53,10 +46,7 @@ public class AccountApiController extends ApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AccountAddResponse> add(@RequestBody @Valid AccountAddRequest request,
                                                                 HttpServletRequest httpServletRequest) {
-        Integer userId = this.pullUserIdFromSession(httpServletRequest);
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Integer userId = this.extractUserId(httpServletRequest);
         AccountDTO account = accountService.create(userId, request.getName(), request.getBalance());
         if (account == null) {
             return status(HttpStatus.INTERNAL_SERVER_ERROR).build();

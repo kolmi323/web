@@ -5,10 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.gnezdilov.api.ApiController;
+import ru.gnezdilov.api.AbstractController;
+import ru.gnezdilov.api.converter.ConverterUserDTOToAuthResponse;
 import ru.gnezdilov.api.converter.ConverterUserDTOToRegisterResponse;
+import ru.gnezdilov.api.json.auth.AuthRequest;
+import ru.gnezdilov.api.json.auth.AuthResponse;
 import ru.gnezdilov.api.json.register.RegisterRequest;
 import ru.gnezdilov.api.json.register.RegisterResponse;
 import ru.gnezdilov.service.AuthService;
@@ -23,9 +26,11 @@ import static org.springframework.http.ResponseEntity.status;
 
 @RequiredArgsConstructor
 @RestController
-public class RegisterApiController extends ApiController {
+@RequestMapping("/api")
+public class StartApiController extends AbstractController {
     private final AuthService authService;
-    private final ConverterUserDTOToRegisterResponse converter;
+    private final ConverterUserDTOToRegisterResponse converterUserDTOToRegisterResponse;
+    private final ConverterUserDTOToAuthResponse converterUserDTOToAuthResponse;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody @Valid RegisterRequest registerRequest,
@@ -34,7 +39,18 @@ public class RegisterApiController extends ApiController {
         if (user == null) {
             return status(HttpStatus.UNAUTHORIZED).build();
         }
-        this.putUserIdToSession(httpServletRequest, user.getId());
-        return ok(Objects.requireNonNull(converter.convert(user)));
+        this.wrapUserId(httpServletRequest, user.getId());
+        return ok(converterUserDTOToRegisterResponse.convert(user));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> auth(@RequestBody @Valid AuthRequest authRequest,
+                                             HttpServletRequest httpServletRequest) {
+        UserDTO user = authService.authorization(authRequest.getEmail(), authRequest.getPassword());
+        if (user == null) {
+            return status(HttpStatus.UNAUTHORIZED).build();
+        }
+        this.wrapUserId(httpServletRequest, user.getId());
+        return ok(converterUserDTOToAuthResponse.convert(user));
     }
 }

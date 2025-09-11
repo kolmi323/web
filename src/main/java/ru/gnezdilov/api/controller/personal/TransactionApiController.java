@@ -3,8 +3,12 @@ package ru.gnezdilov.api.controller.personal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import ru.gnezdilov.api.ApiController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ru.gnezdilov.api.AbstractController;
+import ru.gnezdilov.api.controller.ApiController;
 import ru.gnezdilov.api.converter.ConverterTransactionDTOToTransactionAddResponse;
 import ru.gnezdilov.api.json.transaction.add.TransactionAddRequest;
 import ru.gnezdilov.api.json.transaction.add.TransactionAddResponse;
@@ -29,10 +33,7 @@ public class TransactionApiController extends ApiController {
     @PostMapping("/add")
     public ResponseEntity<TransactionAddResponse> add(@RequestBody @Valid TransactionAddRequest request,
                                                                     HttpServletRequest httpServletRequest) {
-        Integer userId = this.pullUserIdFromSession(httpServletRequest);
-        if (userId == null) {
-            return status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Integer userId = this.extractUserId(httpServletRequest);
         TransactionDTO transaction = transactionService.create(
                 Arrays.asList(request.getTypesIds()), userId,
                 request.getSendingId(), request.getReceivingId(), request.getAmount()

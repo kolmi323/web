@@ -37,7 +37,7 @@ public class LoginController extends WebController {
             try {
                  UserDTO user = authService.authorization(form.getEmail(), form.getPassword());
                 if (user != null) {
-                    this.putUserIdToSession(request, user.getId());
+                    this.wrapUserId(request, user.getId());
                     return "redirect:/personal";
                 }
             } catch (NotFoundException e) {

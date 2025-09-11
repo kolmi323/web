@@ -17,10 +17,7 @@ public class PersonalController extends WebController {
 
     @GetMapping("/personal")
     public String index(Model model, HttpServletRequest request) {
-        Integer userId = this.pullUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/start";
-        }
+        Integer userId = this.extractUserId(request);
         UserDTO user = userService.getUserById(userId);
         if (user == null) {
             this.removeAttributeUserIdFromSession(request);
