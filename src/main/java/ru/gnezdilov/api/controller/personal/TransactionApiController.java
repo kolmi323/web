@@ -3,10 +3,7 @@ package ru.gnezdilov.api.controller.personal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.gnezdilov.api.AbstractController;
 import ru.gnezdilov.api.controller.ApiController;
 import ru.gnezdilov.api.converter.ConverterTransactionDTOToTransactionAddResponse;
@@ -31,6 +28,7 @@ public class TransactionApiController extends ApiController {
     private final ConverterTransactionDTOToTransactionAddResponse converter;
 
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<TransactionAddResponse> add(@RequestBody @Valid TransactionAddRequest request,
                                                                     HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);

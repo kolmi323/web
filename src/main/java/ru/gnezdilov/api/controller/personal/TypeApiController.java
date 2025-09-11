@@ -39,6 +39,7 @@ public class TypeApiController extends ApiController {
     }
 
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<TypeResponse> add(@RequestBody @Valid TypeAddRequest request,
                                                           HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);

@@ -36,10 +36,10 @@ public class AccountApiController extends ApiController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
+    public boolean delete(@RequestBody @Valid DeleteRequest request,
                                                                 HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);
-        return ok(new BooleanResponse(accountService.delete(request.getId(), userId)));
+        return accountService.delete(request.getId(), userId);
     }
 
     @PostMapping("/add")
@@ -51,6 +51,6 @@ public class AccountApiController extends ApiController {
         if (account == null) {
             return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ok(Objects.requireNonNull(converter.convert(account)));
+        return ok(converter.convert(account));
     }
 }

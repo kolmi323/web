@@ -26,20 +26,20 @@ public class ReportTransactionApiController extends ApiController {
     private final CategoryTransactionService categoryTransactionService;
 
     @GetMapping("/incoming")
-    public ResponseEntity<CategoryTransactionResponse> getIncomingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
+    public Map<String, BigDecimal> getIncomingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
                                                                                             HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);
         Map<String, BigDecimal> transactions = categoryTransactionService.getIncomingTransactions(userId,
                 request.getDateAfter(), request.getDateBefore());
-        return ok(new CategoryTransactionResponse(transactions));
+        return transactions;
     }
 
     @GetMapping("/outgoing")
-    public ResponseEntity<CategoryTransactionResponse> getOutgoingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
+    public Map<String, BigDecimal> getOutgoingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
                                                                                             HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);
         Map<String, BigDecimal> transactions =  categoryTransactionService.getOutgoingTransactions(userId,
                 request.getDateAfter(), request.getDateBefore());
-        return ok(new CategoryTransactionResponse(transactions));
+        return transactions;
     }
 }
