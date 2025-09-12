@@ -54,13 +54,11 @@ public class AccountController extends WebController {
                              HttpServletRequest request) {
         Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
-            try {
-                AccountDTO account = accountService.create(userId, form.getName(), form.getBalance());
-                if (account != null) {
-                    model.addAttribute("message", "Account " + account.getId() + " - created");
-                }
-            } catch (Exception e) {
-                result.addError(new FieldError("form", "name", e.getMessage()));
+            AccountDTO account = accountService.create(userId, form.getName(), form.getBalance());
+            if (account != null) {
+                model.addAttribute("message", "Account " + account.getId() + " - created");
+            } else {
+                model.addAttribute("message", " ");
             }
         }
         model.addAttribute("form", form);

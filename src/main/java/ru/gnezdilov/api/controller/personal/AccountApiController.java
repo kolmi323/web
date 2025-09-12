@@ -44,13 +44,10 @@ public class AccountApiController extends ApiController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AccountAddResponse> add(@RequestBody @Valid AccountAddRequest request,
+    public AccountAddResponse add(@RequestBody @Valid AccountAddRequest request,
                                                                 HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);
         AccountDTO account = accountService.create(userId, request.getName(), request.getBalance());
-        if (account == null) {
-            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-        return ok(converter.convert(account));
+        return converter.convert(account);
     }
 }

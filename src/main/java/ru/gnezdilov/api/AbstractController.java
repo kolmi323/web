@@ -1,6 +1,7 @@
 package ru.gnezdilov.api;
 
 import ru.gnezdilov.api.exception.UnauthorizedException;
+import ru.gnezdilov.service.dto.UserDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,5 +22,11 @@ public abstract class AbstractController {
         }
         HttpSession session = request.getSession();
         session.setAttribute("userId", userId);
+    }
+
+    protected void handleUser(UserDTO user) {
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
     }
 }

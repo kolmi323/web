@@ -20,7 +20,7 @@ public class PersonalController extends WebController {
         Integer userId = this.extractUserId(request);
         UserDTO user = userService.getUserById(userId);
         if (user == null) {
-            this.removeAttributeUserIdFromSession(request);
+            this.removeAttributeFromSession(request, "userId");
             return "redirect:/start";
         }
         model.addAttribute("name", user.getName());

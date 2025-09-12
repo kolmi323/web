@@ -32,35 +32,32 @@ public class TypeApiController extends ApiController {
     private final ConverterTypeDTOToTypeResponse converter;
 
     @GetMapping("/show")
-    public ResponseEntity<ListResponse<TypeDTO>> show(HttpServletRequest request) {
+    public List<TypeDTO> show(HttpServletRequest request) {
         Integer userId = this.extractUserId(request);
         List<TypeDTO> types = typeService.getAll(userId);
-        return ok(new ListResponse<>(types));
+        return types;
     }
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TypeResponse> add(@RequestBody @Valid TypeAddRequest request,
+    public TypeResponse add(@RequestBody @Valid TypeAddRequest request,
                                                           HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);
         TypeDTO type = typeService.create(userId, request.getName());
-        if (type == null) {
-            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-        return ok(Objects.requireNonNull(converter.convert(type)));
+        return converter.convert(type);
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<BooleanResponse> delete(@RequestBody @Valid DeleteRequest request,
+    public boolean delete(@RequestBody @Valid DeleteRequest request,
                                                                 HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);
-        return ok(new BooleanResponse(typeService.delete(request.getId(), userId)));
+        return typeService.delete(request.getId(), userId);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<BooleanResponse> update(@RequestBody @Valid TypeUpdateRequest request,
+    public boolean update(@RequestBody @Valid TypeUpdateRequest request,
                                                                    HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);
-        return ok(new BooleanResponse(typeService.edit(request.getId(), userId, request.getNewName())));
+        return typeService.edit(request.getId(), userId, request.getNewName());
     }
 }

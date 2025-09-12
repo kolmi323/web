@@ -29,16 +29,13 @@ public class TransactionApiController extends ApiController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TransactionAddResponse> add(@RequestBody @Valid TransactionAddRequest request,
+    public TransactionAddResponse add(@RequestBody @Valid TransactionAddRequest request,
                                                                     HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);
         TransactionDTO transaction = transactionService.create(
                 Arrays.asList(request.getTypesIds()), userId,
                 request.getSendingId(), request.getReceivingId(), request.getAmount()
         );
-        if (transaction == null) {
-            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-        return ok(Objects.requireNonNull(converter.convert(transaction)));
+        return converter.convert(transaction);
     }
 }
