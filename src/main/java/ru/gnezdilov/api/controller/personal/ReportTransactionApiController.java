@@ -1,23 +1,18 @@
 package ru.gnezdilov.api.controller.personal;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.gnezdilov.api.AbstractController;
 import ru.gnezdilov.api.controller.ApiController;
 import ru.gnezdilov.api.json.categorytransaction.CategoryTransactionRequest;
-import ru.gnezdilov.api.json.categorytransaction.CategoryTransactionResponse;
 import ru.gnezdilov.service.personal.CategoryTransactionService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Map;
-
-import static org.springframework.http.ResponseEntity.ok;
 
 @RequiredArgsConstructor
 @RestController

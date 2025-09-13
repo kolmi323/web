@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class TransactionDAO {
+public class    TransactionDAO {
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
     private final CategoryTransactionRepository categoryTransactionRepository;

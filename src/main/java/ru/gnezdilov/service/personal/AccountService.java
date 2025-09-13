@@ -1,5 +1,6 @@
 package ru.gnezdilov.service.personal;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.dao.AccountRepository;
 import ru.gnezdilov.dao.entities.AccountModel;
@@ -11,14 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AccountService {
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
     private final ConverterAccountModelToAccountDTO converter;
-
-    public AccountService(AccountRepository dao, ConverterAccountModelToAccountDTO converter) {
-        this.accountRepository = dao;
-        this.converter = converter;
-    }
 
     public boolean existsById(int id, int userId) {
         return this.accountRepository.existsByIdAndUserId(id, userId);

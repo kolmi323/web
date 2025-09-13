@@ -2,14 +2,10 @@ package ru.gnezdilov.api.controller.personal;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.gnezdilov.api.AbstractController;
 import ru.gnezdilov.api.controller.ApiController;
 import ru.gnezdilov.api.converter.ConverterTypeDTOToTypeResponse;
-import ru.gnezdilov.api.json.BooleanResponse;
 import ru.gnezdilov.api.json.DeleteRequest;
-import ru.gnezdilov.api.json.ListResponse;
 import ru.gnezdilov.api.json.type.TypeResponse;
 import ru.gnezdilov.api.json.type.add.TypeAddRequest;
 import ru.gnezdilov.api.json.type.update.TypeUpdateRequest;
@@ -19,10 +15,6 @@ import ru.gnezdilov.service.personal.TypeService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
-
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.http.ResponseEntity.status;
 
 @RequiredArgsConstructor
 @RestController
@@ -55,9 +47,10 @@ public class TypeApiController extends ApiController {
     }
 
     @PostMapping("/update")
-    public boolean update(@RequestBody @Valid TypeUpdateRequest request,
+    public TypeResponse update(@RequestBody @Valid TypeUpdateRequest request,
                                                                    HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);
-        return typeService.edit(request.getId(), userId, request.getNewName());
+        TypeDTO type = typeService.edit(request.getId(), userId, request.getNewName());
+        return converter.convert(type);
     }
 }

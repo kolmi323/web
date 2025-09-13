@@ -18,6 +18,7 @@ import ru.gnezdilov.web.form.type.TypeUpdateForm;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Controller
@@ -85,11 +86,8 @@ public class TypeController extends WebController {
         Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
             try {
-                if (typeService.edit(form.getId(), userId, form.getNewName())) {
-                    model.addAttribute("message", "Type successfully update");
-                } else {
-                    model.addAttribute("message", "Update failed");
-                }
+                TypeDTO type = typeService.edit(form.getId(), userId, form.getNewName());
+                model.addAttribute("message", "Account " + type.getId() + " - modified. New name: " + type.getName());
             } catch (Exception e) {
                 result.addError(new FieldError("form", "name", e.getMessage()));
             }

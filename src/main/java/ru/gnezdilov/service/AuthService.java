@@ -1,5 +1,6 @@
 package ru.gnezdilov.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.dao.UserRepository;
 import ru.gnezdilov.dao.exception.NotFoundException;
@@ -9,16 +10,11 @@ import ru.gnezdilov.service.custominterface.DigestService;
 import ru.gnezdilov.service.dto.UserDTO;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
     private final DigestService digestService;
     private final ConverterUserModelToUserDTO converter;
-
-    public AuthService(UserRepository dao, DigestService digestService, ConverterUserModelToUserDTO converter) {
-        this.userRepository = dao;
-        this.digestService = digestService;
-        this.converter = converter;
-    }
 
     public UserDTO authorization(String email, String password) {
         return userRepository.findByEmailAndPassword(email, digestService.hashPassword(password))

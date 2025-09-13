@@ -161,20 +161,20 @@ public class TypeServiceTest {
 
     @Test
     public void edit_returnTrue_whenCalledWithValidException() {
-        when(typeRepository.updateName(1, 1, "work")).thenReturn(1);
+        TypeModel typeRequest = new TypeModel(1, 1, "hobby");
+        TypeModel typeUpdate = new TypeModel(1, 1, "work");
+        TypeDTO typeDTO = new TypeDTO(1, 1, "work");
 
-        assertTrue(subj.edit(1, 1, "work"));
+        when(typeRepository.findByIdAndUserId(1, 1)).thenReturn(typeRequest);
+        typeUpdate.setName("work");
+        when(typeRepository.save(typeRequest)).thenReturn(typeUpdate);
+        when(converter.convert(typeUpdate)).thenReturn(typeDTO);
 
-        verify(typeRepository, times(1)).updateName(1, 1, "work");
-    }
+        assertEquals(typeDTO, subj.edit(1, 1, "hobby"));
 
-    @Test
-    public void edit_returnFalse_whenCalledWithInvalidException() {
-        when(typeRepository.updateName(1, 2, "work")).thenReturn(0);
-
-        assertFalse(subj.edit(1, 2, "work"));
-
-        verify(typeRepository, times(1)).updateName(1, 2, "work");
+        verify(typeRepository, times(1)).findByIdAndUserId(1, 1);
+        verify(typeRepository, times(1)).save(typeRequest);
+        verify(converter, times(1)).convert(typeUpdate);
     }
 
     @Test

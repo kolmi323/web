@@ -1,5 +1,6 @@
 package ru.gnezdilov.service.personal;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.dao.TransactionDAO;
 import ru.gnezdilov.dao.exception.*;
@@ -13,21 +14,13 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionService {
     private final TransactionDAO transactionDAO;
     private final AccountService accountService;
     private final TypeService typeService;
     private final UserService userService;
     private final ConverterTransactionModelToTransactionDTO converter;
-
-    public TransactionService(TransactionDAO transactionDAO, AccountService accountService, TypeService typeService,
-                              UserService userService, ConverterTransactionModelToTransactionDTO converter) {
-        this.transactionDAO = transactionDAO;
-        this.accountService = accountService;
-        this.typeService = typeService;
-        this.userService = userService;
-        this.converter = converter;
-    }
 
     public TransactionDTO create(List<Integer> typeIds, int userId, int fromAccountId, int toAccountId, BigDecimal amount) {
         validateUser(userId);

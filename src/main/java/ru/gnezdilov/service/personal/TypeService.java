@@ -1,5 +1,6 @@
 package ru.gnezdilov.service.personal;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gnezdilov.dao.entities.TypeModel;
 import ru.gnezdilov.service.dto.TypeDTO;
@@ -10,14 +11,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TypeService {
     private final TypeRepository typeRepository;
     private final ConverterTypeModelToTypeDTO converter;
-
-    public TypeService(TypeRepository dao, ConverterTypeModelToTypeDTO converter) {
-        this.typeRepository = dao;
-        this.converter = converter;
-    }
 
     public List<TypeDTO> getAll(int userId) {
         return this.typeRepository.getAllByUserId(userId).stream()
@@ -29,8 +26,11 @@ public class TypeService {
         return typeRepository.existsByIdAndUserId(id, userId);
     }
 
-    public boolean edit(int id, int userId, String newName) {
-        return this.typeRepository.updateName(id, userId, newName) == 1;
+    public TypeDTO edit(int id, int userId, String newName) {
+        TypeModel type = this.typeRepository.findByIdAndUserId(id, userId);
+        type.setName(newName);
+        return this.converter
+                .convert(this.typeRepository.save(type));
     }
 
     public TypeDTO create(int userId, String name) {

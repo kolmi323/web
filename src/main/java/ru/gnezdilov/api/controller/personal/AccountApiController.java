@@ -2,12 +2,9 @@ package ru.gnezdilov.api.controller.personal;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.gnezdilov.api.AbstractController;
 import ru.gnezdilov.api.controller.ApiController;
 import ru.gnezdilov.api.converter.ConverterAccountDTOToAccountAddResponse;
-import ru.gnezdilov.api.json.BooleanResponse;
 import ru.gnezdilov.api.json.DeleteRequest;
 import ru.gnezdilov.api.json.account.create.AccountAddRequest;
 import ru.gnezdilov.api.json.account.create.AccountAddResponse;
@@ -17,10 +14,6 @@ import ru.gnezdilov.service.personal.AccountService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
-
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.http.ResponseEntity.status;
 
 @RequiredArgsConstructor
 @RestController

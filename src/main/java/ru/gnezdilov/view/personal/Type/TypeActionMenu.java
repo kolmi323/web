@@ -32,8 +32,9 @@ public class TypeActionMenu {
     public void updateTypeTransaction(UserDTO currentUser) {
         int typeId = this.utils.enterId();
         String newName = this.utils.enterNameType(true);
-        if (typeService.edit(typeId, currentUser.getId(), newName)) {
-            System.out.println("Update success");
+        TypeDTO type = this.typeService.edit(typeId, currentUser.getId(), newName);
+        if (type != null) {
+            System.out.println("Type updated. New type: " + type.getName());
         } else {
             System.out.println("Update failed");
         }
