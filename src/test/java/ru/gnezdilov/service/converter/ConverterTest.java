@@ -1,14 +1,8 @@
 package ru.gnezdilov.service.converter;
 
 import org.junit.Test;
-import ru.gnezdilov.dao.entities.AccountModel;
-import ru.gnezdilov.dao.entities.TransactionModel;
-import ru.gnezdilov.dao.entities.TypeModel;
-import ru.gnezdilov.dao.entities.UserModel;
-import ru.gnezdilov.service.dto.AccountDTO;
-import ru.gnezdilov.service.dto.TransactionDTO;
-import ru.gnezdilov.service.dto.TypeDTO;
-import ru.gnezdilov.service.dto.UserDTO;
+import ru.gnezdilov.dao.entities.*;
+import ru.gnezdilov.service.dto.*;
 import org.springframework.core.convert.converter.Converter;
 
 import java.math.BigDecimal;
@@ -56,6 +50,14 @@ public class ConverterTest {
         returnDTO(converter, transactionModel, transactionDTO);
     }
 
+    @Test
+    public void converter_returnCategoryTransactionDTO_whenCalledWithValidArguments() {
+        ConverterCategoryTransactionModelToCategoryTransactionDTO converter = new ConverterCategoryTransactionModelToCategoryTransactionDTO();
+        CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel(1, 1, 1);
+        CategoryTransactionDTO categoryTransactionDTO = new CategoryTransactionDTO(1, 1, 1);
+        returnDTO(converter, categoryTransactionModel, categoryTransactionDTO);
+    }
+
     @Test (expected = NullPointerException.class)
     public void convert_accountThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterAccountModelToAccountDTO converter = new ConverterAccountModelToAccountDTO();
@@ -78,6 +80,12 @@ public class ConverterTest {
     @Test (expected = NullPointerException.class)
     public void converter_transactionThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterTransactionModelToTransactionDTO converter = new ConverterTransactionModelToTransactionDTO();
+        throwNullPointerException(converter);
+    }
+
+    @Test (expected = NullPointerException.class)
+    public void converter_categoryTransactionThrowNullPointerException_whenCalledWithValidArguments() {
+        ConverterCategoryTransactionModelToCategoryTransactionDTO converter = new ConverterCategoryTransactionModelToCategoryTransactionDTO();
         throwNullPointerException(converter);
     }
 

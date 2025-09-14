@@ -31,7 +31,7 @@ public class ReportController extends WebController {
     @GetMapping()
     public String report(HttpServletRequest request) {
         this.extractUserId(request);
-        return "personal/report/reportMain";
+        return "personal/report/main";
     }
 
     @GetMapping("/incoming")
@@ -77,13 +77,13 @@ public class ReportController extends WebController {
         }
         model.addAttribute("transactions", transactions);
         model.addAttribute("type_report", typeReport);
-        return "personal/report/reportShow";
+        return "personal/report/show";
     }
 
     private String reportData(Model model, String typeReport) {
         model.addAttribute("form", new ReportDataForm());
         model.addAttribute("type_report", typeReport);
-        return "personal/report/reportData";
+        return "personal/report/data";
     }
 
     private String reportData(ReportDataForm form,
@@ -101,6 +101,6 @@ public class ReportController extends WebController {
         }
         model.addAttribute("form", form);
         model.addAttribute("type_report", typeReport);
-        return "personal/report/reportData";
+        return "personal/report/data";
     }
 }

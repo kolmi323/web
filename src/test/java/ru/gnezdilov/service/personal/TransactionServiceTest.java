@@ -16,7 +16,6 @@ import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.dto.TransactionDTO;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +26,7 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TransactionServletServiceTest {
+public class TransactionServiceTest {
     @InjectMocks private TransactionService subj;
 
     @Mock private TransactionDAO transactionDAO;
@@ -43,9 +42,9 @@ public class TransactionServletServiceTest {
     public void create_successAndReturnTransactionDTO_whenCalledWithValidArguments() {
         when(userService.existsById(1)).thenReturn(true);
         when(typeService.existsById(1, 1)).thenReturn(true);
-        when(accountService.existsById(1, 1)).thenReturn(true);
-        when(accountService.getById(1, 1)).thenReturn(ACCOUNT_DTO);
-        when(accountService.existsById(2, 1)).thenReturn(true);
+        when(accountService.existsByIdAndUserId(1, 1)).thenReturn(true);
+        when(accountService.getByIdAndUserId(1, 1)).thenReturn(ACCOUNT_DTO);
+        when(accountService.existsByIdAndUserId(2, 1)).thenReturn(true);
 
         TransactionModel transactionModel = new TransactionModel(1, 1, 2, new BigDecimal("500.00"), LocalDate.now());
         when(transactionDAO.insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00"))).thenReturn(transactionModel);
@@ -57,8 +56,8 @@ public class TransactionServletServiceTest {
 
         verify(userService, times(1)).existsById(1);
         verify(typeService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(2, 1);
+        verify(accountService, times(1)).existsByIdAndUserId(1, 1);
+        verify(accountService, times(1)).existsByIdAndUserId(2, 1);
         verify(transactionDAO, times(1)).insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00"));
         verify(converter, times(1)).convert(transactionModel);
     }
@@ -70,19 +69,6 @@ public class TransactionServletServiceTest {
         NotFoundException exception = assertThrows(NotFoundException.class,
                 () -> subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")));
         assertEquals("User not found", exception.getMessage());
-
-        verify(userService, times(1)).existsById(1);
-        verifyNoInteractions(typeService);
-        verifyNoInteractions(accountService);
-        verifyNoInteractions(transactionDAO);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void create_acceptDaoExceptionOnUserDao_whenCalledWithValidArguments() {
-        when(userService.existsById(1)).thenThrow(DAOException.class);
-
-        assertThrows(DAOException.class, () -> subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")));
 
         verify(userService, times(1)).existsById(1);
         verifyNoInteractions(typeService);
@@ -108,21 +94,7 @@ public class TransactionServletServiceTest {
     }
 
     @Test
-    public void create_acceptDAOExceptionOnTypeDao_whenCalledWithValidArguments() {
-        when(userService.existsById(1)).thenReturn(true);
-        when(typeService.existsById(1, 1)).thenThrow(new DAOException(new SQLException()));
-
-        assertThrows(DAOException.class, () -> subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")));
-
-        verify(userService, times(1)).existsById(1);
-        verify(typeService, times(1)).existsById(1, 1);
-        verifyNoInteractions(accountService);
-        verifyNoInteractions(transactionDAO);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void create_acceptIllegalArgument_whenCalledWithInvalidAccountIdsSame() {
+    public void create_acceptIllegalArgumentException_whenCalledWithInvalidAccountIdsSame() {
         when(userService.existsById(1)).thenReturn(true);
         when(typeService.existsById(1, 1)).thenReturn(true);
 
@@ -160,31 +132,14 @@ public class TransactionServletServiceTest {
     public void create_acceptNotFoundSenderAccount_whenCalledWithInvalidFromAccountId() {
         when(userService.existsById(1)).thenReturn(true);
         when(typeService.existsById(1, 1)).thenReturn(true);
-
-        when(accountService.existsById(1, 1))
-                .thenThrow(new NotFoundException("Account with id 1 - not found"));
+        when(accountService.existsByIdAndUserId(1, 1)).thenReturn(false);
 
         NotFoundException exception = assertThrows(NotFoundException.class, () -> subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")));
-        assertEquals("Account with id 1 - not found", exception.getMessage());
+        assertEquals("Account 1 not found", exception.getMessage());
 
         verify(userService, times(1)).existsById(1);
         verify(typeService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(1, 1);
-        verifyNoInteractions(transactionDAO);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void create_acceptDAOExceptionOnSenderAccountDao_whenCalledWithValidArguments() {
-        when(userService.existsById(1)).thenReturn(true);
-        when(typeService.existsById(1, 1)).thenReturn(true);
-        when(accountService.existsById(1, 1)).thenThrow(new DAOException(new SQLException()));
-
-        assertThrows(DAOException.class, () -> subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")));
-
-        verify(userService, times(1)).existsById(1);
-        verify(typeService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(1, 1);
+        verify(accountService, times(1)).existsByIdAndUserId(1, 1);
         verifyNoInteractions(transactionDAO);
         verifyNoInteractions(converter);
     }
@@ -193,8 +148,10 @@ public class TransactionServletServiceTest {
     public void create_acceptInsufficientFunds_whenCalledWithInvalidAmount() {
         when(userService.existsById(1)).thenReturn(true);
         when(typeService.existsById(1, 1)).thenReturn(true);
-        when(accountService.existsById(1, 1)).thenThrow(
-                new InsufficientFundsException("On Sender account 1 has insufficient funds"));
+        when(accountService.existsByIdAndUserId(1, 1)).thenReturn(true);
+
+        AccountDTO account = new AccountDTO(1, 1, "sber", BigDecimal.ZERO);
+        when(accountService.getByIdAndUserId(1, 1)).thenReturn(account);
 
         InsufficientFundsException exception = assertThrows(InsufficientFundsException.class,
                 () -> subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("5000.00")));
@@ -202,7 +159,7 @@ public class TransactionServletServiceTest {
 
         verify(userService, times(1)).existsById(1);
         verify(typeService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(1, 1);
+        verify(accountService, times(1)).existsByIdAndUserId(1, 1);
         verifyNoInteractions(transactionDAO);
         verifyNoInteractions(converter);
     }
@@ -211,36 +168,17 @@ public class TransactionServletServiceTest {
     public void create_acceptNotFoundReceiverAccount_whenCalledWithInvalidToAccountId() {
         when(userService.existsById(1)).thenReturn(true);
         when(typeService.existsById(1, 1)).thenReturn(true);
-        when(accountService.getById(1, 1)).thenReturn(ACCOUNT_DTO);
-        when(accountService.existsById(1, 1)).thenReturn(true);
-        when(accountService.existsById(2, 1))
-                .thenThrow(new NotFoundException("Account with id 2 - not found"));
+        when(accountService.getByIdAndUserId(1, 1)).thenReturn(ACCOUNT_DTO);
+        when(accountService.existsByIdAndUserId(1, 1)).thenReturn(true);
+        when(accountService.existsByIdAndUserId(2, 1)).thenReturn(false);
 
         NotFoundException exception = assertThrows(NotFoundException.class, () -> subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")));
-        assertEquals("Account with id 2 - not found", exception.getMessage());
+        assertEquals("Account 2 not found", exception.getMessage());
 
         verify(userService, times(1)).existsById(1);
         verify(typeService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(2, 1);
-        verifyNoInteractions(transactionDAO);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void create_acceptDaoExceptionOnReceiverAccountDao_whenCalledWithValidArguments() {
-        when(userService.existsById(1)).thenReturn(true);
-        when(typeService.existsById(1, 1)).thenReturn(true);
-        when(accountService.getById(1, 1)).thenReturn(ACCOUNT_DTO);
-        when(accountService.existsById(1, 1)).thenReturn(true);
-        when(accountService.existsById(2, 1)).thenThrow(new DAOException(new SQLException()));
-
-        assertThrows(DAOException.class, () -> subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")));
-
-        verify(userService, times(1)).existsById(1);
-        verify(typeService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(2, 1);
+        verify(accountService, times(1)).existsByIdAndUserId(1, 1);
+        verify(accountService, times(1)).existsByIdAndUserId(2, 1);
         verifyNoInteractions(transactionDAO);
         verifyNoInteractions(converter);
     }
@@ -249,9 +187,9 @@ public class TransactionServletServiceTest {
     public void create_acceptDaoExceptionOnTransactionDao_whenCalledWithValidArguments() {
         when(userService.existsById(1)).thenReturn(true);
         when(typeService.existsById(1, 1)).thenReturn(true);
-        when(accountService.getById(1, 1)).thenReturn(ACCOUNT_DTO);
-        when(accountService.existsById(1, 1)).thenReturn(true);
-        when(accountService.existsById(2, 1)).thenReturn(true);
+        when(accountService.getByIdAndUserId(1, 1)).thenReturn(ACCOUNT_DTO);
+        when(accountService.existsByIdAndUserId(1, 1)).thenReturn(true);
+        when(accountService.existsByIdAndUserId(2, 1)).thenReturn(true);
 
         when(transactionDAO.insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00"))).thenThrow(DAOException.class);
 
@@ -259,50 +197,8 @@ public class TransactionServletServiceTest {
 
         verify(userService, times(1)).existsById(1);
         verify(typeService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(2, 1);
-        verify(transactionDAO, times(1)).insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00"));
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void create_acceptNotFoundOnTransactionDao_whenCalledWithInvalidArguments() {
-        when(userService.existsById(1)).thenReturn(true);
-        when(typeService.existsById(1, 1)).thenReturn(true);
-        when(accountService.getById(1, 1)).thenReturn(ACCOUNT_DTO);
-        when(accountService.existsById(1, 1)).thenReturn(true);
-        when(accountService.existsById(2, 1)).thenReturn(true);
-
-        when(transactionDAO.insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")))
-                .thenThrow(NotFoundException.class);
-
-        assertThrows(NotFoundException.class, () -> subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")));
-
-        verify(userService, times(1)).existsById(1);
-        verify(typeService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(2, 1);
-        verify(transactionDAO, times(1)).insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00"));
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void create_acceptInsufficientFundsOnTransactionDao_whenCalledWithInvalidArguments() {
-        when(userService.existsById(1)).thenReturn(true);
-        when(typeService.existsById(1, 1)).thenReturn(true);
-        when(accountService.getById(1, 1)).thenReturn(ACCOUNT_DTO);
-        when(accountService.existsById(1, 1)).thenReturn(true);
-        when(accountService.existsById(2, 1)).thenReturn(true);
-
-        when(transactionDAO.insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")))
-                .thenThrow(InsufficientFundsException.class);
-
-        assertThrows(InsufficientFundsException.class, () -> subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")));
-
-        verify(userService, times(1)).existsById(1);
-        verify(typeService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsById(2, 1);
+        verify(accountService, times(1)).existsByIdAndUserId(1, 1);
+        verify(accountService, times(1)).existsByIdAndUserId(2, 1);
         verify(transactionDAO, times(1)).insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00"));
         verifyNoInteractions(converter);
     }

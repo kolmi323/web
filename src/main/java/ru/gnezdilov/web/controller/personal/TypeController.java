@@ -29,7 +29,7 @@ public class TypeController extends WebController {
     @GetMapping()
     public String type(HttpServletRequest request) {
         this.extractUserId(request);
-        return "personal/type/typeMain";
+        return "personal/type/main";
     }
 
     @GetMapping("/show")
@@ -38,13 +38,13 @@ public class TypeController extends WebController {
         Integer userId = this.extractUserId(request);
         List<TypeDTO> types = typeService.getAll(userId);
         model.addAttribute("types", types);
-        return "personal/type/typeShow";
+        return "personal/type/show";
     }
 
     @GetMapping("/add")
     public String addType(Model model) {
         model.addAttribute("form", new TypeAddForm());
-        return "personal/type/typeAdd";
+        return "personal/type/add";
     }
 
     @PostMapping("/add")
@@ -59,13 +59,13 @@ public class TypeController extends WebController {
             this.handleMessage("Account " + type.getId() + " - created", redirectAttributes);
         }
         model.addAttribute("form", form);
-        return "personal/type/typeAdd";
+        return "personal/type/add";
     }
 
     @GetMapping("/update")
     public String updateType(Model model) {
         model.addAttribute("form", new TypeUpdateForm());
-        return "personal/type/typeUpdate";
+        return "personal/type/update";
     }
 
     @PostMapping("/update")
@@ -80,13 +80,13 @@ public class TypeController extends WebController {
             this.handleMessage("Account " + type.getId() + " - modified. New name: " + type.getName(), redirectAttributes);
         }
         model.addAttribute("form", form);
-        return "personal/type/typeUpdate";
+        return "personal/type/update";
     }
 
     @GetMapping("/delete")
     public String deleteType(Model model) {
         model.addAttribute("form", new DeleteForm());
-        return "personal/type/typeDelete";
+        return "personal/type/delete";
     }
 
     @PostMapping("/delete")
@@ -104,6 +104,6 @@ public class TypeController extends WebController {
             }
         }
         model.addAttribute("form", form);
-        return "personal/type/typeDelete";
+        return "personal/type/delete";
     }
 }

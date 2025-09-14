@@ -30,13 +30,13 @@ public class TransactionController extends WebController {
     @GetMapping()
     public String transaction(HttpServletRequest request) {
         this.extractUserId(request);
-        return "personal/transaction/transactionMain";
+        return "personal/transaction/main";
     }
 
     @GetMapping("/add")
     public String addTransaction(Model model) {
         model.addAttribute("form", new TransactionAddForm());
-        return "personal/transaction/transactionAdd";
+        return "personal/transaction/add";
     }
 
     @PostMapping("/add")
@@ -56,7 +56,7 @@ public class TransactionController extends WebController {
             return this.handleMessage("Transaction " + transactionDTO.getId() + " - created.", redirectAttributes);
         }
         model.addAttribute("form", form);
-        return "personal/transaction/transactionAdd";
+        return "personal/transaction/add";
     }
 
     private List<Integer> processIdsFromString(String ids) {

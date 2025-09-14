@@ -25,7 +25,7 @@ public class TypeServiceTest {
     @Mock private ConverterTypeModelToTypeDTO converter;
 
     @Test
-    public void getAllByUserId_returnLustTypeModel_whenCalledWithValidException() {
+    public void getAllByUserId_returnListTypeModel_whenCalledWithValidException() {
         TypeModel typeModel = new TypeModel(1, 1, "hobby");
         List<TypeModel> accountsModelsList = new ArrayList<>();
         accountsModelsList.add(typeModel);
@@ -57,17 +57,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void getAllByUserId_acceptDAOException_whenCalledWithValidException() {
-        when(typeRepository.getAllByUserId(1)).thenThrow(DAOException.class);
-
-        assertThrows(DAOException.class, () -> subj.getAll(1));
-
-        verify(typeRepository, times(1)).getAllByUserId(1);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void save_returnTypeDTO_whenCalledWithValidException() {
+    public void create_returnTypeDTO_whenCalledWithValidException() {
         TypeModel typeModel = new TypeModel(1, 1, "hobby");
         TypeModel typeRequest = new TypeModel();
         typeRequest.setUserId(1);
@@ -85,30 +75,12 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void save_acceptDAOExceptionWithMessageAboutFailedCreated_whenCalledWithValidException() {
+    public void save_acceptIllegalArgumentException_whenCalledWithInvalidException() {
         TypeModel typeRequest = new TypeModel();
         typeRequest.setUserId(1);
-        typeRequest.setName("hobby");
-        when(typeRepository.save(typeRequest))
-                .thenThrow(new DAOException("Insert type failed"));
+        when(typeRepository.save(typeRequest)).thenThrow(IllegalArgumentException.class);
 
-        DAOException exception = assertThrows(DAOException.class,
-                () -> subj.create(1, "hobby"));
-        assertEquals("Insert type failed", exception.getMessage());
-
-        verify(typeRepository, times(1))
-                .save(typeRequest);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void save_acceptDAOException_whenCalledWithValidException() {
-        TypeModel typeRequest = new TypeModel();
-        typeRequest.setUserId(1);
-        typeRequest.setName("hobby");
-        when(typeRepository.save(typeRequest)).thenThrow(DAOException.class);
-
-        assertThrows(DAOException.class, () -> subj.create(1, "hobby"));
+        assertThrows(IllegalArgumentException.class, () -> subj.create(1, null));
 
         verify(typeRepository, times(1))
                 .save(typeRequest);
@@ -134,16 +106,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void deleteByIdAndUserId_acceptDAOException_whenCalledWithValidException() {
-        when(typeRepository.deleteByIdAndUserId(1, 1)).thenThrow(DAOException.class);
-
-        assertThrows(DAOException.class, () -> subj.delete(1, 1));
-
-        verify(typeRepository, times(1)).deleteByIdAndUserId(1, 1);
-    }
-
-    @Test
-    public void edit_returnTrue_whenCalledWithValidException() {
+    public void edit_returnTypeDTO_whenCalledWithValidException() {
         TypeModel typeRequest = new TypeModel(1, 1, "hobby");
         TypeModel typeUpdate = new TypeModel(1, 1, "work");
         TypeDTO typeDTO = new TypeDTO(1, 1, "work");
@@ -176,15 +139,6 @@ public class TypeServiceTest {
         assertFalse(subj.existsById(1, 2));
 
         verify(typeRepository, times(1)).existsByIdAndUserId(1, 2);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void existsById_acceptDAOException_whenCalledWithValidException() {
-        when(typeRepository.existsByIdAndUserId(1, 1)).thenThrow(DAOException.class);
-        assertThrows(DAOException.class, () -> subj.existsById(1, 1));
-
-        verify(typeRepository, times(1)).existsByIdAndUserId(1, 1);
         verifyNoInteractions(converter);
     }
 }

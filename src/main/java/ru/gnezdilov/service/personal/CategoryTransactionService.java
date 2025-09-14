@@ -15,7 +15,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CategoryTransactionService {
     private final CategoryTransactionRepository repository;
-    private final ConverterCategoryTransactionModelToCategoryTransactionDTO converter;
 
     public Map<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
         return handleResult(repository.getIncomingTransaction(userId, startDate, endDate));

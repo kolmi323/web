@@ -28,7 +28,7 @@ public class AccountController extends WebController {
     @GetMapping()
     public String account(HttpServletRequest request) {
         this.extractUserId(request);
-        return "personal/account/accountMain";
+        return "personal/account/main";
     }
 
     @GetMapping("/show")
@@ -37,13 +37,13 @@ public class AccountController extends WebController {
         Integer userId = this.extractUserId(request);
         List<AccountDTO> accounts = accountService.getAll(userId);
         model.addAttribute("accounts", accounts);
-        return "personal/account/accountShow";
+        return "personal/account/show";
     }
 
     @GetMapping("/add")
     public String addAccount(Model model) {
         model.addAttribute("form", new AccountAddForm());
-        return "personal/account/accountAdd";
+        return "personal/account/add";
     }
 
     @PostMapping("/add")
@@ -58,13 +58,13 @@ public class AccountController extends WebController {
             return this.handleMessage("Account " + account.getId() + " - created", redirectAttributes);
         }
         model.addAttribute("form", form);
-        return "personal/account/accountAdd";
+        return "personal/account/add";
     }
 
     @GetMapping("/delete")
     public String deleteAccount(Model model) {
         model.addAttribute("form", new DeleteForm());
-        return "personal/account/accountDelete";
+        return "personal/account/delete";
     }
 
     @PostMapping("/delete")
@@ -82,6 +82,6 @@ public class AccountController extends WebController {
             }
         }
         model.addAttribute("form", form);
-        return "personal/account/accountDelete";
+        return "personal/account/delete";
     }
 }

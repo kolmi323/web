@@ -9,9 +9,7 @@ import ru.gnezdilov.service.converter.ConverterTransactionModelToTransactionDTO;
 import ru.gnezdilov.service.dto.TransactionDTO;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -54,16 +52,16 @@ public class TransactionService {
     }
 
     private void assertHasEnoughAccounts (int userId, int fromAccountId, BigDecimal amount) {
-        if (!accountService.existsById(fromAccountId, userId)) {
+        if (!accountService.existsByIdAndUserId(fromAccountId, userId)) {
             throw new NotFoundException("Account " + fromAccountId + " not found");
         }
-        if (amount.compareTo(accountService.getById(fromAccountId, userId).getBalance()) > 0) {
+        if (amount.compareTo(accountService.getByIdAndUserId(fromAccountId, userId).getBalance()) > 0) {
             throw new InsufficientFundsException("On Sender account " + fromAccountId + " has insufficient funds");
         }
     }
 
     private void assertReceiverAccount(int userId, int toAccountId) {
-        if (!accountService.existsById(toAccountId, userId)) {
+        if (!accountService.existsByIdAndUserId(toAccountId, userId)) {
             throw new NotFoundException("Account " + toAccountId + " not found");
         }
     }

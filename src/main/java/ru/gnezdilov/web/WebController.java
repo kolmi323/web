@@ -2,6 +2,7 @@ package ru.gnezdilov.web;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.gnezdilov.api.AbstractController;
 import ru.gnezdilov.api.exception.UnauthorizedException;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.dao.exception.InsufficientFundsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 
@@ -59,6 +61,11 @@ public class WebController extends AbstractController {
         return handleException(e, redirectAttributes);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleIllegalArgumentException(IllegalArgumentException e, RedirectAttributes redirectAttributes) {
+        return handleException(e, redirectAttributes);
+    }
+
     @ExceptionHandler(JsonParseException.class)
     public String handleInsufficientFundsException(JsonParseException e, RedirectAttributes redirectAttributes) {
         return handleException(e, redirectAttributes);
@@ -74,14 +81,14 @@ public class WebController extends AbstractController {
         return handleException(e, redirectAttributes);
     }
 
-    @ExceptionHandler(Exception.class)
-    public String handleInsufficientFundsException(Exception e, RedirectAttributes redirectAttributes) {
+    @ExceptionHandler(DataAccessException.class)
+    public String handleDataAccessException(DataAccessException e, RedirectAttributes redirectAttributes) {
         return handleException(e, redirectAttributes);
     }
 
-    protected void removeAttributeFromSession(HttpServletRequest request, String nameAttribute) {
-        HttpSession session = request.getSession();
-        session.removeAttribute(nameAttribute);
+    @ExceptionHandler(Exception.class)
+    public String handleInsufficientFundsException(Exception e, RedirectAttributes redirectAttributes) {
+        return handleException(e, redirectAttributes);
     }
 
     protected String pullAttributeFromSession(HttpServletRequest request, String nameAttribute) {

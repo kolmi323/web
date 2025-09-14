@@ -20,6 +20,6 @@ public class PersonalController extends WebController {
         Integer userId = this.extractUserId(request);
         UserDTO user = userService.getUserById(userId);
         model.addAttribute("name", user.getName());
-        return "personal/personalMenu";
+        return "personal/menu";
     }
 }

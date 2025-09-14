@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CategoryTransactionServletServiceTest {
+public class CategoryTransactionServiceTest {
     @InjectMocks private CategoryTransactionService subj;
 
     @Mock private CategoryTransactionRepository repository;
@@ -54,6 +54,15 @@ public class CategoryTransactionServletServiceTest {
     }
 
     @Test
+    public void getIncomingTransactions_throwIllegalArgumentException_whenCalledWithInvalidArguments() {
+        when(repository.getIncomingTransaction(1, null, null)).thenThrow(IllegalArgumentException.class);
+
+        assertThrows(IllegalArgumentException.class, () -> subj.getIncomingTransactions(1, null, null));
+
+        verify(repository, times(1)).getIncomingTransaction(1, null, null);
+    }
+
+    @Test
     public void getOutgoingTransactions_returnHashMap_whenCalledWithValidArguments() {
         ArrayList<Object[]> result = new ArrayList<>();
         Object[] report = {"hobby", new BigDecimal(1)};
@@ -81,5 +90,14 @@ public class CategoryTransactionServletServiceTest {
 
         verify(repository, times(1)).getOutgoingTransaction(1,
                 LocalDate.parse("2025-01-10"), LocalDate.parse("2025-01-30"));
+    }
+
+    @Test
+    public void getOutgoingTransactions_throwIllegalArgumentException_whenCalledWithInvalidArguments() {
+        when(repository.getOutgoingTransaction(1, null, null)).thenThrow(IllegalArgumentException.class);
+
+        assertThrows(IllegalArgumentException.class, () -> subj.getOutgoingTransactions(1, null, null));
+
+        verify(repository, times(1)).getOutgoingTransaction(1, null, null);
     }
 }

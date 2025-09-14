@@ -17,11 +17,11 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final ConverterAccountModelToAccountDTO converter;
 
-    public boolean existsById(int id, int userId) {
+    public boolean existsByIdAndUserId(int id, int userId) {
         return this.accountRepository.existsByIdAndUserId(id, userId);
     }
 
-    public AccountDTO getById(int id, int userId) {
+    public AccountDTO getByIdAndUserId(int id, int userId) {
         return converter.convert(this.accountRepository.findByIdAndUserId(id, userId));
     }
 

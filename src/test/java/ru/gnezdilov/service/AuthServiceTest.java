@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.UserRepository;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.entities.UserModel;
 import ru.gnezdilov.service.converter.ConverterUserModelToUserDTO;
@@ -63,14 +64,14 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void authorization_acceptDAOException_whenCalledWithValidArguments() {
+    public void authorization_acceptIllegalArgumentException_whenCalledWithInvalidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
-        when(userRepository.findByEmailAndPassword("anton@mail.ru", "hash")).thenThrow(DAOException.class);
+        when(userRepository.findByEmailAndPassword(null, "hash")).thenThrow(IllegalArgumentException.class);
 
-        assertThrows(DAOException.class, () -> subj.authorization("anton@mail.ru", "password"));
+        assertThrows(IllegalArgumentException.class, () -> subj.authorization(null, "password"));
 
         verify(digestService, times(1)).hashPassword("password");
-        verify(userRepository, times(1)).findByEmailAndPassword("anton@mail.ru", "hash");
+        verify(userRepository, times(1)).findByEmailAndPassword(null, "hash");
         verifyNoInteractions(converter);
     }
 
@@ -103,38 +104,15 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void createNewUser_acceptDAOExceptionWithMessageAboutFailedCreated_whenCalledWithValidArguments() {
+    public void createNewUser_acceptIllegalArgumentException_whenCalledWithInvalidArguments() {
         when(digestService.hashPassword("password")).thenReturn("hash");
 
         UserModel userRequest = new UserModel();
-        userRequest.setName("Anton");
-        userRequest.setEmail("anton@mail.ru");
         userRequest.setPassword("hash");
 
-        DAOException daoException = new DAOException("Insert user failed");
-        when(userRepository.save(userRequest)).thenThrow(daoException);
+        when(userRepository.save(userRequest)).thenThrow(IllegalArgumentException.class);
 
-        DAOException exception = assertThrows(DAOException.class,
-                () -> subj.createNewUser("Anton", "anton@mail.ru", "password"));
-        assertEquals("Insert user failed", exception.getMessage());
-
-        verify(digestService, times(1)).hashPassword("password");
-        verify(userRepository, times(1)).save(userRequest);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void createNewUser_acceptDAOException_whenCalledWithValidArguments() {
-        when(digestService.hashPassword("password")).thenReturn("hash");
-
-        UserModel userRequest = new UserModel();
-        userRequest.setName("Anton");
-        userRequest.setEmail("anton@mail.ru");
-        userRequest.setPassword("hash");
-
-        when(userRepository.save(userRequest)).thenThrow(DAOException.class);
-
-        assertThrows(DAOException.class, () -> subj.createNewUser("Anton", "anton@mail.ru", "password"));
+        assertThrows(IllegalArgumentException.class, () -> subj.createNewUser(null, null, "password"));
 
         verify(digestService, times(1)).hashPassword("password");
         verify(userRepository, times(1)).save(userRequest);

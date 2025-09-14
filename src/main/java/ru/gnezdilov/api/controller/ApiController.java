@@ -2,6 +2,7 @@ package ru.gnezdilov.api.controller;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +12,7 @@ import ru.gnezdilov.api.AbstractController;
 import ru.gnezdilov.api.exception.UnauthorizedException;
 import ru.gnezdilov.api.json.ErrorResponse;
 import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.dao.exception.InsufficientFundsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 
@@ -50,6 +52,13 @@ public class ApiController extends AbstractController {
                 .body(new ErrorResponse(e.getMessage()));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientFundsException(IllegalArgumentException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleInsufficientFundsException(MethodArgumentNotValidException e) {
         return ResponseEntity
@@ -75,6 +84,13 @@ public class ApiController extends AbstractController {
     public ResponseEntity<ErrorResponse> handleInsufficientFundsException(DAOException e) {
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientFundsException(DataAccessException e) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(e.getMessage()));
     }
 
