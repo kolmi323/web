@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.personal.TypeService;
 import ru.gnezdilov.web.WebController;
@@ -18,7 +18,6 @@ import ru.gnezdilov.web.form.type.TypeUpdateForm;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.lang.reflect.Type;
 import java.util.List;
 
 @Controller
@@ -30,7 +29,7 @@ public class TypeController extends WebController {
     @GetMapping()
     public String type(HttpServletRequest request) {
         this.extractUserId(request);
-        return "personal/type/type_main";
+        return "personal/type/typeMain";
     }
 
     @GetMapping("/show")
@@ -39,88 +38,72 @@ public class TypeController extends WebController {
         Integer userId = this.extractUserId(request);
         List<TypeDTO> types = typeService.getAll(userId);
         model.addAttribute("types", types);
-        return "personal/type/type_show";
+        return "personal/type/typeShow";
     }
 
     @GetMapping("/add")
     public String addType(Model model) {
         model.addAttribute("form", new TypeAddForm());
-        model.addAttribute("message", " ");
-        return "personal/type/type_add";
+        return "personal/type/typeAdd";
     }
 
     @PostMapping("/add")
     public String addType(@ModelAttribute("form") @Valid TypeAddForm form,
                           BindingResult result,
                           Model model,
-                          HttpServletRequest request) {
+                          HttpServletRequest request,
+                          RedirectAttributes redirectAttributes) {
         Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
-            try {
-                TypeDTO type = typeService.create(userId, form.getName());
-                if (type != null) {
-                    model.addAttribute("message", "Account " + type.getId() + " - created");
-                } else {
-                    model.addAttribute("message", " ");
-                }
-            } catch (Exception e) {
-                result.addError(new FieldError("form", "name", e.getMessage()));
-            }
+            TypeDTO type = typeService.create(userId, form.getName());
+            this.handleMessage("Account " + type.getId() + " - created", redirectAttributes);
         }
         model.addAttribute("form", form);
-        return "personal/type/type_add";
+        return "personal/type/typeAdd";
     }
 
     @GetMapping("/update")
     public String updateType(Model model) {
         model.addAttribute("form", new TypeUpdateForm());
-        model.addAttribute("message", " ");
-        return "personal/type/type_update";
+        return "personal/type/typeUpdate";
     }
 
     @PostMapping("/update")
     public String updateType(@ModelAttribute("form") @Valid TypeUpdateForm form,
                              BindingResult result,
                              Model model,
-                             HttpServletRequest request) {
+                             HttpServletRequest request,
+                             RedirectAttributes redirectAttributes) {
         Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
-            try {
-                TypeDTO type = typeService.edit(form.getId(), userId, form.getNewName());
-                model.addAttribute("message", "Account " + type.getId() + " - modified. New name: " + type.getName());
-            } catch (Exception e) {
-                result.addError(new FieldError("form", "name", e.getMessage()));
-            }
+            TypeDTO type = typeService.edit(form.getId(), userId, form.getNewName());
+            this.handleMessage("Account " + type.getId() + " - modified. New name: " + type.getName(), redirectAttributes);
         }
         model.addAttribute("form", form);
-        return "personal/type/type_update";
+        return "personal/type/typeUpdate";
     }
 
     @GetMapping("/delete")
     public String deleteType(Model model) {
         model.addAttribute("form", new DeleteForm());
-        model.addAttribute("message", " ");
-        return "personal/type/type_delete";
+        return "personal/type/typeDelete";
     }
 
     @PostMapping("/delete")
     public String deleteType(@ModelAttribute("form") @Valid DeleteForm form,
                              BindingResult result,
                              Model model,
-                             HttpServletRequest request) {
+                             HttpServletRequest request,
+                             RedirectAttributes redirectAttributes) {
         Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
-            try {
-                if (typeService.delete(form.getId(), userId)) {
-                    model.addAttribute("message", "Type " + form.getId() + " - successfully deleted");
-                } else {
-                    model.addAttribute("message", "Delete failed");
-                }
-            } catch (Exception e) {
-                result.addError(new FieldError("form", "id", e.getMessage()));
+            if (typeService.delete(form.getId(), userId)) {
+                this.handleMessage("Type " + form.getId() + " - successfully deleted", redirectAttributes);
+            } else {
+                this.handleMessage("Delete failed", redirectAttributes);
             }
         }
         model.addAttribute("form", form);
-        return "personal/type/type_delete";
+        return "personal/type/typeDelete";
     }
 }

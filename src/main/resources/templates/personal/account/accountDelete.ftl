@@ -20,9 +20,6 @@
             <@spring.formInput "form.id" "class=\"form-control\" id=\"inputId\" placeholder=\"Enter id for delete account\"" "id"/>
             <@spring.showErrors "<br/>"/>
         </div>
-        <div class="container">
-            <p>${message}</p>
-        </div>
         <button type="submit" class="btn btn-primary">Delete</button>
     </form>
 </div>

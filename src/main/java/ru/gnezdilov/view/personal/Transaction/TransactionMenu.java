@@ -37,8 +37,7 @@ public class TransactionMenu {
                 } else {
                     System.out.println("Invalid input");
                 }
-            } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException |
-                     DataSourceException | InsufficientFundsException | IllegalArgumentException | ExitException e) {
+            } catch (NotFoundException | DAOException | NullPointerException | InsufficientFundsException | IllegalArgumentException | ExitException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());

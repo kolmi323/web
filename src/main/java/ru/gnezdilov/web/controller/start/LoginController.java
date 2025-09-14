@@ -34,14 +34,10 @@ public class LoginController extends WebController {
                         Model model,
                         HttpServletRequest request) {
         if (!result.hasErrors()) {
-            try {
-                 UserDTO user = authService.authorization(form.getEmail(), form.getPassword());
-                if (user != null) {
-                    this.wrapUserId(request, user.getId());
-                    return "redirect:/personal";
-                }
-            } catch (NotFoundException e) {
-                result.addError(new FieldError("form", "email", "Invalid email or password"));
+            UserDTO user = authService.authorization(form.getEmail(), form.getPassword());
+            if (user != null) {
+                this.wrapUserId(request, user.getId());
+                return "redirect:/personal";
             }
         }
         model.addAttribute("form", form);

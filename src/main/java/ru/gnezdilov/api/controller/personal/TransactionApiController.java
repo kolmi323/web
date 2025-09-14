@@ -27,7 +27,7 @@ public class TransactionApiController extends ApiController {
                                                                     HttpServletRequest httpServletRequest) {
         Integer userId = this.extractUserId(httpServletRequest);
         TransactionDTO transaction = transactionService.create(
-                Arrays.asList(request.getTypesIds()), userId,
+                request.getTypesIds(), userId,
                 request.getSendingId(), request.getReceivingId(), request.getAmount()
         );
         return converter.convert(transaction);

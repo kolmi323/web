@@ -46,8 +46,7 @@ public class TypeMenu {
                 } else {
                     System.out.println("Invalid input");
                 }
-            } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException |
-                     DataSourceException | ExitException e) {
+            } catch (NotFoundException | DAOException | NullPointerException | ExitException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());

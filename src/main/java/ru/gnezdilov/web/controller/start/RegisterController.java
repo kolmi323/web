@@ -32,16 +32,12 @@ public class RegisterController extends WebController {
                            BindingResult result,
                            Model model,
                            HttpServletRequest request) {
-        try {
-            if (!result.hasErrors()) {
-                UserDTO user = authService.createNewUser(form.getName(), form.getEmail(), form.getPassword());
-                if (user != null) {
-                    this.wrapUserId(request, user.getId());
-                    return "redirect:/personal";
-                }
+        if (!result.hasErrors()) {
+            UserDTO user = authService.createNewUser(form.getName(), form.getEmail(), form.getPassword());
+            if (user != null) {
+                this.wrapUserId(request, user.getId());
+                return "redirect:/personal";
             }
-        } catch (Exception e) {
-            result.addError(new FieldError("form", "name", e.getMessage()));
         }
         model.addAttribute("form", form);
         return "register";

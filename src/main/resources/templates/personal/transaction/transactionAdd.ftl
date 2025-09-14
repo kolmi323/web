@@ -38,9 +38,6 @@
             <@spring.formInput "form.amount" "class=\"form-control\" id=\"inputAmount\" placeholder=\"Enter amount\"" "amount"/>
             <@spring.showErrors "<br/>"/>
         </div>
-        <div class="container">
-            <p>${message}</p>
-        </div>
         <button type="submit" class="btn btn-primary">Create</button>
     </form>
 </div>

@@ -8,11 +8,13 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 public class TransactionAddRequest implements AbstractRequest {
-    private Integer[] typesIds;
+    private ArrayList<Integer> typesIds;
     private int sendingId;
     private int receivingId;
     @NotNull

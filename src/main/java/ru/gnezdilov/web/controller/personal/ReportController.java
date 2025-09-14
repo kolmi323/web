@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +31,7 @@ public class ReportController extends WebController {
     @GetMapping()
     public String report(HttpServletRequest request) {
         this.extractUserId(request);
-        return "personal/report/report_main";
+        return "personal/report/reportMain";
     }
 
     @GetMapping("/incoming")
@@ -66,25 +65,25 @@ public class ReportController extends WebController {
                               HttpServletRequest request) {
         Integer userId = this.extractUserId(request);
         Map<String, BigDecimal> transactions = new HashMap<>();
-        String typeReport = getDataFromSession(request, "typeReport");
+        String typeReport = this.pullAttributeFromSession(request, "typeReport");
         if (typeReport.equals(NAME_INCOMING)) {
             transactions = categoryTransactionService.getIncomingTransactions(userId,
-                    LocalDate.parse(getDataFromSession(request, "dateAfter")),
-                    LocalDate.parse(getDataFromSession(request, "dateBefore")));
+                    LocalDate.parse(this.pullAttributeFromSession(request, "dateAfter")),
+                    LocalDate.parse(this.pullAttributeFromSession(request, "dateBefore")));
         } else if (typeReport.equals(NAME_OUTGOING)) {
             transactions = categoryTransactionService.getOutgoingTransactions(userId,
-                    LocalDate.parse(getDataFromSession(request, "dateAfter")),
-                    LocalDate.parse(getDataFromSession(request, "dateBefore")));
+                    LocalDate.parse(this.pullAttributeFromSession(request, "dateAfter")),
+                    LocalDate.parse(this.pullAttributeFromSession(request, "dateBefore")));
         }
         model.addAttribute("transactions", transactions);
         model.addAttribute("type_report", typeReport);
-        return "personal/report/report_show";
+        return "personal/report/reportShow";
     }
 
     private String reportData(Model model, String typeReport) {
         model.addAttribute("form", new ReportDataForm());
         model.addAttribute("type_report", typeReport);
-        return "personal/report/report_data";
+        return "personal/report/reportData";
     }
 
     private String reportData(ReportDataForm form,
@@ -94,23 +93,14 @@ public class ReportController extends WebController {
                               String typeReport) {
         this.extractUserId(request);
         if (!result.hasErrors()) {
-            try {
-                HttpSession session = request.getSession();
-                session.setAttribute("dateAfter", form.getDateAfter());
-                session.setAttribute("dateBefore", form.getDateBefore());
-                session.setAttribute("typeReport", typeReport);
-                return "redirect:/report/show";
-            } catch (Exception e) {
-                result.addError(new FieldError("form", "dateAfter", e.getMessage()));
-            }
+            HttpSession session = request.getSession();
+            session.setAttribute("dateAfter", form.getDateAfter());
+            session.setAttribute("dateBefore", form.getDateBefore());
+            session.setAttribute("typeReport", typeReport);
+            return "redirect:/report/show";
         }
         model.addAttribute("form", form);
         model.addAttribute("type_report", typeReport);
-        return "personal/report/report_data";
-    }
-
-    private String getDataFromSession(HttpServletRequest request, String nameData) {
-        HttpSession session = request.getSession();
-        return session.getAttribute(nameData).toString();
+        return "personal/report/reportData";
     }
 }

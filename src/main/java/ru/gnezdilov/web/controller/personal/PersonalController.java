@@ -19,11 +19,7 @@ public class PersonalController extends WebController {
     public String index(Model model, HttpServletRequest request) {
         Integer userId = this.extractUserId(request);
         UserDTO user = userService.getUserById(userId);
-        if (user == null) {
-            this.removeAttributeFromSession(request, "userId");
-            return "redirect:/start";
-        }
         model.addAttribute("name", user.getName());
-        return "personal/personal_menu";
+        return "personal/personalMenu";
     }
 }

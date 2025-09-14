@@ -33,7 +33,7 @@ public class LoginWindow {
             currentUser = authService.authorization(email, password);
             System.out.println("Logged in successfully");
             personalOfficePage.start(currentUser);
-        } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException | DataSourceException | ExitException e) {
+        } catch (NotFoundException | DAOException | NullPointerException | ExitException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println(e.getMessage());

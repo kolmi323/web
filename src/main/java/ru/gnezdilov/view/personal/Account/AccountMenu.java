@@ -42,7 +42,7 @@ public class AccountMenu {
                 } else {
                     System.out.println("Invalid input");
                 }
-            } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException | DataSourceException e) {
+            } catch (NotFoundException | DAOException | NullPointerException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());

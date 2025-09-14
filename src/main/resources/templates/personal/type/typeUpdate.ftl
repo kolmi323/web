@@ -25,9 +25,6 @@
             <@spring.formInput "form.newName" "class=\"form-control\" id=\"inputNewName\" placeholder=\"Enter new name\"" "newName"/>
             <@spring.showErrors "<br/>"/>
         </div>
-        <div class="container">
-            <p>${message}</p>
-        </div>
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>

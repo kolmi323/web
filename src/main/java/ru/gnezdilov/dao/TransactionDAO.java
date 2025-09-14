@@ -42,7 +42,7 @@ public class    TransactionDAO {
 
     protected void updateFromAccount(int userId, int fromAccountId, BigDecimal amount) throws PersistenceException {
         try {
-            AccountModel accountModel = accountRepository.findByIdAndUserIdWhereBalanceGreater(fromAccountId, userId, amount);
+            AccountModel accountModel = accountRepository.findByIdAndUserIdAndBalanceIsGreaterThanEqual(fromAccountId, userId, amount);
             accountModel.setBalance(accountModel.getBalance().subtract(amount));
             accountRepository.save(accountModel);
         } catch (NoResultException e) {
@@ -54,7 +54,7 @@ public class    TransactionDAO {
 
     protected void updateToAccount(int userId, int toAccountId, BigDecimal amount) throws PersistenceException {
         try {
-            AccountModel accountModel = accountRepository.findByIdAndUserIdWhereBalanceGreater(toAccountId, userId, amount);
+            AccountModel accountModel = accountRepository.findByIdAndUserId(toAccountId, userId);
             accountModel.setBalance(accountModel.getBalance().add(amount));
             accountRepository.save(accountModel);
         } catch (NoResultException e) {

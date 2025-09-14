@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.UserRepository;
-import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.entities.UserModel;
@@ -118,26 +117,6 @@ public class AuthServiceTest {
         DAOException exception = assertThrows(DAOException.class,
                 () -> subj.createNewUser("Anton", "anton@mail.ru", "password"));
         assertEquals("Insert user failed", exception.getMessage());
-
-        verify(digestService, times(1)).hashPassword("password");
-        verify(userRepository, times(1)).save(userRequest);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void createNewUser_acceptAlreadyExistsException_whenCalledWithValidArguments() {
-        when(digestService.hashPassword("password")).thenReturn("hash");
-
-        UserModel userRequest = new UserModel();
-        userRequest.setName("Anton");
-        userRequest.setEmail("anton@mail.ru");
-        userRequest.setPassword("hash");
-
-        when(userRepository.save(userRequest))
-                .thenThrow(AlreadyExistsException.class);
-
-        assertThrows(AlreadyExistsException.class,
-                () -> subj.createNewUser("Anton", "anton@mail.ru", "password"));
 
         verify(digestService, times(1)).hashPassword("password");
         verify(userRepository, times(1)).save(userRequest);

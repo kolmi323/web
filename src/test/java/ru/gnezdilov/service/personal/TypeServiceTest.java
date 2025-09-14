@@ -6,7 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.TypeRepository;
-import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.entities.TypeModel;
 import ru.gnezdilov.service.converter.ConverterTypeModelToTypeDTO;
@@ -96,22 +95,6 @@ public class TypeServiceTest {
         DAOException exception = assertThrows(DAOException.class,
                 () -> subj.create(1, "hobby"));
         assertEquals("Insert type failed", exception.getMessage());
-
-        verify(typeRepository, times(1))
-                .save(typeRequest);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void save_acceptAlreadyExistsException_whenCalledWithValidException() {
-        TypeModel typeRequest = new TypeModel();
-        typeRequest.setUserId(1);
-        typeRequest.setName("hobby");
-        when(typeRepository.save(typeRequest))
-                .thenThrow(AlreadyExistsException.class);
-
-        assertThrows(AlreadyExistsException.class, () -> subj
-                .create(1, "hobby"));
 
         verify(typeRepository, times(1))
                 .save(typeRequest);

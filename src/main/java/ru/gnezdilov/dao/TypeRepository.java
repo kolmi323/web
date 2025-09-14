@@ -14,11 +14,11 @@ import java.util.List;
 @Repository
 public interface TypeRepository extends JpaRepository<TypeModel, Integer> {
     @Transactional
-    Integer deleteByIdAndUserId(Integer id, Integer userId) throws DAOException;
+    Integer deleteByIdAndUserId(Integer id, Integer userId);
 
-    List<TypeModel> getAllByUserId(Integer userId) throws DAOException;
+    List<TypeModel> getAllByUserId(Integer userId);
 
-    boolean existsByIdAndUserId(Integer id, Integer userId) throws DAOException;
+    boolean existsByIdAndUserId(Integer id, Integer userId);
 
-    TypeModel findByIdAndUserId(Integer id, Integer userId) throws DAOException;
+    TypeModel findByIdAndUserId(Integer id, Integer userId);
 }

@@ -12,10 +12,13 @@ import java.util.List;
 @Repository
 public interface AccountRepository extends JpaRepository<AccountModel, Integer> {
     boolean existsByIdAndUserId(Integer id, Integer userId);
+
     AccountModel findByIdAndUserId(Integer id, Integer userId);
+
     List<AccountModel> findAllByUserId(Integer userId);
+
     @Transactional
     Integer deleteByIdAndUserId(Integer id, Integer userId);
-    @Query("SELECT a FROM AccountModel AS a WHERE a.id = :id AND a.userId = :userId AND a.balance >= :balance")
-    AccountModel findByIdAndUserIdWhereBalanceGreater(Integer id, Integer userId, BigDecimal balance);
+
+    AccountModel findByIdAndUserIdAndBalanceIsGreaterThanEqual(Integer id, Integer userId, BigDecimal balance);
 }

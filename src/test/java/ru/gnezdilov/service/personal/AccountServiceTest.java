@@ -6,7 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.AccountRepository;
-import ru.gnezdilov.dao.exception.AlreadyExistsException;
 import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.dao.entities.AccountModel;
@@ -100,22 +99,6 @@ public class AccountServiceTest {
         DAOException exception = assertThrows(DAOException.class,
                 () -> subj.create(1, "bank", new BigDecimal("1000.50")));
         assertEquals("Insert account failed", exception.getMessage());
-
-        verify(accountRepository, times(1)).save(accountRequest);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void create_shouldAcceptAlreadyExistsException_whenCalledWithValidArguments() {
-        AccountModel accountRequest = new AccountModel();
-        accountRequest.setUserId(1);
-        accountRequest.setName("bank");
-        accountRequest.setBalance(new BigDecimal("1000.50"));
-        when(accountRepository.save(accountRequest))
-                .thenThrow(AlreadyExistsException.class);
-
-        assertThrows(AlreadyExistsException.class, () -> subj
-                .create(1, "bank", new BigDecimal("1000.50")));
 
         verify(accountRepository, times(1)).save(accountRequest);
         verifyNoInteractions(converter);
