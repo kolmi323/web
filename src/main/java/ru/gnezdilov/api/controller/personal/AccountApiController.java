@@ -29,10 +29,9 @@ public class AccountApiController extends ApiController {
     }
 
     @PostMapping("/delete")
-    public boolean delete(@RequestBody @Valid DeleteRequest request,
-                                                                HttpServletRequest httpServletRequest) {
-        Integer userId = this.extractUserId(httpServletRequest);
-        return accountService.delete(request.getId(), userId);
+    public void delete(@RequestBody @Valid DeleteRequest request,
+                          HttpServletRequest httpServletRequest) {
+        accountService.delete(request.getId(), this.extractUserId(httpServletRequest));
     }
 
     @PostMapping("/add")

@@ -2,8 +2,11 @@ package ru.gnezdilov.service.personal;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.gnezdilov.dao.AccountRepository;
 import ru.gnezdilov.dao.entities.AccountModel;
+import ru.gnezdilov.dao.exception.IllegalArgumentException;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.service.converter.ConverterAccountModelToAccountDTO;
 import ru.gnezdilov.service.dto.AccountDTO;
 
@@ -40,7 +43,13 @@ public class AccountService {
         return converter.convert(accountModel);
     }
 
-    public boolean delete(int id, int userId) {
-        return this.accountRepository.deleteByIdAndUserId(id, userId) == 1;
+    @Transactional(rollbackFor = {NotFoundException.class, IllegalArgumentException.class})
+    public void delete(int id, int userId) {
+        int countModifiedRecords = this.accountRepository.deleteByIdAndUserId(id, userId);
+        if (countModifiedRecords == 0) {
+            throw new NotFoundException("Account with id " + id + " not found");
+        } else if (countModifiedRecords > 1) {
+            throw new IllegalArgumentException("Deletion of account with id " + id + " failed");
+        }
     }
 }

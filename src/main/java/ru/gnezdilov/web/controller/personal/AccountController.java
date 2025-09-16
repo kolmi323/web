@@ -75,11 +75,8 @@ public class AccountController extends WebController {
                                 RedirectAttributes redirectAttributes) {
         Integer userId = this.extractUserId(request);
         if (!result.hasErrors()) {
-            if (accountService.delete(form.getId(), userId)) {
-                return this.handleMessage("Account " + form.getId() + " - deleted", redirectAttributes);
-            } else {
-                return this.handleMessage("Deleted failed", redirectAttributes);
-            }
+            accountService.delete(form.getId(), userId);
+            return this.handleMessage("Account " + form.getId() + " - deleted", redirectAttributes);
         }
         model.addAttribute("form", form);
         return "personal/account/delete";

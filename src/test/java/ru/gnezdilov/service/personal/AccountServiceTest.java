@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.AccountRepository;
 import ru.gnezdilov.dao.entities.AccountModel;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.service.converter.ConverterAccountModelToAccountDTO;
 import ru.gnezdilov.service.dto.AccountDTO;
 
@@ -94,16 +95,25 @@ public class AccountServiceTest {
     public void delete_shouldReturnSuccess_whenCalledWithValidArguments() {
         when(accountRepository.deleteByIdAndUserId(1, 1)).thenReturn(1);
 
-        assertTrue(subj.delete(1, 1));
+        subj.delete(1, 1);
 
         verify(accountRepository, times(1)).deleteByIdAndUserId(1, 1);
     }
 
     @Test
-    public void delete_shouldReturnFailed_whenCalledWithValidArguments() {
+    public void delete_throwNotFoundException_whenCalledWithValidArguments() {
         when(accountRepository.deleteByIdAndUserId(1, 1)).thenReturn(0);
 
-        assertFalse(subj.delete(1, 1));
+        assertThrows(NotFoundException.class, () -> subj.delete(1, 1));
+
+        verify(accountRepository, times(1)).deleteByIdAndUserId(1, 1);
+    }
+
+    @Test
+    public void delete_throwIllegalArgumentException_whenCalledWithValidArguments() {
+        when(accountRepository.deleteByIdAndUserId(1, 1)).thenReturn(2);
+
+        assertThrows(IllegalArgumentException.class, () -> subj.delete(1, 1));
 
         verify(accountRepository, times(1)).deleteByIdAndUserId(1, 1);
     }
