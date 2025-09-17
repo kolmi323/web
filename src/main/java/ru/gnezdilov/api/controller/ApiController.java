@@ -83,7 +83,7 @@ public class ApiController extends AbstractController {
     @ExceptionHandler(DAOException.class)
     public ResponseEntity<ErrorResponse> handleInsufficientFundsException(DAOException e) {
         return ResponseEntity
-                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(e.getMessage()));
     }
 

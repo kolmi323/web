@@ -17,7 +17,6 @@ public interface AccountRepository extends JpaRepository<AccountModel, Integer> 
 
     List<AccountModel> findAllByUserId(Integer userId);
 
-    @Transactional
     Integer deleteByIdAndUserId(Integer id, Integer userId);
 
     AccountModel findByIdAndUserIdAndBalanceIsGreaterThanEqual(Integer id, Integer userId, BigDecimal balance);

@@ -5,12 +5,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import ru.gnezdilov.dao.TransactionDAO;
-import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.TransactionRepository;
+import ru.gnezdilov.dao.entities.TransactionModel;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.dao.exception.InsufficientFundsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
-import ru.gnezdilov.dao.entities.TransactionModel;
 import ru.gnezdilov.service.converter.ConverterTransactionModelToTransactionDTO;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.dto.TransactionDTO;
@@ -29,11 +28,11 @@ import static org.mockito.Mockito.*;
 public class TransactionServiceTest {
     @InjectMocks private TransactionService subj;
 
-    @Mock private TransactionDAO transactionDAO;
     @Mock private AccountService accountService;
     @Mock private UserService userService;
     @Mock private TypeService typeService;
     @Mock private ConverterTransactionModelToTransactionDTO converter;
+    @Mock private TransactionRepository repository;
 
     private List<Integer> TYPE_IDS = new ArrayList<>(Arrays.asList(1));
     private final AccountDTO ACCOUNT_DTO = new AccountDTO(1, 1, "sber", new BigDecimal("1000.00"));
@@ -46,20 +45,25 @@ public class TransactionServiceTest {
         when(accountService.getByIdAndUserId(1, 1)).thenReturn(ACCOUNT_DTO);
         when(accountService.existsByIdAndUserId(2, 1)).thenReturn(true);
 
-        TransactionModel transactionModel = new TransactionModel(1, 1, 2, new BigDecimal("500.00"), LocalDate.now());
-        when(transactionDAO.insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00"))).thenReturn(transactionModel);
+        TransactionModel transactionModelRequest = new TransactionModel(0, 1, 2, new BigDecimal("500.00"), LocalDate.now());
+        transactionModelRequest.linkTypeId(1);
+        TransactionModel transactionModelResponse = new TransactionModel(1, 1, 2, new BigDecimal("500.00"), LocalDate.now());
+        transactionModelResponse.linkTypeId(1);
+        when(repository.save(transactionModelRequest)).thenReturn(transactionModelResponse);
 
         TransactionDTO transactionDTO = new TransactionDTO(1, 1, 2, new BigDecimal("500.00"), LocalDate.now());
-        when(converter.convert(transactionModel)).thenReturn(transactionDTO);
+        when(converter.convert(transactionModelResponse)).thenReturn(transactionDTO);
 
-        assertEquals(transactionDTO, subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")));
+        TransactionDTO result = subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00"));
+        assertEquals(transactionDTO, result);
 
         verify(userService, times(1)).existsById(1);
         verify(typeService, times(1)).existsById(1, 1);
         verify(accountService, times(1)).existsByIdAndUserId(1, 1);
         verify(accountService, times(1)).existsByIdAndUserId(2, 1);
-        verify(transactionDAO, times(1)).insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00"));
-        verify(converter, times(1)).convert(transactionModel);
+        verify(repository, times(1))
+                .save(new TransactionModel(0, 1, 2, new BigDecimal("500.00"), LocalDate.now()));
+        verify(converter, times(1)).convert(transactionModelResponse);
     }
 
     @Test
@@ -73,7 +77,7 @@ public class TransactionServiceTest {
         verify(userService, times(1)).existsById(1);
         verifyNoInteractions(typeService);
         verifyNoInteractions(accountService);
-        verifyNoInteractions(transactionDAO);
+        verifyNoInteractions(repository);
         verifyNoInteractions(converter);
     }
 
@@ -89,7 +93,7 @@ public class TransactionServiceTest {
         verify(userService, times(1)).existsById(1);
         verify(typeService, times(1)).existsById(1, 1);
         verifyNoInteractions(accountService);
-        verifyNoInteractions(transactionDAO);
+        verifyNoInteractions(repository);
         verifyNoInteractions(converter);
     }
 
@@ -106,7 +110,7 @@ public class TransactionServiceTest {
         verify(userService, times(1)).existsById(1);
         verify(typeService, times(1)).existsById(1, 1);
         verifyNoInteractions(accountService);
-        verifyNoInteractions(transactionDAO);
+        verifyNoInteractions(repository);
         verifyNoInteractions(converter);
     }
 
@@ -114,7 +118,6 @@ public class TransactionServiceTest {
     public void create_acceptIllegalArgument_whenCalledWithInvalidAccountIdEqualZero() {
         when(userService.existsById(1)).thenReturn(true);
         when(typeService.existsById(1, 1)).thenReturn(true);
-
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> subj.create(TYPE_IDS, 1, 0, 0, new BigDecimal("500.00")));
@@ -124,7 +127,7 @@ public class TransactionServiceTest {
         verify(userService, times(1)).existsById(1);
         verify(typeService, times(1)).existsById(1, 1);
         verifyNoInteractions(accountService);
-        verifyNoInteractions(transactionDAO);
+        verifyNoInteractions(repository);
         verifyNoInteractions(converter);
     }
 
@@ -140,7 +143,7 @@ public class TransactionServiceTest {
         verify(userService, times(1)).existsById(1);
         verify(typeService, times(1)).existsById(1, 1);
         verify(accountService, times(1)).existsByIdAndUserId(1, 1);
-        verifyNoInteractions(transactionDAO);
+        verifyNoInteractions(repository);
         verifyNoInteractions(converter);
     }
 
@@ -160,7 +163,7 @@ public class TransactionServiceTest {
         verify(userService, times(1)).existsById(1);
         verify(typeService, times(1)).existsById(1, 1);
         verify(accountService, times(1)).existsByIdAndUserId(1, 1);
-        verifyNoInteractions(transactionDAO);
+        verifyNoInteractions(repository);
         verifyNoInteractions(converter);
     }
 
@@ -179,27 +182,7 @@ public class TransactionServiceTest {
         verify(typeService, times(1)).existsById(1, 1);
         verify(accountService, times(1)).existsByIdAndUserId(1, 1);
         verify(accountService, times(1)).existsByIdAndUserId(2, 1);
-        verifyNoInteractions(transactionDAO);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void create_acceptDaoExceptionOnTransactionDao_whenCalledWithValidArguments() {
-        when(userService.existsById(1)).thenReturn(true);
-        when(typeService.existsById(1, 1)).thenReturn(true);
-        when(accountService.getByIdAndUserId(1, 1)).thenReturn(ACCOUNT_DTO);
-        when(accountService.existsByIdAndUserId(1, 1)).thenReturn(true);
-        when(accountService.existsByIdAndUserId(2, 1)).thenReturn(true);
-
-        when(transactionDAO.insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00"))).thenThrow(DAOException.class);
-
-        assertThrows(DAOException.class, () -> subj.create(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00")));
-
-        verify(userService, times(1)).existsById(1);
-        verify(typeService, times(1)).existsById(1, 1);
-        verify(accountService, times(1)).existsByIdAndUserId(1, 1);
-        verify(accountService, times(1)).existsByIdAndUserId(2, 1);
-        verify(transactionDAO, times(1)).insert(TYPE_IDS, 1, 1, 2, new BigDecimal("500.00"));
+        verifyNoInteractions(repository);
         verifyNoInteractions(converter);
     }
 }

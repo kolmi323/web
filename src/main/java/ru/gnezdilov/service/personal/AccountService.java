@@ -2,6 +2,7 @@ package ru.gnezdilov.service.personal;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.gnezdilov.dao.AccountRepository;
 import ru.gnezdilov.dao.entities.AccountModel;
@@ -51,5 +52,19 @@ public class AccountService {
         } else if (countModifiedRecords > 1) {
             throw new IllegalArgumentException("Deletion of account with id " + id + " failed");
         }
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void updateFromAccount(int userId, int fromAccountId, BigDecimal amount) {
+        AccountModel accountModel = accountRepository.findByIdAndUserIdAndBalanceIsGreaterThanEqual(fromAccountId, userId, amount);
+        accountModel.setBalance(accountModel.getBalance().subtract(amount));
+        accountRepository.save(accountModel);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void updateToAccount(int userId, int toAccountId, BigDecimal amount) {
+        AccountModel accountModel = accountRepository.findByIdAndUserId(toAccountId, userId);
+        accountModel.setBalance(accountModel.getBalance().add(amount));
+        accountRepository.save(accountModel);
     }
 }

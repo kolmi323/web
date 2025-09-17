@@ -9,17 +9,20 @@ import javax.persistence.*;
 @Table(name = "type_transaction")
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryTransactionModel implements HasId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(name = "type_id")
     private int typeId;
-    @Column(name = "transaction_id")
-    private int transactionId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id")
+    private TransactionModel transaction;
 
     @Override
     public String toString() {

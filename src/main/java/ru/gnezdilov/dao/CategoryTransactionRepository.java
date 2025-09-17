@@ -15,7 +15,7 @@ public interface CategoryTransactionRepository extends JpaRepository<CategoryTra
             "FROM UserModel us " +
             "JOIN AccountModel ac ON us.id = ac.userId " +
             "JOIN TransactionModel tr ON ac.id = tr.receiverAccountId " +
-            "LEFT JOIN CategoryTransactionModel tt ON tr.id = tt.transactionId " +
+            "LEFT JOIN CategoryTransactionModel tt ON tr.id = tt.transaction.id " +
             "LEFT JOIN TypeModel ty ON tt.typeId = ty.id " +
             "WHERE us.id = :userId AND tr.date > :dateAfter AND tr.date < :dateBefore " +
             "GROUP BY ty.name")
@@ -27,7 +27,7 @@ public interface CategoryTransactionRepository extends JpaRepository<CategoryTra
             "FROM UserModel us " +
             "JOIN AccountModel ac ON us.id = ac.userId " +
             "JOIN TransactionModel tr ON ac.id = tr.senderAccountId " +
-            "LEFT JOIN CategoryTransactionModel tt ON tr.id = tt.transactionId " +
+            "LEFT JOIN CategoryTransactionModel tt ON tr.id = tt.transaction.id " +
             "LEFT JOIN TypeModel ty ON tt.typeId = ty.id " +
             "WHERE us.id = :userId AND tr.date > :dateAfter AND tr.date < :dateBefore " +
             "GROUP BY ty.name")

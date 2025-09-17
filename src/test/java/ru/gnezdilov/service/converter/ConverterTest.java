@@ -53,7 +53,8 @@ public class ConverterTest {
     @Test
     public void converter_returnCategoryTransactionDTO_whenCalledWithValidArguments() {
         ConverterCategoryTransactionModelToCategoryTransactionDTO converter = new ConverterCategoryTransactionModelToCategoryTransactionDTO();
-        CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel(1, 1, 1);
+        TransactionModel transactionModel = new TransactionModel(1, 1, 2, new BigDecimal("1000.10"), LocalDate.now());
+        CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel(1, 1, transactionModel);
         CategoryTransactionDTO categoryTransactionDTO = new CategoryTransactionDTO(1, 1, 1);
         returnDTO(converter, categoryTransactionModel, categoryTransactionDTO);
     }

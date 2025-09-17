@@ -9,6 +9,6 @@ import ru.gnezdilov.service.dto.CategoryTransactionDTO;
 public class ConverterCategoryTransactionModelToCategoryTransactionDTO implements Converter<CategoryTransactionModel, CategoryTransactionDTO> {
     @Override
     public CategoryTransactionDTO convert(CategoryTransactionModel source) {
-        return new CategoryTransactionDTO(source.getId(), source.getTypeId(), source.getTransactionId());
+        return new CategoryTransactionDTO(source.getId(), source.getId(), source.getId());
     }
 }
