@@ -19,7 +19,7 @@
     @EqualsAndHashCode(onlyExplicitlyIncluded = true)
     @NoArgsConstructor
     public class TransactionModel implements HasId {
-        public TransactionModel(int id, int senderAccountId, int receiverAccountId, BigDecimal amount, LocalDate date) {
+        public TransactionModel(int id, Integer senderAccountId, Integer receiverAccountId, BigDecimal amount, LocalDate date) {
             this.id = id;
             this.senderAccountId = senderAccountId;
             this.receiverAccountId = receiverAccountId;
@@ -34,11 +34,11 @@
 
         @Column(name = "from_account_id")
         @EqualsAndHashCode.Include
-        private int senderAccountId;
+        private Integer senderAccountId;
 
         @Column(name = "to_account_id")
         @EqualsAndHashCode.Include
-        private int receiverAccountId;
+        private Integer receiverAccountId;
 
         @Column(nullable = false, name = "amount")
         @EqualsAndHashCode.Include
@@ -48,18 +48,24 @@
         @EqualsAndHashCode.Include
         private LocalDate date;
 
-        @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL)
-        private Set<CategoryTransactionModel> categoryTransactionModel= new HashSet<>();
+        @ManyToMany
+        @JoinTable(name = "type_transaction",
+                joinColumns = @JoinColumn(name = "transaction_id"),
+                inverseJoinColumns = @JoinColumn(name = "type_id"))
+        private Set<TypeModel> types =  new HashSet<>();
 
         @Override
         public String toString() {
             return id + ". " + date +": " + amount;
         }
 
-        public void linkTypeId(int typeId) {
-            CategoryTransactionModel ctm = new CategoryTransactionModel();
-            ctm.setTypeId(typeId);
-            ctm.setTransaction(this);
-            this.categoryTransactionModel.add(ctm);
+        public void addType(TypeModel type) {
+            types.add(type);
+            type.getTransactions().add(this);
+        }
+
+        public void removeType(TypeModel type) {
+            types.remove(type);
+            type.getTransactions().remove(this);
         }
     }

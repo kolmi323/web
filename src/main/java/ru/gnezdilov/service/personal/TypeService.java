@@ -22,6 +22,10 @@ public class TypeService {
                 .collect(Collectors.toList());
     }
 
+    public TypeModel getModelById(int id) {
+        return typeRepository.getOne(id);
+    }
+
     public boolean existsById(int id, int userId) {
         return typeRepository.existsByIdAndUserId(id, userId);
     }

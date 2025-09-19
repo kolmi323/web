@@ -90,6 +90,6 @@ public class TransactionService {
     }
 
     private void linkingTypeAndTransaction(List<Integer> typeIds, TransactionModel transactionModel) {
-        typeIds.forEach(transactionModel::linkTypeId);
+        typeIds.forEach(id -> transactionModel.addType(typeService.getModelById(id)));
     }
 }

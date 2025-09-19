@@ -50,15 +50,6 @@ public class ConverterTest {
         returnDTO(converter, transactionModel, transactionDTO);
     }
 
-    @Test
-    public void converter_returnCategoryTransactionDTO_whenCalledWithValidArguments() {
-        ConverterCategoryTransactionModelToCategoryTransactionDTO converter = new ConverterCategoryTransactionModelToCategoryTransactionDTO();
-        TransactionModel transactionModel = new TransactionModel(1, 1, 2, new BigDecimal("1000.10"), LocalDate.now());
-        CategoryTransactionModel categoryTransactionModel = new CategoryTransactionModel(1, 1, transactionModel);
-        CategoryTransactionDTO categoryTransactionDTO = new CategoryTransactionDTO(1, 1, 1);
-        returnDTO(converter, categoryTransactionModel, categoryTransactionDTO);
-    }
-
     @Test (expected = NullPointerException.class)
     public void convert_accountThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterAccountModelToAccountDTO converter = new ConverterAccountModelToAccountDTO();
@@ -81,12 +72,6 @@ public class ConverterTest {
     @Test (expected = NullPointerException.class)
     public void converter_transactionThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterTransactionModelToTransactionDTO converter = new ConverterTransactionModelToTransactionDTO();
-        throwNullPointerException(converter);
-    }
-
-    @Test (expected = NullPointerException.class)
-    public void converter_categoryTransactionThrowNullPointerException_whenCalledWithValidArguments() {
-        ConverterCategoryTransactionModelToCategoryTransactionDTO converter = new ConverterCategoryTransactionModelToCategoryTransactionDTO();
         throwNullPointerException(converter);
     }
 

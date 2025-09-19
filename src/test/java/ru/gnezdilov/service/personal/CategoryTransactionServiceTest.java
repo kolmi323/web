@@ -5,8 +5,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import ru.gnezdilov.dao.CategoryTransactionRepository;
-import ru.gnezdilov.service.converter.ConverterCategoryTransactionModelToCategoryTransactionDTO;
+import ru.gnezdilov.dao.TransactionRepository;
+import ru.gnezdilov.dao.entities.TransactionModel;
+import ru.gnezdilov.dao.entities.TypeModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -20,14 +21,16 @@ import static org.mockito.Mockito.*;
 public class CategoryTransactionServiceTest {
     @InjectMocks private CategoryTransactionService subj;
 
-    @Mock private CategoryTransactionRepository repository;
-    @Mock private ConverterCategoryTransactionModelToCategoryTransactionDTO converter;
+    @Mock private TransactionRepository repository;
 
     @Test
     public void getIncomingTransactions_returnHashMap_whenCalledWithValidArguments() {
-        ArrayList<Object[]> result = new ArrayList<>();
-        Object[] report = {"hobby", new BigDecimal(1)};
-        result.add(report);
+        ArrayList<TransactionModel> result = new ArrayList<>();
+        TransactionModel transactionModel = new TransactionModel(1, 1, 2,
+                new BigDecimal(1), LocalDate.parse("2025-01-15"));
+        TypeModel typeModel = new TypeModel(1, 1, "hobby");
+        transactionModel.getTypes().add(typeModel);
+        result.add(transactionModel);
         HashMap<String, BigDecimal> hm = new HashMap<>();
         hm.put("hobby", new BigDecimal(1));
         when(repository.getIncomingTransaction(1,
@@ -42,7 +45,7 @@ public class CategoryTransactionServiceTest {
 
     @Test
     public void getIncomingTransactions_returnEmptyHashMap_whenCalledWithValidArguments() {
-        ArrayList<Object[]> result = new ArrayList<>();
+        ArrayList<TransactionModel> result = new ArrayList<>();
         when(repository.getIncomingTransaction(1, LocalDate.parse("2025-01-10"),
                 LocalDate.parse("2025-01-30"))).thenReturn(result);
 
@@ -64,9 +67,12 @@ public class CategoryTransactionServiceTest {
 
     @Test
     public void getOutgoingTransactions_returnHashMap_whenCalledWithValidArguments() {
-        ArrayList<Object[]> result = new ArrayList<>();
-        Object[] report = {"hobby", new BigDecimal(1)};
-        result.add(report);
+        ArrayList<TransactionModel> result = new ArrayList<>();
+        TransactionModel transactionModel = new TransactionModel(1, 1, 2,
+                new BigDecimal(1), LocalDate.parse("2025-01-15"));
+        TypeModel typeModel = new TypeModel(1, 1, "hobby");
+        transactionModel.getTypes().add(typeModel);
+        result.add(transactionModel);
         HashMap<String, BigDecimal> hm = new HashMap<>();
         hm.put("hobby", new BigDecimal(1));
         when(repository.getOutgoingTransaction(1,
@@ -81,7 +87,7 @@ public class CategoryTransactionServiceTest {
 
     @Test
     public void getOutgoingTransactions_returnEmptyHashMap_whenCalledWithValidArguments() {
-        ArrayList<Object[]> result = new ArrayList<>();
+        ArrayList<TransactionModel> result = new ArrayList<>();
         when(repository.getOutgoingTransaction(1, LocalDate.parse("2025-01-10"),
                 LocalDate.parse("2025-01-30"))).thenReturn(result);
 

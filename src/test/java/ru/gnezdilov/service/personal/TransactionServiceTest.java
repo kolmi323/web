@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.TransactionRepository;
 import ru.gnezdilov.dao.entities.TransactionModel;
+import ru.gnezdilov.dao.entities.TypeModel;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.dao.exception.InsufficientFundsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
@@ -45,10 +46,12 @@ public class TransactionServiceTest {
         when(accountService.getByIdAndUserId(1, 1)).thenReturn(ACCOUNT_DTO);
         when(accountService.existsByIdAndUserId(2, 1)).thenReturn(true);
 
+        TypeModel type = new TypeModel(1, 1, "cool");
         TransactionModel transactionModelRequest = new TransactionModel(0, 1, 2, new BigDecimal("500.00"), LocalDate.now());
-        transactionModelRequest.linkTypeId(1);
+        transactionModelRequest.addType(type);
         TransactionModel transactionModelResponse = new TransactionModel(1, 1, 2, new BigDecimal("500.00"), LocalDate.now());
-        transactionModelResponse.linkTypeId(1);
+        transactionModelResponse.addType(type);
+        when(typeService.getModelById(1)).thenReturn(type);
         when(repository.save(transactionModelRequest)).thenReturn(transactionModelResponse);
 
         TransactionDTO transactionDTO = new TransactionDTO(1, 1, 2, new BigDecimal("500.00"), LocalDate.now());

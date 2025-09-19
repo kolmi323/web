@@ -6,11 +6,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.gnezdilov.dao.TypeRepository;
-import ru.gnezdilov.dao.exception.DAOException;
 import ru.gnezdilov.dao.entities.TypeModel;
 import ru.gnezdilov.service.converter.ConverterTypeModelToTypeDTO;
 import ru.gnezdilov.service.dto.TypeDTO;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class TypeServiceTest {
     }
 
     @Test
-    public void getAllByUserId_returnEmptyList_whenCalledWithValidException() {
+    public void getAllByUserId_returnEmptyList_whenCalledWithValidArguments() {
         List<TypeModel> typeModelList = new ArrayList<>();
         when(typeRepository.getAllByUserId(1)).thenReturn(typeModelList);
 
@@ -54,6 +54,25 @@ public class TypeServiceTest {
 
         verify(typeRepository, times(1)).getAllByUserId(1);
         verifyNoInteractions(converter);
+    }
+
+    @Test
+    public void getModelByID_returnTypeDTO_whenCalledWithValidArguments() {
+        TypeModel typeModel = new TypeModel(1, 1, "hobby");
+
+        when(typeRepository.getOne(1)).thenReturn(typeModel);
+
+        assertEquals(typeModel, subj.getModelById(1));
+        verify(typeRepository, times(1)).getOne(1);
+    }
+
+    @Test
+    public void getModelById_acceptEntityNotFoundException_whenCalledWithValidArguments() {
+        when(typeRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+
+        assertThrows(EntityNotFoundException.class, () -> subj.getModelById(1));
+
+        verify(typeRepository, times(1)).getOne(1);
     }
 
     @Test
@@ -73,6 +92,7 @@ public class TypeServiceTest {
         verify(typeRepository, times(1)).save(typeRequest);
         verify(converter, times(1)).convert(typeModel);
     }
+
 
     @Test
     public void save_acceptIllegalArgumentException_whenCalledWithInvalidException() {
