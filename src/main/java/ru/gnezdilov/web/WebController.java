@@ -15,6 +15,7 @@ import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.dao.exception.InsufficientFundsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -73,6 +74,11 @@ public class WebController extends AbstractController {
 
     @ExceptionHandler(NotFoundException.class)
     public String handleInsufficientFundsException(NotFoundException e, RedirectAttributes redirectAttributes) {
+        return handleException(e, redirectAttributes);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public String handleInsufficientFundsException(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
         return handleException(e, redirectAttributes);
     }
 

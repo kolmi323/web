@@ -7,6 +7,8 @@ import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.dao.exception.*;
 
+import javax.persistence.EntityNotFoundException;
+
 @Component
 public class RegisterWindow {
     private final UIUtils utils;
@@ -37,7 +39,7 @@ public class RegisterWindow {
             currentUser = authService.createNewUser(name, email, password);
             System.out.println("User created");
             personalOfficePage.start(currentUser);
-        } catch (NotFoundException | DAOException | NullPointerException | ExitException e ) {
+        } catch (EntityNotFoundException | NotFoundException | DAOException | NullPointerException | ExitException e ) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println(e.getMessage());

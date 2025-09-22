@@ -6,6 +6,8 @@ import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.dao.exception.*;
 
+import javax.persistence.EntityNotFoundException;
+
 @Component
 public class TypeMenu {
     private final InputRequest inputRequest;
@@ -46,7 +48,7 @@ public class TypeMenu {
                 } else {
                     System.out.println("Invalid input");
                 }
-            } catch (NotFoundException | DAOException | NullPointerException | ExitException e) {
+            } catch (EntityNotFoundException | NotFoundException | DAOException | NullPointerException | ExitException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());

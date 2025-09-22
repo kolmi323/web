@@ -16,6 +16,8 @@ import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.dao.exception.InsufficientFundsException;
 import ru.gnezdilov.dao.exception.NotFoundException;
 
+import javax.persistence.EntityNotFoundException;
+
 @RestControllerAdvice
 public class ApiController extends AbstractController {
     @ExceptionHandler(UnauthorizedException.class)
@@ -75,6 +77,13 @@ public class ApiController extends AbstractController {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleInsufficientFundsException(NotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientFundsException(EntityNotFoundException e) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(e.getMessage()));
