@@ -25,12 +25,9 @@ public class CategoryTransactionServiceTest {
 
     @Test
     public void getIncomingTransactions_returnHashMap_whenCalledWithValidArguments() {
-        ArrayList<TransactionModel> result = new ArrayList<>();
-        TransactionModel transactionModel = new TransactionModel(1, 1, 2,
-                new BigDecimal(1), LocalDate.parse("2025-01-15"));
-        TypeModel typeModel = new TypeModel(1, 1, "hobby");
-        transactionModel.getTypes().add(typeModel);
-        result.add(transactionModel);
+        ArrayList<Object[]> result = new ArrayList<>();
+        Object[] report = {"hobby", new BigDecimal(1)};
+        result.add(report);
         HashMap<String, BigDecimal> hm = new HashMap<>();
         hm.put("hobby", new BigDecimal(1));
         when(repository.getIncomingTransaction(1,
@@ -45,7 +42,7 @@ public class CategoryTransactionServiceTest {
 
     @Test
     public void getIncomingTransactions_returnEmptyHashMap_whenCalledWithValidArguments() {
-        ArrayList<TransactionModel> result = new ArrayList<>();
+        ArrayList<Object[]> result = new ArrayList<>();
         when(repository.getIncomingTransaction(1, LocalDate.parse("2025-01-10"),
                 LocalDate.parse("2025-01-30"))).thenReturn(result);
 
@@ -67,12 +64,9 @@ public class CategoryTransactionServiceTest {
 
     @Test
     public void getOutgoingTransactions_returnHashMap_whenCalledWithValidArguments() {
-        ArrayList<TransactionModel> result = new ArrayList<>();
-        TransactionModel transactionModel = new TransactionModel(1, 1, 2,
-                new BigDecimal(1), LocalDate.parse("2025-01-15"));
-        TypeModel typeModel = new TypeModel(1, 1, "hobby");
-        transactionModel.getTypes().add(typeModel);
-        result.add(transactionModel);
+        ArrayList<Object[]> result = new ArrayList<>();
+        Object[] report = {"hobby", new BigDecimal(1)};
+        result.add(report);
         HashMap<String, BigDecimal> hm = new HashMap<>();
         hm.put("hobby", new BigDecimal(1));
         when(repository.getOutgoingTransaction(1,
@@ -87,7 +81,7 @@ public class CategoryTransactionServiceTest {
 
     @Test
     public void getOutgoingTransactions_returnEmptyHashMap_whenCalledWithValidArguments() {
-        ArrayList<TransactionModel> result = new ArrayList<>();
+        ArrayList<Object[]> result = new ArrayList<>();
         when(repository.getOutgoingTransaction(1, LocalDate.parse("2025-01-10"),
                 LocalDate.parse("2025-01-30"))).thenReturn(result);
 

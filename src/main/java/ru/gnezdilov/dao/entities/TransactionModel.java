@@ -9,7 +9,9 @@
     import javax.persistence.*;
     import java.math.BigDecimal;
     import java.time.LocalDate;
+    import java.util.ArrayList;
     import java.util.HashSet;
+    import java.util.List;
     import java.util.Set;
 
     @Entity
@@ -33,26 +35,22 @@
         private int id;
 
         @Column(name = "from_account_id")
-        @EqualsAndHashCode.Include
         private Integer senderAccountId;
 
         @Column(name = "to_account_id")
-        @EqualsAndHashCode.Include
         private Integer receiverAccountId;
 
         @Column(nullable = false, name = "amount")
-        @EqualsAndHashCode.Include
         private BigDecimal amount;
 
         @Column(nullable = false, name = "date")
-        @EqualsAndHashCode.Include
         private LocalDate date;
 
         @ManyToMany
         @JoinTable(name = "type_transaction",
                 joinColumns = @JoinColumn(name = "transaction_id"),
                 inverseJoinColumns = @JoinColumn(name = "type_id"))
-        private Set<TypeModel> types =  new HashSet<>();
+        private List<TypeModel> types = new ArrayList<>();
 
         @Override
         public String toString() {
@@ -61,11 +59,5 @@
 
         public void addType(TypeModel type) {
             types.add(type);
-            type.getTransactions().add(this);
-        }
-
-        public void removeType(TypeModel type) {
-            types.remove(type);
-            type.getTransactions().remove(this);
         }
     }

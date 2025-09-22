@@ -24,15 +24,12 @@ public class TypeModel implements HasId {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
-    @Column(nullable = false, name = "user_id")
-    @EqualsAndHashCode.Include
-    private int userId;
-    @Column(nullable = false, name = "name")
-    @EqualsAndHashCode.Include
-    private String name;
 
-    @ManyToMany(mappedBy = "types")
-    private Set<TransactionModel> transactions = new HashSet<>();
+    @Column(nullable = false, name = "user_id")
+    private int userId;
+
+    @Column(nullable = false, name = "name")
+    private String name;
 
     @Override
     public String toString() {
