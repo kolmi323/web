@@ -40,10 +40,7 @@ public class AccountActionMenu {
 
     public void removeAccount(UserDTO currentUser) {
         int id = this.utils.enterId();
-        if (accountService.delete(id, currentUser.getId())) {
-            System.out.println("Account: " + id + " - deleted");
-        } else {
-            System.out.println("Account: " + id + " - not found");
-        }
+        accountService.delete(id, currentUser.getId());
+        System.out.println("Account: " + id + " - deleted");
     }
 }

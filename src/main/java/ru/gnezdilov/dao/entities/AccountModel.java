@@ -13,16 +13,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@NamedQueries({
-        @NamedQuery(name = "Account.findByIdAndUserId",
-                query = "SELECT a FROM AccountModel AS a WHERE a.id = :id AND a.userId = :userId"),
-        @NamedQuery(name = "Account.findByUserId",
-                query = "SELECT a FROM AccountModel AS a WHERE a.userId = :userId"),
-        @NamedQuery(name = "Account.findByIdAndUserIdWhereBalanceGreater",
-                query = "SELECT a FROM AccountModel AS a WHERE a.id = :id AND a.userId = :userId AND a.balance >= :balance"),
-        @NamedQuery(name = "Account.findByUserIdAndName",
-                query = "SELECT a FROM AccountModel AS a WHERE a.userId = :userId AND a.name LIKE :name")
-})
+
 public class AccountModel implements HasId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

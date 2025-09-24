@@ -7,6 +7,8 @@ import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.UIUtils;
 import ru.gnezdilov.dao.exception.*;
 
+import javax.persistence.EntityNotFoundException;
+
 @Component
 public class LoginWindow {
     private final UIUtils utils;
@@ -33,7 +35,7 @@ public class LoginWindow {
             currentUser = authService.authorization(email, password);
             System.out.println("Logged in successfully");
             personalOfficePage.start(currentUser);
-        } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException | DataSourceException | ExitException e) {
+        } catch (EntityNotFoundException | NotFoundException | DAOException | NullPointerException | ExitException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println(e.getMessage());

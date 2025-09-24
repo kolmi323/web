@@ -5,13 +5,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import ru.gnezdilov.dao.TypeDAO;
-import ru.gnezdilov.dao.exception.AlreadyExistsException;
-import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.TypeRepository;
 import ru.gnezdilov.dao.entities.TypeModel;
 import ru.gnezdilov.service.converter.ConverterTypeModelToTypeDTO;
 import ru.gnezdilov.service.dto.TypeDTO;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +21,15 @@ import static org.mockito.Mockito.*;
 public class TypeServiceTest {
     @InjectMocks private TypeService subj;
 
-    @Mock private TypeDAO typeDAO;
+    @Mock private TypeRepository typeRepository;
     @Mock private ConverterTypeModelToTypeDTO converter;
 
     @Test
-    public void getAll_returnLustTypeModel_whenCalledWithValidException() {
+    public void getAllByUserId_returnListTypeModel_whenCalledWithValidException() {
         TypeModel typeModel = new TypeModel(1, 1, "hobby");
         List<TypeModel> accountsModelsList = new ArrayList<>();
         accountsModelsList.add(typeModel);
-        when(typeDAO.getAll(1)).thenReturn(accountsModelsList);
+        when(typeRepository.getAllByUserId(1)).thenReturn(accountsModelsList);
 
         TypeDTO typeDTO = new TypeDTO(1, 1, "hobby");
         when(converter.convert(typeModel)).thenReturn(typeDTO);
@@ -40,37 +39,49 @@ public class TypeServiceTest {
         List<TypeDTO> accounts = subj.getAll(1);
         assertEquals(accountDTOList, accounts);
 
-        verify(typeDAO, times(1)).getAll(1);
+        verify(typeRepository, times(1)).getAllByUserId(1);
         verify(converter, times(1)).convert(typeModel);
     }
 
     @Test
-    public void getAll_returnEmptyList_whenCalledWithValidException() {
+    public void getAllByUserId_returnEmptyList_whenCalledWithValidArguments() {
         List<TypeModel> typeModelList = new ArrayList<>();
-        when(typeDAO.getAll(1)).thenReturn(typeModelList);
+        when(typeRepository.getAllByUserId(1)).thenReturn(typeModelList);
 
         List<TypeDTO> typeDTOList = new ArrayList<>();
         List<TypeDTO> type = subj.getAll(1);
         assertEquals(typeDTOList, type);
 
-        verify(typeDAO, times(1)).getAll(1);
+        verify(typeRepository, times(1)).getAllByUserId(1);
         verifyNoInteractions(converter);
     }
 
     @Test
-    public void getAll_acceptDAOException_whenCalledWithValidException() {
-        when(typeDAO.getAll(1)).thenThrow(DAOException.class);
+    public void getModelByID_returnTypeDTO_whenCalledWithValidArguments() {
+        TypeModel typeModel = new TypeModel(1, 1, "hobby");
 
-        assertThrows(DAOException.class, () -> subj.getAll(1));
+        when(typeRepository.getOne(1)).thenReturn(typeModel);
 
-        verify(typeDAO, times(1)).getAll(1);
-        verifyNoInteractions(converter);
+        assertEquals(typeModel, subj.getModelById(1));
+        verify(typeRepository, times(1)).getOne(1);
+    }
+
+    @Test
+    public void getModelById_acceptEntityNotFoundException_whenCalledWithValidArguments() {
+        when(typeRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+
+        assertThrows(EntityNotFoundException.class, () -> subj.getModelById(1));
+
+        verify(typeRepository, times(1)).getOne(1);
     }
 
     @Test
     public void create_returnTypeDTO_whenCalledWithValidException() {
         TypeModel typeModel = new TypeModel(1, 1, "hobby");
-        when(typeDAO.insert(1, "hobby")).thenReturn(typeModel);
+        TypeModel typeRequest = new TypeModel();
+        typeRequest.setUserId(1);
+        typeRequest.setName("hobby");
+        when(typeRepository.save(typeRequest)).thenReturn(typeModel);
 
         TypeDTO typeDTO = new TypeDTO(1, 1, "hobby");
         when(converter.convert(typeModel)).thenReturn(typeDTO);
@@ -78,137 +89,76 @@ public class TypeServiceTest {
         TypeDTO type = subj.create(1, "hobby");
         assertEquals(typeDTO, type);
 
-        verify(typeDAO, times(1))
-                .insert(1, "hobby");
+        verify(typeRepository, times(1)).save(typeRequest);
         verify(converter, times(1)).convert(typeModel);
     }
 
+
     @Test
-    public void create_acceptDAOExceptionWithMessageAboutFailedCreated_whenCalledWithValidException() {
-        when(typeDAO.insert(1, "hobby"))
-                .thenThrow(new DAOException("Insert type failed"));
+    public void save_acceptIllegalArgumentException_whenCalledWithInvalidException() {
+        TypeModel typeRequest = new TypeModel();
+        typeRequest.setUserId(1);
+        when(typeRepository.save(typeRequest)).thenThrow(IllegalArgumentException.class);
 
-        DAOException exception = assertThrows(DAOException.class,
-                () -> subj.create(1, "hobby"));
-        assertEquals("Insert type failed", exception.getMessage());
+        assertThrows(IllegalArgumentException.class, () -> subj.create(1, null));
 
-        verify(typeDAO, times(1))
-                .insert(1, "hobby");
+        verify(typeRepository, times(1))
+                .save(typeRequest);
         verifyNoInteractions(converter);
     }
 
     @Test
-    public void create_acceptAlreadyExistsException_whenCalledWithValidException() {
-        when(typeDAO.insert(1, "hobby"))
-                .thenThrow(AlreadyExistsException.class);
-
-        assertThrows(AlreadyExistsException.class, () -> subj
-                .create(1, "hobby"));
-
-        verify(typeDAO, times(1))
-                .insert(1, "hobby");
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void create_acceptDAOException_whenCalledWithValidException() {
-        when(typeDAO.insert(1, "hobby")).thenThrow(DAOException.class);
-
-        assertThrows(DAOException.class, () -> subj.create(1, "hobby"));
-
-        verify(typeDAO, times(1))
-                .insert(1, "hobby");
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void delete_returnSuccessDeleted_whenCalledWithValidException() {
-        when(typeDAO.delete(1, 1)).thenReturn(true);
+    public void deleteByIdAndUserId_returnSuccessDeleted_whenCalledWithValidException() {
+        when(typeRepository.deleteByIdAndUserId(1, 1)).thenReturn(1);
 
         assertTrue(subj.delete(1, 1));
 
-        verify(typeDAO, times(1)).delete(1, 1);
+        verify(typeRepository, times(1)).deleteByIdAndUserId(1, 1);
     }
 
     @Test
-    public void delete_returnFailedDeleted_whenCalledWithValidException() {
-        when(typeDAO.delete(1, 1)).thenReturn(false);
+    public void deleteByIdAndUserId_returnFailedDeleted_whenCalledWithValidException() {
+        when(typeRepository.deleteByIdAndUserId(1, 1)).thenReturn(0);
 
         assertFalse(subj.delete(1, 1));
 
-        verify(typeDAO, times(1)).delete(1, 1);
+        verify(typeRepository, times(1)).deleteByIdAndUserId(1, 1);
     }
 
     @Test
-    public void delete_acceptDAOException_whenCalledWithValidException() {
-        when(typeDAO.delete(1, 1)).thenThrow(DAOException.class);
+    public void edit_returnTypeDTO_whenCalledWithValidException() {
+        TypeModel typeRequest = new TypeModel(1, 1, "hobby");
+        TypeModel typeUpdate = new TypeModel(1, 1, "work");
+        TypeDTO typeDTO = new TypeDTO(1, 1, "work");
 
-        assertThrows(DAOException.class, () -> subj.delete(1, 1));
+        when(typeRepository.findByIdAndUserId(1, 1)).thenReturn(typeRequest);
+        typeUpdate.setName("work");
+        when(typeRepository.save(typeRequest)).thenReturn(typeUpdate);
+        when(converter.convert(typeUpdate)).thenReturn(typeDTO);
 
-        verify(typeDAO, times(1)).delete(1, 1);
-    }
+        assertEquals(typeDTO, subj.edit(1, 1, "hobby"));
 
-    @Test
-    public void edit_returnEditedTypeDTO_whenCalledWithValidException() {
-        TypeModel typeModel = new TypeModel(1, 1, "hobby");
-        when(typeDAO.update(1, 1, "work")).thenReturn(typeModel);
-
-        TypeDTO typeDTO = new TypeDTO(1, 1, "hobby");
-        when(converter.convert(typeModel)).thenReturn(typeDTO);
-
-        TypeDTO type = subj.edit(1, 1, "work");
-        assertEquals(typeDTO, type);
-
-        verify(typeDAO, times(1)).update(1, 1, "work");
-        verify(converter, times(1)).convert(typeModel);
-    }
-
-    @Test
-    public void edit_acceptDAOExceptionWithMessageAboutNotFoundType_whenCalledWithValidException() {
-        when(typeDAO.update(1, 1, "work")).thenThrow(new DAOException("Not found type"));
-
-        DAOException exception = assertThrows(DAOException.class, () -> subj.edit(1, 1, "work"));
-        assertEquals("Not found type", exception.getMessage());
-
-        verify(typeDAO, times(1)).update(1, 1, "work");
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void edit_acceptDAOException_whenCalledWithValidException() {
-        when(typeDAO.update(1, 1, "work")).thenThrow(DAOException.class);
-
-        assertThrows(DAOException.class, () -> subj.edit(1, 1, "work"));
-
-        verify(typeDAO, times(1)).update(1, 1, "work");
-        verifyNoInteractions(converter);
+        verify(typeRepository, times(1)).findByIdAndUserId(1, 1);
+        verify(typeRepository, times(1)).save(typeRequest);
+        verify(converter, times(1)).convert(typeUpdate);
     }
 
     @Test
     public void existsById_returnTrue_whenCalledWithValidException() {
-        when(typeDAO.existsById(1, 1)).thenReturn(true);
+        when(typeRepository.existsByIdAndUserId(1, 1)).thenReturn(true);
 
         assertTrue(subj.existsById(1, 1));
 
-        verify(typeDAO, times(1)).existsById(1, 1);
+        verify(typeRepository, times(1)).existsByIdAndUserId(1, 1);
         verifyNoInteractions(converter);
     }
 
     @Test
     public void existsById_returnFalse_whenCalledWithInvalidException() {
-        when(typeDAO.existsById(1, 2)).thenReturn(false);
-        assertFalse(subj.existsById(2, 1));
+        when(typeRepository.existsByIdAndUserId(1, 2)).thenReturn(false);
+        assertFalse(subj.existsById(1, 2));
 
-        verify(typeDAO, times(1)).existsById(1, 2);
-        verifyNoInteractions(converter);
-    }
-
-    @Test
-    public void existsById_acceptDAOException_whenCalledWithValidException() {
-        when(typeDAO.existsById(1, 1)).thenThrow(DAOException.class);
-        assertThrows(DAOException.class, () -> subj.existsById(1, 1));
-
-        verify(typeDAO, times(1)).existsById(1, 1);
+        verify(typeRepository, times(1)).existsByIdAndUserId(1, 2);
         verifyNoInteractions(converter);
     }
 }

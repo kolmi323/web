@@ -1,39 +1,42 @@
 package ru.gnezdilov.service.personal;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.gnezdilov.dao.TransactionDAO;
-import ru.gnezdilov.dao.exception.*;
+import org.springframework.transaction.annotation.Transactional;
+import ru.gnezdilov.dao.TransactionRepository;
+import ru.gnezdilov.dao.entities.TransactionModel;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
+import ru.gnezdilov.dao.exception.InsufficientFundsException;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.service.converter.ConverterTransactionModelToTransactionDTO;
 import ru.gnezdilov.service.dto.TransactionDTO;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionService {
-    private final TransactionDAO transactionDAO;
+    private final TransactionRepository transactionRepository;
     private final AccountService accountService;
     private final TypeService typeService;
     private final UserService userService;
     private final ConverterTransactionModelToTransactionDTO converter;
 
-    public TransactionService(TransactionDAO transactionDAO, AccountService accountService, TypeService typeService,
-                              UserService userService, ConverterTransactionModelToTransactionDTO converter) {
-        this.transactionDAO = transactionDAO;
-        this.accountService = accountService;
-        this.typeService = typeService;
-        this.userService = userService;
-        this.converter = converter;
-    }
-
+    @Transactional
     public TransactionDTO create(List<Integer> typeIds, int userId, int fromAccountId, int toAccountId, BigDecimal amount) {
         validateUser(userId);
         validateType(userId, typeIds);
         validateAccounts(userId, fromAccountId, toAccountId, amount);
-        return converter.convert(transactionDAO.insert(typeIds, userId, fromAccountId, toAccountId, amount));
+        return insert(typeIds, userId, fromAccountId, toAccountId, amount);
+    }
+
+    public TransactionDTO insert(List<Integer> typeIds, int userId, int fromAccountId, int toAccountId, BigDecimal amount) {
+        accountService.updateFromAccount(userId, fromAccountId, amount);
+        accountService.updateToAccount(userId, toAccountId, amount);
+        TransactionModel transactionModel = createTransaction(typeIds, fromAccountId, toAccountId, amount);
+        return converter.convert(transactionModel);
     }
 
     private void validateUser(int userId) {
@@ -61,17 +64,32 @@ public class TransactionService {
     }
 
     private void assertHasEnoughAccounts (int userId, int fromAccountId, BigDecimal amount) {
-        if (!accountService.existsById(fromAccountId, userId)) {
+        if (!accountService.existsByIdAndUserId(fromAccountId, userId)) {
             throw new NotFoundException("Account " + fromAccountId + " not found");
         }
-        if (amount.compareTo(accountService.getById(fromAccountId, userId).getBalance()) > 0) {
+        if (amount.compareTo(accountService.getByIdAndUserId(fromAccountId, userId).getBalance()) > 0) {
             throw new InsufficientFundsException("On Sender account " + fromAccountId + " has insufficient funds");
         }
     }
 
     private void assertReceiverAccount(int userId, int toAccountId) {
-        if (!accountService.existsById(toAccountId, userId)) {
+        if (!accountService.existsByIdAndUserId(toAccountId, userId)) {
             throw new NotFoundException("Account " + toAccountId + " not found");
         }
+    }
+
+    private TransactionModel createTransaction(List<Integer> typeIds, int fromAccountId, int toAccountId, BigDecimal amount) {
+        TransactionModel transactionModel = new TransactionModel();
+        transactionModel.setSenderAccountId(fromAccountId);
+        transactionModel.setReceiverAccountId(toAccountId);
+        transactionModel.setAmount(amount);
+        transactionModel.setDate(LocalDate.now());
+        linkingTypeAndTransaction(typeIds, transactionModel);
+        transactionModel = transactionRepository.save(transactionModel);
+        return transactionModel;
+    }
+
+    private void linkingTypeAndTransaction(List<Integer> typeIds, TransactionModel transactionModel) {
+        typeIds.forEach(id -> transactionModel.addType(typeService.getModelById(id)));
     }
 }

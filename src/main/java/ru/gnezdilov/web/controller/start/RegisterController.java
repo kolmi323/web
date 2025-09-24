@@ -1,40 +1,45 @@
 package ru.gnezdilov.web.controller.start;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import ru.gnezdilov.service.AuthService;
 import ru.gnezdilov.service.dto.UserDTO;
-import ru.gnezdilov.view.UIUtils;
-import ru.gnezdilov.web.abstractcustom.AbstractController;
-import ru.gnezdilov.web.interfaces.Controller;
-import ru.gnezdilov.web.json.register.RegisterRequest;
-import ru.gnezdilov.web.json.register.RegisterResponse;
+import ru.gnezdilov.web.WebController;
+import ru.gnezdilov.web.form.RegisterForm;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import javax.validation.Valid;
 
-@Service("/register")
-public class RegisterController extends AbstractController<RegisterRequest, RegisterResponse> {
+@Controller
+@RequiredArgsConstructor
+public class RegisterController extends WebController {
     private final AuthService authService;
 
-    public RegisterController(AuthService authService, ObjectMapper om, UIUtils utils) {
-        super(om, utils);
-        this.authService = authService;
+    @GetMapping("/register")
+    public String register(Model model) {
+        model.addAttribute("form", new RegisterForm());
+        return "register";
     }
 
-    @Override
-    public RegisterResponse handle(RegisterRequest request) {
-        UserDTO userDTO = authService.createNewUser(
-                request.getName(),
-                this.extractEmail(request.getEmail()),
-                this.extractPassword(request.getPassword())
-        );
-        return new RegisterResponse(userDTO.getId(), userDTO.getEmail());
-    }
-
-    @Override
-    public Class<RegisterRequest> getRequestClass() {
-        return RegisterRequest.class;
+    @PostMapping("/register")
+    public String register(@ModelAttribute("form") @Valid RegisterForm form,
+                           BindingResult result,
+                           Model model,
+                           HttpServletRequest request) {
+        if (!result.hasErrors()) {
+            UserDTO user = authService.createNewUser(form.getName(), form.getEmail(), form.getPassword());
+            if (user != null) {
+                this.wrapUserId(request, user.getId());
+                return "redirect:/personal";
+            }
+        }
+        model.addAttribute("form", form);
+        return "register";
     }
 }

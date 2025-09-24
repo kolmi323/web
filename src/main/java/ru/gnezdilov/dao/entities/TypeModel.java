@@ -4,28 +4,30 @@ import lombok.*;
 import ru.gnezdilov.service.custominterface.HasId;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "type")
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-@AllArgsConstructor
-@NamedQueries({
-        @NamedQuery(name = "Type.findByUserId",
-                query = "SELECT t FROM TypeModel AS t WHERE t.userId = :userId"),
-        @NamedQuery(name = "Type.findByIdAndUserId",
-                query = "SELECT t FROM TypeModel AS t WHERE t.id = :id AND t.userId = :userId"),
-        @NamedQuery(name = "Type.findByUserIdAndName",
-                query = "SELECT t FROM TypeModel AS t WHERE t.userId = :userId AND t.name = :name")
-})
 public class TypeModel implements HasId {
+    public TypeModel(int id, int userId, String name) {
+        this.id = id;
+        this.userId = userId;
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private int id;
+
     @Column(nullable = false, name = "user_id")
     private int userId;
+
     @Column(nullable = false, name = "name")
     private String name;
 

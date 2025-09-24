@@ -7,6 +7,8 @@ import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.view.InputRequest;
 import ru.gnezdilov.view.UIUtils;
 
+import javax.persistence.EntityNotFoundException;
+
 @Component
 public class TransactionMenu {
     private final InputRequest inputRequest;
@@ -37,8 +39,7 @@ public class TransactionMenu {
                 } else {
                     System.out.println("Invalid input");
                 }
-            } catch (NotFoundException | AlreadyExistsException | DAOException | NullPointerException |
-                     DataSourceException | InsufficientFundsException | IllegalArgumentException | ExitException e) {
+            } catch (EntityNotFoundException | NotFoundException | DAOException | NullPointerException | InsufficientFundsException | IllegalArgumentException | ExitException e) {
                 System.out.println(e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
