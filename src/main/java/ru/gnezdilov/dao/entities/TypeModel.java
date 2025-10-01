@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "type")
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 public class TypeModel implements HasId {
     public TypeModel(int id, int userId, String name) {
@@ -22,7 +22,6 @@ public class TypeModel implements HasId {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
     private int id;
 
     @Column(nullable = false, name = "user_id")

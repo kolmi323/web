@@ -38,63 +38,63 @@ public class WebController extends AbstractController {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public String handleInvalidReferenceException(DataIntegrityViolationException e, RedirectAttributes redirectAttributes) {
+    public String handleDataIntegrityViolationException(DataIntegrityViolationException e, RedirectAttributes redirectAttributes) {
         if (e.getCause() instanceof ConstraintViolationException) {
             return handleConstraintViolationException((ConstraintViolationException) e.getCause(), redirectAttributes);
         } else {
-            return handleException(e, redirectAttributes);
+            return redirectException(e, redirectAttributes);
         }
     }
 
     @ExceptionHandler(InsufficientFundsException.class)
     public String handleInsufficientFundsException(InsufficientFundsException e, RedirectAttributes redirectAttributes) {
-        return handleException(e, redirectAttributes);
+        return redirectException(e, redirectAttributes);
     }
 
     @ExceptionHandler(NumberFormatException.class)
-    public String handleInsufficientFundsException(NumberFormatException e,
+    public String handleNumberFormatException(NumberFormatException e,
                                                                           RedirectAttributes redirectAttributes) {
-        return handleException(e, redirectAttributes);
+        return redirectException(e, redirectAttributes);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String handleInsufficientFundsException(MethodArgumentNotValidException e, RedirectAttributes redirectAttributes) {
-        return handleException(e, redirectAttributes);
+    public String handleMethodArgumentNotValidException(MethodArgumentNotValidException e, RedirectAttributes redirectAttributes) {
+        return redirectException(e, redirectAttributes);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public String handleIllegalArgumentException(IllegalArgumentException e, RedirectAttributes redirectAttributes) {
-        return handleException(e, redirectAttributes);
+        return redirectException(e, redirectAttributes);
     }
 
     @ExceptionHandler(JsonParseException.class)
-    public String handleInsufficientFundsException(JsonParseException e, RedirectAttributes redirectAttributes) {
-        return handleException(e, redirectAttributes);
+    public String handleJsonParseException(JsonParseException e, RedirectAttributes redirectAttributes) {
+        return redirectException(e, redirectAttributes);
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public String handleInsufficientFundsException(NotFoundException e, RedirectAttributes redirectAttributes) {
-        return handleException(e, redirectAttributes);
+    public String handleNotFoundException(NotFoundException e, RedirectAttributes redirectAttributes) {
+        return redirectException(e, redirectAttributes);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public String handleInsufficientFundsException(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
-        return handleException(e, redirectAttributes);
+    public String handleEntityNotFoundException(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
+        return redirectException(e, redirectAttributes);
     }
 
     @ExceptionHandler(DAOException.class)
-    public String handleInsufficientFundsException(DAOException e, RedirectAttributes redirectAttributes) {
-        return handleException(e, redirectAttributes);
+    public String handleDAOException(DAOException e, RedirectAttributes redirectAttributes) {
+        return redirectException(e, redirectAttributes);
     }
 
     @ExceptionHandler(DataAccessException.class)
     public String handleDataAccessException(DataAccessException e, RedirectAttributes redirectAttributes) {
-        return handleException(e, redirectAttributes);
+        return redirectException(e, redirectAttributes);
     }
 
     @ExceptionHandler(Exception.class)
-    public String handleInsufficientFundsException(Exception e, RedirectAttributes redirectAttributes) {
-        return handleException(e, redirectAttributes);
+    public String handleException(Exception e, RedirectAttributes redirectAttributes) {
+        return redirectException(e, redirectAttributes);
     }
 
     protected String pullAttributeFromSession(HttpServletRequest request, String nameAttribute) {
@@ -102,12 +102,12 @@ public class WebController extends AbstractController {
         return session.getAttribute(nameAttribute).toString();
     }
 
-    protected String handleMessage(String message, RedirectAttributes redirectAttributes) {
+    protected String redirectMessage(String message, RedirectAttributes redirectAttributes) {
         redirectAttributes.addAttribute("message", message);
         return "redirect:/alertMessage";
     }
 
-    private String handleException(Exception e, RedirectAttributes redirectAttributes) {
+    private String redirectException(Exception e, RedirectAttributes redirectAttributes) {
         redirectAttributes.addAttribute( "error", e.getMessage());
         return "redirect:/alertError";
     }

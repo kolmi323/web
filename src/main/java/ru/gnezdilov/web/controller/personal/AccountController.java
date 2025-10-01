@@ -26,15 +26,13 @@ public class AccountController extends WebController {
     private final AccountService accountService;
 
     @GetMapping()
-    public String account(HttpServletRequest request) {
-        this.extractUserId(request);
+    public String account() {
         return "personal/account/main";
     }
 
     @GetMapping("/show")
-    public String showAccount(HttpServletRequest request,
-                              Model model) {
-        Integer userId = this.extractUserId(request);
+    public String showAccount(Model model) {
+        Integer userId = this.currentUser().getId();
         List<AccountDTO> accounts = accountService.getAll(userId);
         model.addAttribute("accounts", accounts);
         return "personal/account/show";
@@ -50,12 +48,11 @@ public class AccountController extends WebController {
     public String addAccount(@ModelAttribute("form") @Valid AccountAddForm form,
                              BindingResult result,
                              Model model,
-                             HttpServletRequest request,
                              RedirectAttributes redirectAttributes) {
-        Integer userId = this.extractUserId(request);
+        Integer userId = this.currentUser().getId();
         if (!result.hasErrors()) {
             AccountDTO account = accountService.create(userId, form.getName(), form.getBalance());
-            return this.handleMessage("Account " + account.getId() + " - created", redirectAttributes);
+            return this.redirectMessage("Account " + account.getId() + " - created", redirectAttributes);
         }
         model.addAttribute("form", form);
         return "personal/account/add";
@@ -70,13 +67,11 @@ public class AccountController extends WebController {
     @PostMapping("/delete")
     public String deleteAccount(@ModelAttribute("form") @Valid DeleteForm form,
                              BindingResult result,
-                             Model model,
-                             HttpServletRequest request,
-                                RedirectAttributes redirectAttributes) {
-        Integer userId = this.extractUserId(request);
+                             Model model, RedirectAttributes redirectAttributes) {
+        Integer userId = this.currentUser().getId();
         if (!result.hasErrors()) {
             accountService.delete(form.getId(), userId);
-            return this.handleMessage("Account " + form.getId() + " - deleted", redirectAttributes);
+            return this.redirectMessage("Account " + form.getId() + " - deleted", redirectAttributes);
         }
         model.addAttribute("form", form);
         return "personal/account/delete";

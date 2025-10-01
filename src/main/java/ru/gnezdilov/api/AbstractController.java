@@ -1,6 +1,8 @@
 package ru.gnezdilov.api;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import ru.gnezdilov.api.exception.UnauthorizedException;
+import ru.gnezdilov.security.CustomUserDetails;
 import ru.gnezdilov.service.dto.UserDTO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,12 @@ public abstract class AbstractController {
             throw new UnauthorizedException();
         }
         return userId;
+    }
+
+    protected CustomUserDetails currentUser() {
+        return (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
     }
 
     protected void wrapUserId(HttpServletRequest request, Integer userId) {

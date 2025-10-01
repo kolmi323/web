@@ -36,6 +36,12 @@
                 <button type="submit" class="btn btn-primary">Reports</button>
             </form>
         </div>
+        <br>
+        <div class="col">
+            <form action="/logout" method="get">
+                <button type="submit" class="btn btn-primary">Logout</button>
+            </form>
+        </div>
     </div>
 </div>
 <script src="/static/js/bootstrap.min.js"></script>

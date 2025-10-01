@@ -27,15 +27,13 @@ public class TypeController extends WebController {
     private final TypeService typeService;
 
     @GetMapping()
-    public String type(HttpServletRequest request) {
-        this.extractUserId(request);
+    public String type() {
         return "personal/type/main";
     }
 
     @GetMapping("/show")
-    public String showTypes(HttpServletRequest request,
-                            Model model) {
-        Integer userId = this.extractUserId(request);
+    public String showTypes(Model model) {
+        Integer userId = this.currentUser().getId();
         List<TypeDTO> types = typeService.getAll(userId);
         model.addAttribute("types", types);
         return "personal/type/show";
@@ -51,12 +49,11 @@ public class TypeController extends WebController {
     public String addType(@ModelAttribute("form") @Valid TypeAddForm form,
                           BindingResult result,
                           Model model,
-                          HttpServletRequest request,
                           RedirectAttributes redirectAttributes) {
-        Integer userId = this.extractUserId(request);
+        Integer userId = this.currentUser().getId();
         if (!result.hasErrors()) {
             TypeDTO type = typeService.create(userId, form.getName());
-            this.handleMessage("Account " + type.getId() + " - created", redirectAttributes);
+            this.redirectMessage("Account " + type.getId() + " - created", redirectAttributes);
         }
         model.addAttribute("form", form);
         return "personal/type/add";
@@ -72,12 +69,11 @@ public class TypeController extends WebController {
     public String updateType(@ModelAttribute("form") @Valid TypeUpdateForm form,
                              BindingResult result,
                              Model model,
-                             HttpServletRequest request,
                              RedirectAttributes redirectAttributes) {
-        Integer userId = this.extractUserId(request);
+        Integer userId = this.currentUser().getId();
         if (!result.hasErrors()) {
             TypeDTO type = typeService.edit(form.getId(), userId, form.getNewName());
-            this.handleMessage("Account " + type.getId() + " - modified. New name: " + type.getName(), redirectAttributes);
+            this.redirectMessage("Account " + type.getId() + " - modified. New name: " + type.getName(), redirectAttributes);
         }
         model.addAttribute("form", form);
         return "personal/type/update";
@@ -93,14 +89,13 @@ public class TypeController extends WebController {
     public String deleteType(@ModelAttribute("form") @Valid DeleteForm form,
                              BindingResult result,
                              Model model,
-                             HttpServletRequest request,
                              RedirectAttributes redirectAttributes) {
-        Integer userId = this.extractUserId(request);
+        Integer userId = this.currentUser().getId();
         if (!result.hasErrors()) {
             if (typeService.delete(form.getId(), userId)) {
-                this.handleMessage("Type " + form.getId() + " - successfully deleted", redirectAttributes);
+                this.redirectMessage("Type " + form.getId() + " - successfully deleted", redirectAttributes);
             } else {
-                this.handleMessage("Delete failed", redirectAttributes);
+                this.redirectMessage("Delete failed", redirectAttributes);
             }
         }
         model.addAttribute("form", form);

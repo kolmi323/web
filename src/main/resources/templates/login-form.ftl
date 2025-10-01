@@ -12,16 +12,14 @@
     <div class="row">
         <div class="col"></div>
         <div class="col">
-            <form action="login" method="post">
+            <form action="/login" method="post">
                 <div class="mb-3">
                     <label for="exampleInputEmail" class="form-label">Email address</label>
-                    <@spring.formInput "form.email" "class=\"form-control\" id=\"exampleInputEmail\" placeholder=\"Enter email\"" "email"/>
-                    <@spring.showErrors "<br/>"/>
+                    <input name="email" class="form-control" id="inputEmail" placeholder="Enter email" type="text"/>
                 </div>
                 <div class="mb-3">
                     <label for="exampleInputPassword" class="form-label">Password</label>
-                    <@spring.formInput "form.password" "class=\"form-control\" id=\"exampleInputPassword\" placeholder=\"Password\"" "password"/>
-                    <@spring.showErrors "<br/>"/>
+                    <input name="password" class="form-control" id="inputPassword" placeholder="Password" type="password"/>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
