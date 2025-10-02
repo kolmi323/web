@@ -28,8 +28,7 @@ public class TransactionController extends WebController {
     private final TransactionService transactionService;
 
     @GetMapping()
-    public String transaction(HttpServletRequest request) {
-        this.extractUserId(request);
+    public String transaction() {
         return "personal/transaction/main";
     }
 

@@ -25,31 +25,28 @@ public class TypeApiController extends ApiController {
 
     @GetMapping("/show")
     public List<TypeDTO> show(HttpServletRequest request) {
-        Integer userId = this.extractUserId(request);
+        Integer userId = this.currentUser().getId();
         List<TypeDTO> types = typeService.getAll(userId);
         return types;
     }
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public TypeResponse add(@RequestBody @Valid TypeAddRequest request,
-                                                          HttpServletRequest httpServletRequest) {
-        Integer userId = this.extractUserId(httpServletRequest);
+    public TypeResponse add(@RequestBody @Valid TypeAddRequest request) {
+        Integer userId = this.currentUser().getId();
         TypeDTO type = typeService.create(userId, request.getName());
         return converter.convert(type);
     }
 
     @PostMapping("/delete")
-    public boolean delete(@RequestBody @Valid DeleteRequest request,
-                                                                HttpServletRequest httpServletRequest) {
-        Integer userId = this.extractUserId(httpServletRequest);
+    public boolean delete(@RequestBody @Valid DeleteRequest request) {
+        Integer userId = this.currentUser().getId();
         return typeService.delete(request.getId(), userId);
     }
 
     @PostMapping("/update")
-    public TypeResponse update(@RequestBody @Valid TypeUpdateRequest request,
-                                                                   HttpServletRequest httpServletRequest) {
-        Integer userId = this.extractUserId(httpServletRequest);
+    public TypeResponse update(@RequestBody @Valid TypeUpdateRequest request) {
+        Integer userId = this.currentUser().getId();
         TypeDTO type = typeService.edit(request.getId(), userId, request.getNewName());
         return converter.convert(type);
     }

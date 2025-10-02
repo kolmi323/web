@@ -1,6 +1,10 @@
 package ru.gnezdilov.api.controller.start;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +18,8 @@ import ru.gnezdilov.api.json.register.RegisterRequest;
 import ru.gnezdilov.api.json.register.RegisterResponse;
 import ru.gnezdilov.service.AuthService;
 import ru.gnezdilov.service.dto.UserDTO;
+import ru.gnezdilov.service.personal.UserService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RequiredArgsConstructor
@@ -23,24 +27,24 @@ import javax.validation.Valid;
 @RequestMapping("/api")
 public class StartApiController extends AbstractController {
     private final AuthService authService;
+    private final UserService userService;
     private final ConverterUserDTOToRegisterResponse converterUserDTOToRegisterResponse;
     private final ConverterUserDTOToAuthResponse converterUserDTOToAuthResponse;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @PostMapping("/register")
-    public RegisterResponse register(@RequestBody @Valid RegisterRequest registerRequest,
-                                                                   HttpServletRequest httpServletRequest) {
+    public RegisterResponse register(@RequestBody @Valid RegisterRequest registerRequest) {
         UserDTO user = authService.createNewUser(registerRequest.getName(), registerRequest.getEmail(), registerRequest.getPassword());
         this.handleUser(user);
-        this.wrapUserId(httpServletRequest, user.getId());
         return converterUserDTOToRegisterResponse.convert(user);
     }
 
     @PostMapping("/login")
-    public AuthResponse auth(@RequestBody @Valid AuthRequest authRequest,
-                                             HttpServletRequest httpServletRequest) {
-        UserDTO user = authService.authorization(authRequest.getEmail(), authRequest.getPassword());
-        this.handleUser(user);
-        this.wrapUserId(httpServletRequest, user.getId());
-        return converterUserDTOToAuthResponse.convert(user);
+    public AuthResponse login(@RequestBody AuthRequest authRequest) {
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword());
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return converterUserDTOToAuthResponse.convert(userService.getUserById(this.currentUser().getId()));
     }
 }

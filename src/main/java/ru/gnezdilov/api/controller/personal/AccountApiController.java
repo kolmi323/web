@@ -23,22 +23,21 @@ public class AccountApiController extends ApiController {
     private final ConverterAccountDTOToAccountAddResponse converter;
 
     @GetMapping("/show")
-    public List<AccountDTO> show(HttpServletRequest httpServletRequest) {
-        Integer userId = this.extractUserId(httpServletRequest);
+    public List<AccountDTO> show() {
+        Integer userId = this.currentUser().getId();
         return accountService.getAll(userId);
     }
 
     @PostMapping("/delete")
-    public void delete(@RequestBody @Valid DeleteRequest request,
-                          HttpServletRequest httpServletRequest) {
-        accountService.delete(request.getId(), this.extractUserId(httpServletRequest));
+    public void delete(@RequestBody @Valid DeleteRequest request) {
+        Integer userId = this.currentUser().getId();
+        accountService.delete(request.getId(), userId);
     }
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountAddResponse add(@RequestBody @Valid AccountAddRequest request,
-                                                                HttpServletRequest httpServletRequest) {
-        Integer userId = this.extractUserId(httpServletRequest);
+    public AccountAddResponse add(@RequestBody @Valid AccountAddRequest request) {
+        Integer userId = this.currentUser().getId();
         AccountDTO account = accountService.create(userId, request.getName(), request.getBalance());
         return converter.convert(account);
     }

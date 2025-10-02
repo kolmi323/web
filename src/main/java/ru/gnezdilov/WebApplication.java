@@ -3,6 +3,7 @@ package ru.gnezdilov;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +26,12 @@ public class WebApplication extends WebSecurityConfigurerAdapter {
                         .permitAll()
                     .antMatchers("/personal", "/account/**", "/type/**", "/report/**", "/transaction/**")
                         .hasAnyRole(USER.name(), ADMIN.name())
+                    .antMatchers(HttpMethod.POST, "api/login", "/api/register")
+                        .permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/account/**", "/api/type/**", "/api/transaction/**")
+                        .hasAnyRole(USER.name(), ADMIN.name())
+                    .antMatchers(HttpMethod.GET, "/api/account/show", "/api/type/show", "/api/report/**")
+                        .hasAnyRole(USER.name(), ADMIN.name())
                 .and()
                     .formLogin()
                         .usernameParameter("email")
@@ -32,6 +39,8 @@ public class WebApplication extends WebSecurityConfigurerAdapter {
                         .loginPage("/login-form")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/personal")
+                .and()
+                    .httpBasic()
                 .and()
                     .logout()
                         .logoutUrl("/logout")
