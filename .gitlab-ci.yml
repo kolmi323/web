@@ -2,6 +2,6 @@ image: maven
 
 test:
   script:
-    - mvn clean test
+    - mvn -X clean test
   only:
     - branches
