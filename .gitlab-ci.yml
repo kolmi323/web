@@ -1,6 +1,6 @@
 image: maven
 
-test:
+build:
   script:
     - mvn -X clean test
   only:
