@@ -1,10 +1,7 @@
 package ru.gnezdilov.api.controller.start;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.gnezdilov.api.AbstractController;
 import ru.gnezdilov.api.converter.ConverterUserDTOToAuthResponse;
 import ru.gnezdilov.api.converter.ConverterUserDTOToRegisterResponse;
-import ru.gnezdilov.api.json.auth.AuthRequest;
-import ru.gnezdilov.api.json.auth.AuthResponse;
 import ru.gnezdilov.api.json.register.RegisterRequest;
 import ru.gnezdilov.api.json.register.RegisterResponse;
 import ru.gnezdilov.service.AuthService;
@@ -35,16 +30,6 @@ public class StartApiController extends AbstractController {
     @PostMapping("/register")
     public RegisterResponse register(@RequestBody @Valid RegisterRequest registerRequest) {
         UserDTO user = authService.createNewUser(registerRequest.getName(), registerRequest.getEmail(), registerRequest.getPassword());
-        this.handleUser(user);
         return converterUserDTOToRegisterResponse.convert(user);
-    }
-
-    @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest authRequest) {
-        UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return converterUserDTOToAuthResponse.convert(userService.getUserById(this.currentUser().getId()));
     }
 }

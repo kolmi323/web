@@ -11,7 +11,6 @@ import ru.gnezdilov.api.json.account.create.AccountAddResponse;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.personal.AccountService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
