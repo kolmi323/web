@@ -4,19 +4,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MD5DigestUtilsTest {
-    @InjectMocks private MD5DigestUtils subj;
+public class BCryptPasswordEncoderUtilsTest {
+    @InjectMocks private BCryptPasswordEncoderUtils subj;
 
     @Test
     public void hashPassword_returnHash_whenPasswordIsValid() {
         String password = "password";
-        String hash = "5f4dcc3b5aa765d61d8327deb882cf99";
-
-        assertEquals(hash, subj.hashPassword(password));
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        assertTrue(encoder.matches(password, subj.hashPassword(password)));
     }
 
     @Test

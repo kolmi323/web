@@ -9,7 +9,6 @@ import ru.gnezdilov.api.controller.ApiController;
 import ru.gnezdilov.api.json.categorytransaction.CategoryTransactionRequest;
 import ru.gnezdilov.service.personal.CategoryTransactionService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -21,18 +20,16 @@ public class ReportTransactionApiController extends ApiController {
     private final CategoryTransactionService categoryTransactionService;
 
     @GetMapping("/incoming")
-    public Map<String, BigDecimal> getIncomingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
-                                                                                            HttpServletRequest httpServletRequest) {
-        Integer userId = this.extractUserId(httpServletRequest);
+    public Map<String, BigDecimal> getIncomingTransaction(@RequestBody @Valid CategoryTransactionRequest request) {
+        Integer userId = this.currentUser().getId();
         Map<String, BigDecimal> transactions = categoryTransactionService.getIncomingTransactions(userId,
                 request.getDateAfter(), request.getDateBefore());
         return transactions;
     }
 
     @GetMapping("/outgoing")
-    public Map<String, BigDecimal> getOutgoingTransaction(@RequestBody @Valid CategoryTransactionRequest request,
-                                                                                            HttpServletRequest httpServletRequest) {
-        Integer userId = this.extractUserId(httpServletRequest);
+    public Map<String, BigDecimal> getOutgoingTransaction(@RequestBody @Valid CategoryTransactionRequest request) {
+        Integer userId = this.currentUser().getId();
         Map<String, BigDecimal> transactions =  categoryTransactionService.getOutgoingTransactions(userId,
                 request.getDateAfter(), request.getDateBefore());
         return transactions;

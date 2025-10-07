@@ -8,6 +8,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.gnezdilov.service.AuthService;
 import ru.gnezdilov.service.dto.UserDTO;
 import ru.gnezdilov.web.WebController;
@@ -31,12 +32,11 @@ public class RegisterController extends WebController {
     public String register(@ModelAttribute("form") @Valid RegisterForm form,
                            BindingResult result,
                            Model model,
-                           HttpServletRequest request) {
+                           RedirectAttributes redirectAttributes) {
         if (!result.hasErrors()) {
             UserDTO user = authService.createNewUser(form.getName(), form.getEmail(), form.getPassword());
             if (user != null) {
-                this.wrapUserId(request, user.getId());
-                return "redirect:/personal";
+                return this.redirectMessage("User " + user.getName() + " created", redirectAttributes);
             }
         }
         model.addAttribute("form", form);

@@ -139,5 +139,15 @@
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"/>
     </changeSet>
-
+    
+    <changeSet id="create_user_role" author="gnezdilov">
+        <createTable tableName="user_role">
+            <column name = "user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

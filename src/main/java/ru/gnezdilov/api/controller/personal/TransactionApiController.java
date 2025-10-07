@@ -10,9 +10,7 @@ import ru.gnezdilov.api.json.transaction.add.TransactionAddResponse;
 import ru.gnezdilov.service.dto.TransactionDTO;
 import ru.gnezdilov.service.personal.TransactionService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Arrays;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,9 +21,8 @@ public class TransactionApiController extends ApiController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public TransactionAddResponse add(@RequestBody @Valid TransactionAddRequest request,
-                                                                    HttpServletRequest httpServletRequest) {
-        Integer userId = this.extractUserId(httpServletRequest);
+    public TransactionAddResponse add(@RequestBody @Valid TransactionAddRequest request) {
+        Integer userId = this.currentUser().getId();
         TransactionDTO transaction = transactionService.create(
                 request.getTypesIds(), userId,
                 request.getSendingId(), request.getReceivingId(), request.getAmount()

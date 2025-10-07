@@ -25,7 +25,7 @@ public class AuthServiceTest {
     @InjectMocks private AuthService subj;
 
     @Mock private UserRepository userRepository;
-    @Mock private DigestService digestService;
+    @Mock private BCryptPasswordEncoderUtils digestService;
     @Mock private ConverterUserModelToUserDTO converter;
 
     @Test

@@ -1,7 +1,7 @@
-image: maven
+image: maven:3-openjdk-8
 
 test:
   script:
-    - mvn clean test
+    - mvn -X clean install
   only:
     - branches

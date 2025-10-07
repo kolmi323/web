@@ -10,18 +10,20 @@ import java.math.BigDecimal;
 @Table(name = "account")
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class AccountModel implements HasId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(nullable = false, name = "user_id")
     private int userId;
+
     @Column(nullable = false, name = "name")
     private String name;
+
     @Column(nullable = false, name = "balance")
     private BigDecimal balance;
 

@@ -28,8 +28,7 @@ public class TransactionController extends WebController {
     private final TransactionService transactionService;
 
     @GetMapping()
-    public String transaction(HttpServletRequest request) {
-        this.extractUserId(request);
+    public String transaction() {
         return "personal/transaction/main";
     }
 
@@ -43,9 +42,8 @@ public class TransactionController extends WebController {
     public String addTransaction(@ModelAttribute("form") @Valid TransactionAddForm form,
                                  BindingResult result,
                                  Model model,
-                                 HttpServletRequest request,
                                  RedirectAttributes redirectAttributes) {
-        Integer userId = this.extractUserId(request);
+        Integer userId = this.currentUser().getId();
         if (!result.hasErrors()) {
             List<Integer> typeIds = processIdsFromString(form.getTypeIds());
             TransactionDTO transactionDTO = transactionService.create(typeIds,
@@ -53,7 +51,7 @@ public class TransactionController extends WebController {
                     form.getSendingId(),
                     form.getReceivingId(),
                     form.getAmount());
-            return this.handleMessage("Transaction " + transactionDTO.getId() + " - created.", redirectAttributes);
+            return this.redirectMessage("Transaction " + transactionDTO.getId() + " - created.", redirectAttributes);
         }
         model.addAttribute("form", form);
         return "personal/transaction/add";

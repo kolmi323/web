@@ -18,7 +18,7 @@
     @Table(name = "transaction")
     @Getter
     @Setter
-    @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+    @EqualsAndHashCode(of = "id")
     @NoArgsConstructor
     public class TransactionModel implements HasId {
         public TransactionModel(int id, Integer senderAccountId, Integer receiverAccountId, BigDecimal amount, LocalDate date) {
@@ -31,7 +31,6 @@
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @EqualsAndHashCode.Include
         private int id;
 
         @Column(name = "from_account_id")

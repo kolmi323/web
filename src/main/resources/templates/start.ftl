@@ -24,7 +24,7 @@
         </div>
         <div class="col"></div>
         <div class="col">
-            <form action="login" method="get">
+            <form action="login-form" method="get">
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
         </div>

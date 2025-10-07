@@ -29,8 +29,7 @@ public class ReportController extends WebController {
     private final CategoryTransactionService categoryTransactionService;
 
     @GetMapping()
-    public String report(HttpServletRequest request) {
-        this.extractUserId(request);
+    public String report() {
         return "personal/report/main";
     }
 
@@ -63,7 +62,7 @@ public class ReportController extends WebController {
     @GetMapping("/show")
     public String showReport(Model model,
                               HttpServletRequest request) {
-        Integer userId = this.extractUserId(request);
+        Integer userId = this.currentUser().getId();
         Map<String, BigDecimal> transactions = new HashMap<>();
         String typeReport = this.pullAttributeFromSession(request, "typeReport");
         if (typeReport.equals(NAME_INCOMING)) {
@@ -91,7 +90,6 @@ public class ReportController extends WebController {
                               Model model,
                               HttpServletRequest request,
                               String typeReport) {
-        this.extractUserId(request);
         if (!result.hasErrors()) {
             HttpSession session = request.getSession();
             session.setAttribute("dateAfter", form.getDateAfter());
