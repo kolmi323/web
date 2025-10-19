@@ -1,5 +1,6 @@
 package ru.gnezdilov.security;
 
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@EqualsAndHashCode
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
