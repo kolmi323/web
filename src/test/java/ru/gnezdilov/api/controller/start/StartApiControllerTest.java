@@ -31,23 +31,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class StartApiControllerTest {
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private AuthService authService;
+
     @SpyBean
     private ConverterUserDTOToRegisterResponse converter;
+
+    private ObjectMapper om;
+    private ObjectWriter ow;
 
 
     @Before
     public void setUp() throws Exception {
+        om = new ObjectMapper();
+        ow = om.writer().withDefaultPrettyPrinter();
+
         when(authService.createNewUser("anton", "anton@mail.ru", "anton"))
                 .thenReturn(new UserDTO(3, "anton", "anton@mail.ru"));
     }
 
     @Test
     public void register() throws Exception {
-        ObjectMapper om = new ObjectMapper();
-        ObjectWriter ow = om.writer().withDefaultPrettyPrinter();
-
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setName("anton");
         registerRequest.setEmail("anton@mail.ru");
