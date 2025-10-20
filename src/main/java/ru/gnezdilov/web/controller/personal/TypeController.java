@@ -53,7 +53,7 @@ public class TypeController extends WebController {
         Integer userId = this.currentUser().getId();
         if (!result.hasErrors()) {
             TypeDTO type = typeService.create(userId, form.getName());
-            this.redirectMessage("Account " + type.getId() + " - created", redirectAttributes);
+            return this.redirectMessage("Account " + type.getId() + " - created", redirectAttributes);
         }
         model.addAttribute("form", form);
         return "personal/type/add";
@@ -73,7 +73,7 @@ public class TypeController extends WebController {
         Integer userId = this.currentUser().getId();
         if (!result.hasErrors()) {
             TypeDTO type = typeService.edit(form.getId(), userId, form.getNewName());
-            this.redirectMessage("Account " + type.getId() + " - modified. New name: " + type.getName(), redirectAttributes);
+            return this.redirectMessage("Account " + type.getId() + " - modified. New name: " + type.getName(), redirectAttributes);
         }
         model.addAttribute("form", form);
         return "personal/type/update";
@@ -93,9 +93,9 @@ public class TypeController extends WebController {
         Integer userId = this.currentUser().getId();
         if (!result.hasErrors()) {
             if (typeService.delete(form.getId(), userId)) {
-                this.redirectMessage("Type " + form.getId() + " - successfully deleted", redirectAttributes);
+                return this.redirectMessage("Type " + form.getId() + " - successfully deleted", redirectAttributes);
             } else {
-                this.redirectMessage("Delete failed", redirectAttributes);
+                return this.redirectMessage("Delete failed", redirectAttributes);
             }
         }
         model.addAttribute("form", form);
