@@ -1,27 +1,24 @@
 package ru.gnezdilov.security;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import ru.gnezdilov.WebApplication;
 import ru.gnezdilov.dao.UserRepository;
 import ru.gnezdilov.dao.entities.UserModel;
-import ru.gnezdilov.service.dto.UserDTO;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
 @ContextConfiguration(classes = WebApplication.class)
 public class CustomUserDetailsServiceTest {
     @Autowired
@@ -30,7 +27,7 @@ public class CustomUserDetailsServiceTest {
     @MockBean
     UserRepository userRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         UserModel user = new UserModel(
                 1,

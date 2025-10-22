@@ -1,15 +1,13 @@
 package ru.gnezdilov.web.controller.personal;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.gnezdilov.MockSecurityConfiguration;
 import ru.gnezdilov.WebApplication;
@@ -22,9 +20,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = PersonalController.class)
-@RunWith(SpringRunner.class)
 @Import({SecurityConfiguration.class, MockSecurityConfiguration.class})
 @ContextConfiguration(classes = {WebApplication.class})
+@WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
 public class PersonalControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -32,14 +30,13 @@ public class PersonalControllerTest {
     @MockBean
     private UserService userService;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         when(userService.getUserById(1))
                 .thenReturn(new UserDTO(1, "John", "john@mail.ru"));
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void index_returnPersonalForm() throws Exception {
         mockMvc.perform(get("/personal"))
                 .andExpect(status().isOk())

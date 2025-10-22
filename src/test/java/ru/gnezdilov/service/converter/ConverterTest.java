@@ -1,6 +1,6 @@
 package ru.gnezdilov.service.converter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import ru.gnezdilov.dao.entities.*;
 import ru.gnezdilov.service.dto.*;
 import org.springframework.core.convert.converter.Converter;
@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ConverterTest {
     @Test
@@ -50,29 +51,29 @@ public class ConverterTest {
         returnDTO(converter, transactionModel, transactionDTO);
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test
     public void convert_accountThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterAccountModelToAccountDTO converter = new ConverterAccountModelToAccountDTO();
-        throwNullPointerException(converter);
+        assertThrows(NullPointerException.class, () -> throwNullPointerException(converter));
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test
     public void converter_typeThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterTypeModelToTypeDTO converter
                 = new ConverterTypeModelToTypeDTO();
-        throwNullPointerException(converter);
+        assertThrows(NullPointerException.class, () -> throwNullPointerException(converter));
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test
     public void converter_userThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterUserModelToUserDTO converter = new ConverterUserModelToUserDTO();
-        throwNullPointerException(converter);
+        assertThrows(NullPointerException.class, () -> throwNullPointerException(converter));
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test
     public void converter_transactionThrowNullPointerException_whenCalledWithValidArguments() {
         ConverterTransactionModelToTransactionDTO converter = new ConverterTransactionModelToTransactionDTO();
-        throwNullPointerException(converter);
+        assertThrows(NullPointerException.class, () -> throwNullPointerException(converter));
     }
 
     private <S, T> void returnDTO(Converter<S, T> converter, S model, T dto) {

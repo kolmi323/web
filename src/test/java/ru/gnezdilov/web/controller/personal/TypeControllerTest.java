@@ -1,15 +1,13 @@
 package ru.gnezdilov.web.controller.personal;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import ru.gnezdilov.MockSecurityConfiguration;
@@ -28,9 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(TypeController.class)
-@RunWith(SpringRunner.class)
 @Import({SecurityConfiguration.class, MockSecurityConfiguration.class})
 @ContextConfiguration(classes = WebApplication.class)
+@WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
 public class TypeControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -38,7 +36,7 @@ public class TypeControllerTest {
     @MockBean
     private TypeService typeService;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         List<TypeDTO> typeDTOS = new ArrayList<TypeDTO>();
         typeDTOS.add(new TypeDTO(1, 1, "work"));
@@ -52,7 +50,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void type_returnMainTypeForm() throws Exception {
         mockMvc.perform(get("/type"))
                 .andExpect(status().isOk())
@@ -60,7 +57,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void showTypes_returnShowTypeForm() throws Exception {
         mockMvc.perform(get("/type/show"))
                 .andExpect(status().isOk())
@@ -68,7 +64,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void getAddType_returnTypeAddForm() throws Exception {
         mockMvc.perform(get("/type/add"))
                 .andExpect(status().isOk())
@@ -76,7 +71,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postAddType_redirectToMessageForm_whenCalledWithValidArguments() throws Exception {
         mockMvc.perform(post("/type/add")
                         .param("name", "candy"))
@@ -85,7 +79,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postAddType_returnTypeAddForm_whenCalledWithInvalidArguments() throws Exception {
         mockMvc.perform(post("/type/add")
                         .param("name", ""))
@@ -94,7 +87,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void getUpdateType_returnTypeUpdateForm() throws Exception {
         mockMvc.perform(get("/type/update"))
                 .andExpect(status().isOk())
@@ -102,7 +94,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postUpdateType_redirectToMessageForm_whenCalledWithValidArguments() throws Exception {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("id", "3");
@@ -115,7 +106,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postUpdateType_returnTypeUpdateForm_whenCalledWithInvalidArguments() throws Exception {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("id", "3");
@@ -128,7 +118,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void getDeleteType_returnTypeDeleteForm() throws Exception {
         mockMvc.perform(get("/type/delete"))
                 .andExpect(status().isOk())
@@ -136,7 +125,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postDeleteType_redirectToMessageForm_whenTrueAndCalledWithValidArguments() throws Exception {
         mockMvc.perform(post("/type/delete")
                     .param("id", "3"))
@@ -145,7 +133,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postDeleteType_redirectToMessageForm_whenFalseAndCalledWithValidArguments() throws Exception {
         mockMvc.perform(post("/type/delete")
                         .param("id", "4"))
@@ -154,7 +141,6 @@ public class TypeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postDeleteType_returnTypedDeleteForm_whenCalledWithInvalidArguments() throws Exception {
         mockMvc.perform(post("/type/delete")
                         .param("id", ""))

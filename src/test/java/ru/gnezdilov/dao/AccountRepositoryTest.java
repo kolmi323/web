@@ -1,22 +1,18 @@
 package ru.gnezdilov.dao;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import ru.gnezdilov.WebApplication;
 import ru.gnezdilov.dao.entities.AccountModel;
 
-import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 @DataJpaTest
-@RunWith(SpringRunner.class)
 @ContextConfiguration(classes = WebApplication.class)
 public class AccountRepositoryTest {
     @Autowired

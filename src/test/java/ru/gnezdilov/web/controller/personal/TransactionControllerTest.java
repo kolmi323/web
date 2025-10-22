@@ -1,15 +1,13 @@
 package ru.gnezdilov.web.controller.personal;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import ru.gnezdilov.MockSecurityConfiguration;
@@ -30,9 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(TransactionController.class)
-@RunWith(SpringRunner.class)
 @Import({SecurityConfiguration.class, MockSecurityConfiguration.class})
 @ContextConfiguration(classes = WebApplication.class)
+@WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
 public class TransactionControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +38,7 @@ public class TransactionControllerTest {
     @MockBean
     private TransactionService transactionService;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         List<Integer> typeIds = new ArrayList<>();
         typeIds.add(1);
@@ -57,7 +55,6 @@ public class TransactionControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void transaction_returnMainTransactionForm() throws Exception {
         mockMvc.perform(get("/transaction"))
                 .andExpect(status().isOk())
@@ -65,7 +62,6 @@ public class TransactionControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void getAddTransaction_returnTransactionAddForm() throws Exception {
         mockMvc.perform(get("/transaction/add"))
                 .andExpect(status().isOk())
@@ -73,7 +69,6 @@ public class TransactionControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postAddTransaction_redirectToMessageForm_whenCalledWithValidArguments() throws Exception {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("typeIds", "1,2");
@@ -88,7 +83,6 @@ public class TransactionControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postAddTransaction_returnTransactionAddForm_whenCalledWithInvalidArguments() throws Exception {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("typeIds", "1, 2");

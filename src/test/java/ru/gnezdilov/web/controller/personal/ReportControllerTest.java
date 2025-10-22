@@ -1,15 +1,13 @@
 package ru.gnezdilov.web.controller.personal;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import ru.gnezdilov.MockSecurityConfiguration;
@@ -29,9 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(ReportController.class)
-@RunWith(SpringRunner.class)
 @Import({SecurityConfiguration.class, MockSecurityConfiguration.class})
 @ContextConfiguration(classes = WebApplication.class)
+@WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
 public class ReportControllerTest {
     @Autowired
     private  MockMvc mockMvc;
@@ -40,7 +38,7 @@ public class ReportControllerTest {
     private CategoryTransactionService categoryTransactionService;
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Map<String, BigDecimal> incomingTransactions = new HashMap<>();
         incomingTransactions.put("work", new BigDecimal("1000.00"));
@@ -59,7 +57,6 @@ public class ReportControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void report_returnMainReportForm() throws Exception {
         mockMvc.perform(get("/report"))
                 .andExpect(status().isOk())
@@ -67,7 +64,6 @@ public class ReportControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void getReportIncomingData_returnReportIncomingDataForm() throws Exception {
         mockMvc.perform(get("/report/incoming"))
                 .andExpect(status().isOk())
@@ -75,7 +71,6 @@ public class ReportControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postReportIncomingData_redirectToReportShow_whenCalledWithValidArguments() throws Exception {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("dateAfter", "2025-01-01");
@@ -87,7 +82,6 @@ public class ReportControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postReportIncomingData_returnReportIncomingForm_whenCalledWithInvalidArguments() throws Exception {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("dateAfter", "");
@@ -99,7 +93,6 @@ public class ReportControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void getReportOutgoingData_returnReportOutgoingDataForm() throws Exception {
         mockMvc.perform(get("/report/outgoing"))
                 .andExpect(status().isOk())
@@ -107,7 +100,6 @@ public class ReportControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postReportOutgoingData_redirectToReportShow_whenCalledWithValidArguments() throws Exception {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("dateAfter", "2025-01-01");
@@ -119,7 +111,6 @@ public class ReportControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postReportOutgoingData_returnReportOutgoingForm_whenCalledWithInvalidArguments() throws Exception {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("dateAfter", "");
@@ -131,7 +122,6 @@ public class ReportControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void showReport_returnIncomingTransactionOnReportShowForm() throws Exception {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("dateAfter", "2025-01-01");
@@ -145,7 +135,6 @@ public class ReportControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void showReport_returnOutgoingTransactionOnReportShowForm() throws Exception {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("dateAfter", "2025-01-01");

@@ -1,15 +1,13 @@
 package ru.gnezdilov.web.controller.personal;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -30,9 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(controllers = AccountController.class)
-@RunWith(SpringRunner.class)
 @Import({SecurityConfiguration.class, MockSecurityConfiguration.class})
 @ContextConfiguration(classes = {WebApplication.class})
+@WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
 public class AccountControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +38,7 @@ public class AccountControllerTest {
     @MockBean
     private AccountService accountService;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         List<AccountDTO> accountDTOList = new ArrayList<>();
         accountDTOList.add(new AccountDTO(1, 1, "sber", new BigDecimal(1000)));
@@ -52,7 +50,6 @@ public class AccountControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void account_returnMainAccountForm() throws Exception {
         mockMvc.perform(get("/account"))
                 .andExpect(status().isOk())
@@ -60,7 +57,6 @@ public class AccountControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void showAccount_returnAccountShowForm() throws Exception {
         mockMvc.perform(get("/account/show"))
                 .andExpect(status().isOk())
@@ -68,7 +64,6 @@ public class AccountControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void getAddAccount_returnAddAccountForm() throws Exception {
         mockMvc.perform(get("/account/add"))
                 .andExpect(status().isOk())
@@ -76,7 +71,6 @@ public class AccountControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postAddAccount_returnMessageForm_whenCalledWithValidArgument() throws Exception {
         MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
         request.add("name", "T");
@@ -89,7 +83,6 @@ public class AccountControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postAddAccount_returnAddAccountForm_whenCalledWithInvalidArgument() throws Exception {
         MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
         request.add("name", "");
@@ -102,7 +95,6 @@ public class AccountControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void deleteAccount_returnDeleteAccountForm() throws Exception {
         mockMvc.perform(get("/account/delete"))
                 .andExpect(status().isOk())
@@ -110,7 +102,6 @@ public class AccountControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postDeleteAccount_returnMessageForm_whenCalledWithValidArgument() throws Exception {
         mockMvc.perform(post("/account/delete")
                     .param("id", "1"))
@@ -119,7 +110,6 @@ public class AccountControllerTest {
     }
 
     @Test
-    @WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postDeleteAccount_returnDeleteAccountForm_whenCalledWithInvalidArgument() throws Exception {
         mockMvc.perform(post("/account/delete")
                         .param("id", ""))

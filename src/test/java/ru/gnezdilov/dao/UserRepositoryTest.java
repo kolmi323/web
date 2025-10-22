@@ -1,7 +1,7 @@
 package ru.gnezdilov.dao;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -12,10 +12,10 @@ import ru.gnezdilov.dao.entities.UserModel;
 import ru.gnezdilov.security.UserRole;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static ru.gnezdilov.security.UserRole.USER;
 
 @DataJpaTest
@@ -27,7 +27,7 @@ public class UserRepositoryTest {
 
     private UserModel user;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         user = new UserModel(1, "John", "john@mail.ru",
                 "$2a$10$bN9KZDnhNu3Lu66aCQrH6usaN9giUjIfJE.RI3dCGHCC61vhtUhNO");

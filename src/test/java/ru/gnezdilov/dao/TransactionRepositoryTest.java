@@ -1,24 +1,21 @@
 package ru.gnezdilov.dao;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import ru.gnezdilov.WebApplication;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @DataJpaTest
-@RunWith(SpringRunner.class)
 @ContextConfiguration(classes = WebApplication.class)
 public class TransactionRepositoryTest {
     @Autowired
@@ -26,7 +23,7 @@ public class TransactionRepositoryTest {
 
     private List<Object[]> transactions;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         transactions = new ArrayList<>();
         Object[] firstElement = {"no type", new BigDecimal("600.00")};

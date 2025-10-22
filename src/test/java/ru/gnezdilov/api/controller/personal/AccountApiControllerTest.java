@@ -2,9 +2,8 @@ package ru.gnezdilov.api.controller.personal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.gnezdilov.MockSecurityConfiguration;
 import ru.gnezdilov.WebApplication;
@@ -36,9 +34,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = AccountApiController.class)
-@RunWith(SpringRunner.class)
 @Import({SecurityConfiguration.class, MockSecurityConfiguration.class})
 @ContextConfiguration(classes = WebApplication.class)
+@WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
 public class AccountApiControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -52,7 +50,7 @@ public class AccountApiControllerTest {
     private ObjectMapper om;
     private ObjectWriter ow;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         om = new ObjectMapper();
         ow = om.writer().withDefaultPrettyPrinter();
@@ -67,7 +65,6 @@ public class AccountApiControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void getShow_returnJsonListAccounts_whenCalledWithValidArguments() throws Exception{
         List<AccountDTO> accountDTOList = new ArrayList<>();
         accountDTOList.add(new AccountDTO(1, 1, "sber", new BigDecimal(1000)));
@@ -78,7 +75,6 @@ public class AccountApiControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postDelete_whenCalledWithValidArguments() throws Exception {
         DeleteRequest deleteRequest = new DeleteRequest();
         deleteRequest.setId(1);
@@ -89,7 +85,6 @@ public class AccountApiControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
     public void postAdd_returnJsonAccount_whenCalledWithValidArguments() throws Exception {
         AccountAddRequest accountAddRequest = new AccountAddRequest();
         accountAddRequest.setName("T");
