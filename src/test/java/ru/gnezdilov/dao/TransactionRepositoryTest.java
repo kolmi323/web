@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import ru.gnezdilov.WebApplication;
+import ru.gnezdilov.dao.transaction.TransactionFilter;
+import ru.gnezdilov.dao.transaction.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,6 +16,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @ContextConfiguration(classes = WebApplication.class)
@@ -34,21 +37,49 @@ public class TransactionRepositoryTest {
 
     @Test
     public void getIncomingTransaction_returnListObject_whenCalledWithValidArgument() {
-        List<Object[]> incomingTransactions = subj.getIncomingTransaction(1,
+        TransactionFilter transactionFilter = new TransactionFilter(1,
                 LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 12, 31));
+                LocalDate.of(2025, 12, 31),
+                true);
+
+        List<Object[]> incomingTransactions = subj.getIncomingTransaction(transactionFilter);
         assertNotNull(incomingTransactions);
         assertEquals(transactions.get(0), incomingTransactions.get(0));
         assertEquals(transactions.get(1), incomingTransactions.get(1));
     }
 
     @Test
+    public void getIncomingTransaction_returnEmptyList_whenCalledWithInvalidArgument() {
+        TransactionFilter transactionFilter = new TransactionFilter(1,
+                null,
+                LocalDate.of(2025, 12, 31),
+                true);
+
+        List<Object[]> incomingTransactions = subj.getOutgoingTransaction(transactionFilter);
+        assertTrue(incomingTransactions.isEmpty());
+    }
+
+    @Test
     public void getOutgoingTransaction_returnListObject_whenCalledWithValidArgument() {
-        List<Object[]> incomingTransactions = subj.getOutgoingTransaction(1,
+        TransactionFilter transactionFilter = new TransactionFilter(1,
                 LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 12, 31));
+                LocalDate.of(2025, 12, 31),
+                true);
+
+        List<Object[]> incomingTransactions = subj.getOutgoingTransaction(transactionFilter);
         assertNotNull(incomingTransactions);
         assertEquals(transactions.get(0), incomingTransactions.get(0));
         assertEquals(transactions.get(1), incomingTransactions.get(1));
+    }
+
+    @Test
+    public void getOutgoingTransaction_returnEmptyList_whenCalledWithInvalidArgument() {
+        TransactionFilter transactionFilter = new TransactionFilter(1,
+                null,
+                LocalDate.of(2025, 12, 31),
+                true);
+
+        List<Object[]> incomingTransactions = subj.getOutgoingTransaction(transactionFilter);
+        assertTrue(incomingTransactions.isEmpty());
     }
 }

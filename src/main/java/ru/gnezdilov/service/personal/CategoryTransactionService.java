@@ -2,9 +2,8 @@ package ru.gnezdilov.service.personal;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.gnezdilov.dao.TransactionRepository;
-import ru.gnezdilov.dao.entities.TransactionModel;
-import ru.gnezdilov.dao.entities.TypeModel;
+import ru.gnezdilov.dao.transaction.TransactionFilter;
+import ru.gnezdilov.dao.transaction.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,12 +17,14 @@ public class CategoryTransactionService {
     private final TransactionRepository transactionRepository;
 
     public Map<String, BigDecimal> getIncomingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
-        List<Object[]> transaction = transactionRepository.getIncomingTransaction(userId, startDate, endDate);
+        TransactionFilter filter = new TransactionFilter(userId, startDate, endDate, true);
+        List<Object[]> transaction = transactionRepository.getIncomingTransaction(filter);
         return handleResult(transaction);
     }
 
     public Map<String, BigDecimal> getOutgoingTransactions(int userId, LocalDate startDate, LocalDate endDate) {
-        List<Object[]> transaction = transactionRepository.getOutgoingTransaction(userId, startDate, endDate);
+        TransactionFilter filter = new TransactionFilter(userId, startDate, endDate, false);
+        List<Object[]> transaction = transactionRepository.getOutgoingTransaction(filter);
         return handleResult(transaction);
     }
 

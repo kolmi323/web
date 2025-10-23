@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.gnezdilov.dao.TransactionRepository;
+import ru.gnezdilov.dao.transaction.TransactionRepository;
 import ru.gnezdilov.dao.entities.TransactionModel;
 import ru.gnezdilov.dao.entities.TypeModel;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
