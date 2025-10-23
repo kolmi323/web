@@ -1,10 +1,8 @@
-package ru.gnezdilov;
+package ru.gnezdilov.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import ru.gnezdilov.security.CustomGrantedAuthority;
-import ru.gnezdilov.security.CustomUserDetails;
 
 import static java.util.Collections.singleton;
 import static ru.gnezdilov.security.UserRole.USER;

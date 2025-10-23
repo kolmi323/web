@@ -1,5 +1,6 @@
 package ru.gnezdilov.web.controller.personal;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,13 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
-import ru.gnezdilov.MockSecurityConfiguration;
+import ru.gnezdilov.security.MockSecurityConfiguration;
 import ru.gnezdilov.WebApplication;
 import ru.gnezdilov.config.SecurityConfiguration;
 import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.personal.TypeService;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,12 +41,16 @@ public class TypeControllerTest {
     @BeforeEach
     public void setUp() throws Exception {
         List<TypeDTO> typeDTOS = new ArrayList<TypeDTO>();
+        SQLException sqlException = new SQLException("repeat recording", "23505");
+        Exception e = new ConstraintViolationException("Such a record already exists", sqlException, "repeat recording");
         typeDTOS.add(new TypeDTO(1, 1, "work"));
         typeDTOS.add(new TypeDTO(2, 1, "hobby"));
 
         when(typeService.getAll(1)).thenReturn(typeDTOS);
         when(typeService.create(1, "candy")).thenReturn(new TypeDTO(3, 1, "candy"));
+        when(typeService.create(1, "hobby")).thenThrow(e);
         when(typeService.edit(3, 1, "meat")).thenReturn(new TypeDTO(3, 1, "meat"));
+        when(typeService.edit(3, 1, "hobby")).thenThrow(e);
         when(typeService.delete(3, 1)).thenReturn(true);
         when(typeService.delete(4, 1)).thenReturn(false);
     }
@@ -87,6 +93,14 @@ public class TypeControllerTest {
     }
 
     @Test
+    public void postAddType_redirectToErrorForm_whenEntityAlreadyExist() throws Exception {
+        mockMvc.perform(post("/type/add")
+                        .param("name", "hobby"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertError"));
+    }
+
+    @Test
     public void getUpdateType_returnTypeUpdateForm() throws Exception {
         mockMvc.perform(get("/type/update"))
                 .andExpect(status().isOk())
@@ -115,6 +129,18 @@ public class TypeControllerTest {
                         .params(params))
                 .andExpect(status().isOk())
                 .andExpect(view().name("personal/type/update"));
+    }
+
+    @Test
+    public void postUpdateType_redirectToErrorForm_whenEntityAlreadyExist() throws Exception {
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("id", "3");
+        params.add("newName", "hobby");
+
+        mockMvc.perform(post("/type/update")
+                        .params(params))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertError"));
     }
 
     @Test

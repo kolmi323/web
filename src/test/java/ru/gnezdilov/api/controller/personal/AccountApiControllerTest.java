@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.gnezdilov.MockSecurityConfiguration;
+import ru.gnezdilov.security.MockSecurityConfiguration;
 import ru.gnezdilov.WebApplication;
 import ru.gnezdilov.api.converter.ConverterAccountDTOToAccountAddResponse;
 import ru.gnezdilov.api.json.DeleteRequest;

@@ -10,7 +10,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
-import ru.gnezdilov.MockSecurityConfiguration;
+import ru.gnezdilov.security.MockSecurityConfiguration;
 import ru.gnezdilov.WebApplication;
 import ru.gnezdilov.config.SecurityConfiguration;
 import ru.gnezdilov.service.dto.TransactionDTO;
@@ -83,7 +83,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void postAddTransaction_returnTransactionAddForm_whenCalledWithInvalidArguments() throws Exception {
+    public void postAddTransaction_returnTransactionAddForm_whenCalledWithNull() throws Exception {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("typeIds", "1, 2");
         params.add("sendingId", "");
@@ -94,6 +94,33 @@ public class TransactionControllerTest {
                         .params(params))
                 .andExpect(status().isOk())
                 .andExpect(view().name("personal/transaction/add"));
+    }
 
+    @Test
+    public void postAddTransaction_returnErrorForm_whenCalledWithInvalidFormat() throws Exception {
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("typeIds", "one");
+        params.add("sendingId", "1");
+        params.add("receivingId", "2");
+        params.add("amount", "100");
+
+        mockMvc.perform(post("/transaction/add")
+                        .params(params))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertError"));
+    }
+
+    @Test
+    public void postAddTransaction_returnErrorForm_whenAccountNotFound() throws Exception {
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("typeIds", "one");
+        params.add("sendingId", "1");
+        params.add("receivingId", "10");
+        params.add("amount", "100");
+
+        mockMvc.perform(post("/transaction/add")
+                        .params(params))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertError"));
     }
 }

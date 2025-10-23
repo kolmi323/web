@@ -1,5 +1,6 @@
 package ru.gnezdilov.web.controller.personal;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +12,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import ru.gnezdilov.MockSecurityConfiguration;
+import ru.gnezdilov.security.MockSecurityConfiguration;
 import ru.gnezdilov.WebApplication;
 import ru.gnezdilov.config.SecurityConfiguration;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.personal.AccountService;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,10 +44,13 @@ public class AccountControllerTest {
     public void setUp() throws Exception {
         List<AccountDTO> accountDTOList = new ArrayList<>();
         accountDTOList.add(new AccountDTO(1, 1, "sber", new BigDecimal(1000)));
+        SQLException sqlException = new SQLException("repeat recording", "23505");
+        Exception e = new ConstraintViolationException("Such a record already exists", sqlException, "repeat recording");
 
         AccountDTO accountDTO = new AccountDTO(2, 1, "T", new BigDecimal(500));
 
         when(accountService.create(1, "T", new BigDecimal(500))).thenReturn(accountDTO);
+        when(accountService.create(1, "sber", new BigDecimal(1000))).thenThrow(e);
         when(accountService.getAll(1)).thenReturn(accountDTOList);
     }
 
@@ -83,6 +88,18 @@ public class AccountControllerTest {
     }
 
     @Test
+    public void postAddAccount_returnErrorForm_whenCalledWithInvalidArgument() throws Exception {
+        MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
+        request.add("name", "sber");
+        request.add("balance", "1000");
+
+        mockMvc.perform(post("/account/add")
+                        .params(request))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertError"));
+    }
+
+    @Test
     public void postAddAccount_returnAddAccountForm_whenCalledWithInvalidArgument() throws Exception {
         MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
         request.add("name", "");
@@ -110,9 +127,17 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void postDeleteAccount_returnDeleteAccountForm_whenCalledWithInvalidArgument() throws Exception {
+    public void postDeleteAccount_returnDeleteAccountForm_whenCalledWithNull() throws Exception {
         mockMvc.perform(post("/account/delete")
                         .param("id", ""))
+                .andExpect(status().isOk())
+                .andExpect(view().name("personal/account/delete"));
+    }
+
+    @Test
+    public void postDeleteAccount_returnDeleteAccountForm_whenCalledWithInvalidArgument() throws Exception {
+        mockMvc.perform(post("/account/delete")
+                        .param("id", "one"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("personal/account/delete"));
     }

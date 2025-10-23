@@ -10,7 +10,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
-import ru.gnezdilov.MockSecurityConfiguration;
+import ru.gnezdilov.security.MockSecurityConfiguration;
 import ru.gnezdilov.WebApplication;
 import ru.gnezdilov.config.SecurityConfiguration;
 import ru.gnezdilov.service.personal.CategoryTransactionService;
@@ -82,7 +82,7 @@ public class ReportControllerTest {
     }
 
     @Test
-    public void postReportIncomingData_returnReportIncomingForm_whenCalledWithInvalidArguments() throws Exception {
+    public void postReportIncomingData_returnReportIncomingForm_whenCalledWithNull() throws Exception {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("dateAfter", "");
         params.add("dateBefore", "2025-12-31");
@@ -135,6 +135,19 @@ public class ReportControllerTest {
     }
 
     @Test
+    public void showReport_returnErrorForm_whenCalledIncomingWithInvalidArgument() throws Exception {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("dateAfter", "date middle autumn");
+        attributes.put("dateBefore", "2025-12-31");
+        attributes.put("typeReport", "incoming");
+
+        mockMvc.perform(get("/report/show")
+                        .sessionAttrs(attributes))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertError"));
+    }
+
+    @Test
     public void showReport_returnOutgoingTransactionOnReportShowForm() throws Exception {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("dateAfter", "2025-01-01");
@@ -145,5 +158,18 @@ public class ReportControllerTest {
                         .sessionAttrs(attributes))
                 .andExpect(status().isOk())
                 .andExpect(view().name("personal/report/show"));
+    }
+
+    @Test
+    public void showReport_returnErrorForm_whenCalledOutgoingWithInvalidArgument() throws Exception {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("dateAfter", "date middle autumn");
+        attributes.put("dateBefore", "2025-12-31");
+        attributes.put("typeReport", "outgoing");
+
+        mockMvc.perform(get("/report/show")
+                        .sessionAttrs(attributes))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertError"));
     }
 }
