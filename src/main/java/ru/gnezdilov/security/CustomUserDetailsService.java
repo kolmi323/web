@@ -11,7 +11,7 @@ import ru.gnezdilov.dao.entities.UserModel;
 
 import java.util.stream.Collectors;
 
-@Service
+@Service("customUserDetailsService")
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class CustomUserDetailsService implements UserDetailsService {

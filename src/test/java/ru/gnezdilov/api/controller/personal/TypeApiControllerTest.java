@@ -1,23 +1,15 @@
 package ru.gnezdilov.api.controller.personal;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import ru.gnezdilov.security.MockSecurityConfiguration;
-import ru.gnezdilov.WebApplication;
+import ru.gnezdilov.AbstractControllerTest;
 import ru.gnezdilov.api.converter.ConverterTypeDTOToTypeResponse;
 import ru.gnezdilov.api.json.type.TypeResponse;
-import ru.gnezdilov.config.SecurityConfiguration;
+import ru.gnezdilov.dao.exception.NotFoundException;
 import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.personal.TypeService;
 
@@ -27,29 +19,20 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TypeApiController.class)
-@Import({SecurityConfiguration.class, MockSecurityConfiguration.class})
-@ContextConfiguration(classes = {WebApplication.class})
-@WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
-public class TypeApiControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
+public class TypeApiControllerTest extends AbstractControllerTest {
     @MockBean
     private TypeService typeService;
 
     @SpyBean
     private ConverterTypeDTOToTypeResponse converter;
 
-    private ObjectMapper om;
-    private ObjectWriter ow;
-
     @BeforeEach
     public void setUp() throws Exception {
-        om = new ObjectMapper();
-        ow = om.writer().withDefaultPrettyPrinter();
+        super.setUp();
 
         List<TypeDTO> typeDTOS = new ArrayList<>();
         typeDTOS.add(new TypeDTO(1, 1, "work"));
@@ -58,8 +41,9 @@ public class TypeApiControllerTest {
         when(typeService.getAll(1)).thenReturn(typeDTOS);
         when(typeService.create(1, "candy")).thenReturn(new TypeDTO(3, 1, "candy"));
         when(typeService.edit(3, 1, "meat")).thenReturn(new TypeDTO(3, 1, "meat"));
+        when(typeService.edit(4, 1, "meat")).thenThrow(NotFoundException.class);
         when(typeService.delete(3, 1)).thenReturn(true);
-        when(typeService.delete(4, 1)).thenReturn(false);
+        when(typeService.delete(4, 1)).thenThrow(NotFoundException.class);
     }
 
     @Test
@@ -74,7 +58,7 @@ public class TypeApiControllerTest {
     }
 
     @Test
-    public void postAdd_returnJsonTypeResponse_whenCalledWithValidArguments() throws Exception {
+    public void postAdd_returnJsonTypeResponse_whenCalledWithValidArgument() throws Exception {
         TypeResponse typeResponse = new TypeResponse(3, "candy");
 
         mockMvc.perform(post("/api/type/add")
@@ -82,6 +66,14 @@ public class TypeApiControllerTest {
                     .content("{\"name\" : \"candy\"}"))
                 .andExpect(content().json(ow.writeValueAsString(typeResponse)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void postAdd_return400_whenCalledWithNullArgument() throws Exception {
+        mockMvc.perform(post("/api/type/add")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content("{\"name\" : \"\"}"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -94,12 +86,19 @@ public class TypeApiControllerTest {
     }
 
     @Test
-    public void postDelete_returnFalse_whenCalledWithValidArguments() throws Exception {
+    public void postDelete_return404_whenTypeNotFound() throws Exception {
         mockMvc.perform(post("/api/type/delete")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content("{\"id\" : \"4\"}"))
-                .andExpect(content().string("false"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void postDelete_return400_whenCalledWithNullArguments() throws Exception {
+        mockMvc.perform(post("/api/type/delete")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content("{\"id\" : \"\"}"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -112,5 +111,32 @@ public class TypeApiControllerTest {
                                 "\"newName\" : \"meat\"}"))
                 .andExpect(content().json(ow.writeValueAsString(typeResponse)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void postUpdate_return400_whenCalledWithNullArgument() throws Exception {
+        mockMvc.perform(post("/api/type/update")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content("{\"id\" : \"\", " +
+                                "\"newName\" : \"meat\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void postUpdate_return400_whenCalledWithWrongTypeArgument() throws Exception {
+        mockMvc.perform(post("/api/type/update")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content("{\"id\" : \"one\", " +
+                                "\"newName\" : \"meat\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void postUpdate_return404_whenTypeNotFound() throws Exception {
+        mockMvc.perform(post("/api/type/update")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content("{\"id\" : \"4\", " +
+                                "\"newName\" : \"meat\"}"))
+                .andExpect(status().isNotFound());
     }
 }

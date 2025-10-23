@@ -2,17 +2,10 @@ package ru.gnezdilov.web.controller.personal;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
-import ru.gnezdilov.security.MockSecurityConfiguration;
-import ru.gnezdilov.WebApplication;
-import ru.gnezdilov.config.SecurityConfiguration;
+import ru.gnezdilov.AbstractControllerTest;
 import ru.gnezdilov.service.personal.CategoryTransactionService;
 
 import java.math.BigDecimal;
@@ -27,19 +20,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(ReportController.class)
-@Import({SecurityConfiguration.class, MockSecurityConfiguration.class})
-@ContextConfiguration(classes = WebApplication.class)
-@WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
-public class ReportControllerTest {
-    @Autowired
-    private  MockMvc mockMvc;
-
+public class ReportControllerTest extends AbstractControllerTest {
     @MockBean
     private CategoryTransactionService categoryTransactionService;
-
-
     @BeforeEach
     public void setUp() throws Exception {
+        super.setUp();
+
         Map<String, BigDecimal> incomingTransactions = new HashMap<>();
         incomingTransactions.put("work", new BigDecimal("1000.00"));
 

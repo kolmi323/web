@@ -1,23 +1,14 @@
 package ru.gnezdilov.web.controller.personal;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
-import ru.gnezdilov.security.MockSecurityConfiguration;
-import ru.gnezdilov.WebApplication;
-import ru.gnezdilov.config.SecurityConfiguration;
+import ru.gnezdilov.AbstractControllerTest;
 import ru.gnezdilov.service.dto.TypeDTO;
 import ru.gnezdilov.service.personal.TypeService;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,29 +19,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(TypeController.class)
-@Import({SecurityConfiguration.class, MockSecurityConfiguration.class})
-@ContextConfiguration(classes = WebApplication.class)
-@WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
-public class TypeControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
+public class TypeControllerTest extends AbstractControllerTest {
     @MockBean
     private TypeService typeService;
 
     @BeforeEach
     public void setUp() throws Exception {
+        super.setUp();
+
         List<TypeDTO> typeDTOS = new ArrayList<TypeDTO>();
-        SQLException sqlException = new SQLException("repeat recording", "23505");
-        Exception e = new ConstraintViolationException("Such a record already exists", sqlException, "repeat recording");
         typeDTOS.add(new TypeDTO(1, 1, "work"));
         typeDTOS.add(new TypeDTO(2, 1, "hobby"));
 
         when(typeService.getAll(1)).thenReturn(typeDTOS);
         when(typeService.create(1, "candy")).thenReturn(new TypeDTO(3, 1, "candy"));
-        when(typeService.create(1, "hobby")).thenThrow(e);
+        when(typeService.create(1, "hobby"))
+                .thenThrow(constraintViolationSQLAlreadyExistException);
         when(typeService.edit(3, 1, "meat")).thenReturn(new TypeDTO(3, 1, "meat"));
-        when(typeService.edit(3, 1, "hobby")).thenThrow(e);
+        when(typeService.edit(3, 1, "hobby"))
+                .thenThrow(constraintViolationSQLAlreadyExistException);
         when(typeService.delete(3, 1)).thenReturn(true);
         when(typeService.delete(4, 1)).thenReturn(false);
     }

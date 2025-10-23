@@ -1,21 +1,14 @@
 package ru.gnezdilov.web.controller;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import ru.gnezdilov.WebApplication;
+import ru.gnezdilov.AbstractControllerTest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = AlertController.class)
-@ContextConfiguration(classes = WebApplication.class)
-public class AlertControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
+public class AlertControllerTest extends AbstractControllerTest {
     @Test
     public void error_returnErrorForm() throws Exception {
         mockMvc.perform(get("/alertError?error=superWarningError"))

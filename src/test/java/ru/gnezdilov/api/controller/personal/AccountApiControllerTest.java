@@ -1,25 +1,16 @@
 package ru.gnezdilov.api.controller.personal;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import ru.gnezdilov.security.MockSecurityConfiguration;
-import ru.gnezdilov.WebApplication;
+import ru.gnezdilov.AbstractControllerTest;
 import ru.gnezdilov.api.converter.ConverterAccountDTOToAccountAddResponse;
 import ru.gnezdilov.api.json.DeleteRequest;
 import ru.gnezdilov.api.json.account.create.AccountAddRequest;
 import ru.gnezdilov.api.json.account.create.AccountAddResponse;
-import ru.gnezdilov.config.SecurityConfiguration;
 import ru.gnezdilov.service.dto.AccountDTO;
 import ru.gnezdilov.service.personal.AccountService;
 
@@ -34,26 +25,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = AccountApiController.class)
-@Import({SecurityConfiguration.class, MockSecurityConfiguration.class})
-@ContextConfiguration(classes = WebApplication.class)
-@WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
-public class AccountApiControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
+public class AccountApiControllerTest extends AbstractControllerTest {
     @MockBean
     private AccountService accountService;
 
     @SpyBean
     private ConverterAccountDTOToAccountAddResponse converter;
 
-    private ObjectMapper om;
-    private ObjectWriter ow;
-
     @BeforeEach
     public void setUp() throws Exception {
-        om = new ObjectMapper();
-        ow = om.writer().withDefaultPrettyPrinter();
+        super.setUp();
 
         List<AccountDTO> accountDTOList = new ArrayList<>();
         accountDTOList.add(new AccountDTO(1, 1, "sber", new BigDecimal(1000)));
@@ -62,6 +43,8 @@ public class AccountApiControllerTest {
 
         when(accountService.create(1, "T", new BigDecimal(500))).thenReturn(accountDTO);
         when(accountService.getAll(1)).thenReturn(accountDTOList);
+        when(accountService.create(1, "sber", new BigDecimal(1000)))
+                .thenThrow(this.constraintViolationSQLAlreadyExistException);
     }
 
     @Test
@@ -75,13 +58,32 @@ public class AccountApiControllerTest {
     }
 
     @Test
-    public void postDelete_whenCalledWithValidArguments() throws Exception {
+    public void postDelete_return200_whenCalledWithValidArguments() throws Exception {
         DeleteRequest deleteRequest = new DeleteRequest();
         deleteRequest.setId(1);
         mockMvc.perform(post("/api/account/delete")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(ow.writeValueAsString(deleteRequest)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void postDelete_return400_whenCalledWithNullArgument() throws Exception {
+        DeleteRequest deleteRequest = new DeleteRequest();
+
+        mockMvc.perform(post("/api/account/delete")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(ow.writeValueAsString(deleteRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void postDelete_return400_whenCalledWithWrongType() throws Exception {
+        mockMvc.perform(post("/api/account/delete")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8).content("{" +
+                                "\"id\" : \"one\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -99,5 +101,39 @@ public class AccountApiControllerTest {
                     .content(ow.writeValueAsString(accountAddRequest)))
                 .andExpect(content().json(ow.writeValueAsString(accountAddResponse)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void postAdd_return400_whenEntityAlreadyExists() throws Exception {
+        AccountAddRequest accountAddRequest = new AccountAddRequest();
+        accountAddRequest.setName("sber");
+        accountAddRequest.setBalance(new BigDecimal(1000));
+
+        mockMvc.perform(post("/api/account/add")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(ow.writeValueAsString(accountAddRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void postAdd_return400_whenCalledWithNullArgument() throws Exception {
+        AccountAddRequest accountAddRequest = new AccountAddRequest();
+        accountAddRequest.setBalance(new BigDecimal(1000));
+
+        mockMvc.perform(post("/api/account/add")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(ow.writeValueAsString(accountAddRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void postAdd_return400_whenCalledWithWrongTypeArgument() throws Exception {
+        mockMvc.perform(post("/api/account/add")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content("{\n" +
+                                "    \"name\":\"T\",\n" +
+                                "    \"balance\":\"one hundred\"\n" +
+                                "}"))
+                .andExpect(status().isBadRequest());
     }
 }

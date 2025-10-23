@@ -3,14 +3,11 @@ package ru.gnezdilov.web.controller.start;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import ru.gnezdilov.WebApplication;
+import ru.gnezdilov.AbstractControllerTest;
 import ru.gnezdilov.service.AuthService;
 import ru.gnezdilov.service.dto.UserDTO;
 
@@ -23,16 +20,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(controllers = RegisterController.class)
-@ContextConfiguration(classes = WebApplication.class)
-public class RegisterControllerTest {
-    @Autowired
-    MockMvc mockMvc;
-
+public class RegisterControllerTest extends AbstractControllerTest {
     @MockBean
     AuthService authService;
 
     @BeforeEach
     public void setUp() throws Exception {
+        super.setUp();
+
         UserDTO userDTO = new UserDTO(1, "John", "john@mail.ru");
         UserDTO userException = new UserDTO(1, "exception", "exception");
         SQLException sqlException = new SQLException("repeat recording", "23505");

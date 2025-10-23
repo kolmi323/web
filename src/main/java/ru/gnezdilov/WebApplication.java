@@ -13,7 +13,3 @@ public class WebApplication {
         System.out.println("----------------------------");
     }
 }
-
-// 3EF2836178D1ED6C9B33A69CEDE523B8
-// 84DC4133A3ACDCEF8421F40046B96101
-// 84DC4133A3ACDCEF8421F40046B96101

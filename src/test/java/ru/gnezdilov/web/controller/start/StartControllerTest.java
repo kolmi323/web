@@ -1,22 +1,15 @@
 package ru.gnezdilov.web.controller.start;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import ru.gnezdilov.WebApplication;
+import ru.gnezdilov.AbstractControllerTest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(StartController.class)
-@ContextConfiguration(classes = WebApplication.class)
-public class StartControllerTest {
-    @Autowired
-    MockMvc mockMvc;
-
+public class StartControllerTest extends AbstractControllerTest {
     @Test
     public void start_returnStartForm() throws Exception {
         mockMvc.perform(get("/start"))

@@ -1,20 +1,11 @@
 package ru.gnezdilov.api.controller.personal;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import ru.gnezdilov.security.MockSecurityConfiguration;
-import ru.gnezdilov.WebApplication;
-import ru.gnezdilov.config.SecurityConfiguration;
+import ru.gnezdilov.AbstractControllerTest;
 import ru.gnezdilov.service.personal.CategoryTransactionService;
 
 import java.math.BigDecimal;
@@ -28,23 +19,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ReportTransactionApiController.class)
-@Import({SecurityConfiguration.class, MockSecurityConfiguration.class})
-@ContextConfiguration(classes = WebApplication.class)
-@WithUserDetails(value="john@mail.ru", userDetailsServiceBeanName = "userDetailsService")
-public class ReportTransactionApiControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
+public class ReportTransactionApiControllerTest extends AbstractControllerTest {
     @MockBean
     private CategoryTransactionService categoryTransactionService;
 
-    private ObjectMapper om;
-    private ObjectWriter ow;
-
     @BeforeEach
     public void setUp() throws Exception {
-        om = new ObjectMapper();
-        ow = om.writer().withDefaultPrettyPrinter();
+        super.setUp();
 
         Map<String, BigDecimal> incomingTransactions = new HashMap<>();
         incomingTransactions.put("work", new BigDecimal("1000.00"));
@@ -78,6 +59,29 @@ public class ReportTransactionApiControllerTest {
     }
 
     @Test
+    public void getGetIncomingTransaction_returnNull_whenCalledWithNullArgument() throws Exception {
+        mockMvc.perform(get("/api/report/incoming")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content("{" +
+                                "\"dateAfter\" : \"\",\n" +
+                                "\"dateBefore\" : \"2025-12-31\"\n" +
+                                "}"))
+                .andExpect(content().json("{}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getGetIncomingTransaction_return400_whenCalledWithWrongTypeArgument() throws Exception {
+        mockMvc.perform(get("/api/report/incoming")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content("{" +
+                                "\"dateAfter\" : \"start year\",\n" +
+                                "\"dateBefore\" : \"2025-12-31\"\n" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void postGetOutgoingTransaction_returnOutgoingTransaction_whenCalledWithValidArguments() throws Exception {
         Map<String, BigDecimal> outgoingTransactions = new HashMap<>();
         outgoingTransactions.put("hobby", new BigDecimal("200.00"));
@@ -90,5 +94,28 @@ public class ReportTransactionApiControllerTest {
                                 "}"))
                 .andExpect(content().json(ow.writeValueAsString(outgoingTransactions)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getGetOutgoingTransaction_returnNull_whenCalledWithNullArgument() throws Exception {
+        mockMvc.perform(get("/api/report/outgoing")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content("{" +
+                                "\"dateAfter\" : \"\",\n" +
+                                "\"dateBefore\" : \"2025-12-31\"\n" +
+                                "}"))
+                .andExpect(content().json("{}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getGetOutgoingTransaction_return400_whenCalledWithWrongTypeArgument() throws Exception {
+        mockMvc.perform(get("/api/report/outgoing")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content("{" +
+                                "\"dateAfter\" : \"start year\",\n" +
+                                "\"dateBefore\" : \"2025-12-31\"\n" +
+                                "}"))
+                .andExpect(status().isBadRequest());
     }
 }
