@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.math.BigDecimal;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -11,27 +12,28 @@ public class TransactionRepositoryCustomImpl implements TransactionRepositoryCus
     private final EntityManager em;
 
     @Override
-    public List<Object[]> getIncomingTransaction(TransactionFilter transactionFilter) {
-        return getTransaction(transactionFilter);
+    public Map<String, BigDecimal> getMapIncomingReport(TransactionFilter transactionFilter) {
+        return getTransactionInformation(transactionFilter, true);
     }
 
     @Override
-    public List<Object[]> getOutgoingTransaction(TransactionFilter transactionFilter) {
-        return getTransaction(transactionFilter);
+    public Map<String, BigDecimal> getMapOutgoingReport(TransactionFilter transactionFilter) {
+        return getTransactionInformation(transactionFilter, false);
     }
 
-    private List<Object[]> getTransaction(TransactionFilter transactionFilter) {
+    private Map<String, BigDecimal> getTransactionInformation(TransactionFilter transactionFilter, boolean isIncoming) {
         Map<String, Object> params = new HashMap<>();
-        String query = returnQuery(transactionFilter.isIncoming());
         params.put("userId", transactionFilter.getUserId());
         params.put("dateAfter", transactionFilter.getDateAfter());
         params.put("dateBefore", transactionFilter.getDateBefore());
+
+        String query = returnQuery(isIncoming);
 
         TypedQuery<Object[]> typedQuery = em.createQuery(query, Object[].class);
         params.entrySet()
                 .forEach(p -> typedQuery.setParameter(p.getKey(), p.getValue()));
 
-        return typedQuery.getResultList();
+        return handleResult(typedQuery.getResultList());
     }
 
     private String returnQuery(boolean isIncoming) {
@@ -47,5 +49,13 @@ public class TransactionRepositoryCustomImpl implements TransactionRepositoryCus
                 "WHERE us.id = :userId AND tr.date > :dateAfter AND tr.date < :dateBefore " +
                 "GROUP BY ty.name";
         return query;
+    }
+
+    private Map<String, BigDecimal> handleResult(List<Object[]> result) {
+        Map<String, BigDecimal> transactions = new HashMap<>();
+        for (Object[] row : result) {
+            transactions.put(String.valueOf(row[0]), (BigDecimal) row[1]);
+        }
+        return transactions;
     }
 }

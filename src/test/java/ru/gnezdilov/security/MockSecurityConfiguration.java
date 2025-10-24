@@ -1,4 +1,4 @@
-package ru.gnezdilov;
+package ru.gnezdilov.security;
 
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import ru.gnezdilov.dao.UserRepository;
 import ru.gnezdilov.dao.entities.UserModel;
-import ru.gnezdilov.security.CustomUserDetailsService;
 
 import static java.util.Collections.singleton;
 import static org.mockito.Mockito.when;

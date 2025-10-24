@@ -36,11 +36,11 @@ public class CategoryTransactionActionMenu {
         Map<String, BigDecimal> transactions;
         if (isIncoming) {
             transactions = categoryTransactionService
-                    .getIncomingTransactions(currentUser.getId(), dateAfter, dateBefore);
+                    .getIncomingReport(currentUser.getId(), dateAfter, dateBefore);
             System.out.println("Incoming transactions:");
         } else {
             transactions = categoryTransactionService
-                    .getOutgoingTransactions(currentUser.getId(), dateAfter, dateBefore);
+                    .getOutgoingReport(currentUser.getId(), dateAfter, dateBefore);
             System.out.println("Outgoing transactions:");
         }
         if (transactions.isEmpty()) {

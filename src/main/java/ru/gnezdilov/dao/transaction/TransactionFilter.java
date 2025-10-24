@@ -11,5 +11,4 @@ public class TransactionFilter {
     private Integer userId;
     private LocalDate dateAfter;
     private LocalDate dateBefore;
-    private boolean isIncoming;
 }

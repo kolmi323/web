@@ -33,11 +33,11 @@ public class ReportControllerTest extends AbstractControllerTest {
         Map<String, BigDecimal> outgoingTransactions = new HashMap<>();
         outgoingTransactions.put("hobby", new BigDecimal("200.00"));
 
-        when(categoryTransactionService.getIncomingTransactions(
+        when(categoryTransactionService.getIncomingReport(
                 1,
                 LocalDate.of(2025, 1, 1),
                 LocalDate.of(2025, 12, 31))).thenReturn(incomingTransactions);
-        when(categoryTransactionService.getOutgoingTransactions(
+        when(categoryTransactionService.getOutgoingReport(
                 1,
                 LocalDate.of(2025, 1, 1),
                 LocalDate.of(2025, 12, 31))).thenReturn(outgoingTransactions);

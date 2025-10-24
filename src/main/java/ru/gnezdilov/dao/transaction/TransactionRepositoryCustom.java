@@ -1,8 +1,9 @@
 package ru.gnezdilov.dao.transaction;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public interface TransactionRepositoryCustom {
-    List<Object[]> getIncomingTransaction(TransactionFilter transactionFilter);
-    List<Object[]> getOutgoingTransaction(TransactionFilter transactionFilter);
+    Map<String, BigDecimal> getMapIncomingReport(TransactionFilter transactionFilter);
+    Map<String, BigDecimal> getMapOutgoingReport(TransactionFilter transactionFilter);
 }

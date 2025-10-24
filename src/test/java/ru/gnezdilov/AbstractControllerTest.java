@@ -11,6 +11,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.gnezdilov.config.SecurityConfiguration;
+import ru.gnezdilov.security.MockSecurityConfiguration;
 
 import java.sql.SQLException;
 

@@ -66,11 +66,11 @@ public class ReportController extends WebController {
         Map<String, BigDecimal> transactions = new HashMap<>();
         String typeReport = this.pullAttributeFromSession(request, "typeReport");
         if (typeReport.equals(NAME_INCOMING)) {
-            transactions = categoryTransactionService.getIncomingTransactions(userId,
+            transactions = categoryTransactionService.getIncomingReport(userId,
                     LocalDate.parse(this.pullAttributeFromSession(request, "dateAfter")),
                     LocalDate.parse(this.pullAttributeFromSession(request, "dateBefore")));
         } else if (typeReport.equals(NAME_OUTGOING)) {
-            transactions = categoryTransactionService.getOutgoingTransactions(userId,
+            transactions = categoryTransactionService.getOutgoingReport(userId,
                     LocalDate.parse(this.pullAttributeFromSession(request, "dateAfter")),
                     LocalDate.parse(this.pullAttributeFromSession(request, "dateBefore")));
         }

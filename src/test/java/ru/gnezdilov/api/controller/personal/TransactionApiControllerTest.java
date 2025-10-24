@@ -1,5 +1,7 @@
 package ru.gnezdilov.api.controller.personal;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,6 +15,9 @@ import ru.gnezdilov.api.json.transaction.add.TransactionAddResponse;
 import ru.gnezdilov.service.dto.TransactionDTO;
 import ru.gnezdilov.service.personal.TransactionService;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -48,8 +53,6 @@ public class TransactionApiControllerTest extends AbstractControllerTest {
 
         when(transactionService.create(typeIds, 1, 1, 2, new BigDecimal("100.00")))
                 .thenReturn(transactionDTO);
-
-
     }
 
     @Test
@@ -84,14 +87,26 @@ public class TransactionApiControllerTest extends AbstractControllerTest {
 
     @Test
     public void postAdd_return400_whenCalledWithWrongTypeArguments() throws Exception {
+        WrongTransactionAddResponse wrongTransactionAddResponse = new WrongTransactionAddResponse(
+                singletonList(1),
+                1,
+                "one",
+                new BigDecimal(450));
         mockMvc.perform(post("/api/transaction/add")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .content("{\n" +
-                                "    \"typesIds\" : [\"1\"],\n" +
-                                "    \"sendingId\" : \"one\",\n" +
-                                "    \"receivingId\" : \"3\",\n" +
-                                "    \"amount\" : \"450.00\"\n" +
-                                "}"))
+                        .content(ow.writeValueAsString(wrongTransactionAddResponse)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Data
+    @AllArgsConstructor
+    private class WrongTransactionAddResponse {
+        private List<Integer> typesIds;
+        private int sendingId;
+        private String receivingId;
+        @NotNull
+        @Digits(integer = 8, fraction = 2)
+        @Positive
+        private BigDecimal amount;
     }
 }

@@ -11,8 +11,8 @@ import ru.gnezdilov.dao.transaction.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,25 +24,22 @@ public class TransactionRepositoryTest {
     @Autowired
     private TransactionRepository subj;
 
-    private List<Object[]> transactions;
+    private Map<String, BigDecimal> transactions;
 
     @BeforeEach
     public void setUp() throws Exception {
-        transactions = new ArrayList<>();
-        Object[] firstElement = {"no type", new BigDecimal("600.00")};
-        Object[] secondElement = {"hobby", new BigDecimal("500.00")};
-        transactions.add(firstElement);
-        transactions.add(secondElement);
+        transactions = new HashMap<>();
+        transactions.put("no type", new BigDecimal("600.00"));
+        transactions.put("hobby", new BigDecimal("500.00"));
     }
 
     @Test
     public void getIncomingTransaction_returnListObject_whenCalledWithValidArgument() {
         TransactionFilter transactionFilter = new TransactionFilter(1,
                 LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 12, 31),
-                true);
+                LocalDate.of(2025, 12, 31));
 
-        List<Object[]> incomingTransactions = subj.getIncomingTransaction(transactionFilter);
+        Map<String, BigDecimal> incomingTransactions = subj.getMapIncomingReport(transactionFilter);
         assertNotNull(incomingTransactions);
         assertEquals(transactions.get(0), incomingTransactions.get(0));
         assertEquals(transactions.get(1), incomingTransactions.get(1));
@@ -52,10 +49,9 @@ public class TransactionRepositoryTest {
     public void getIncomingTransaction_returnEmptyList_whenCalledWithInvalidArgument() {
         TransactionFilter transactionFilter = new TransactionFilter(1,
                 null,
-                LocalDate.of(2025, 12, 31),
-                true);
+                LocalDate.of(2025, 12, 31));
 
-        List<Object[]> incomingTransactions = subj.getOutgoingTransaction(transactionFilter);
+        Map<String, BigDecimal> incomingTransactions = subj.getMapOutgoingReport(transactionFilter);
         assertTrue(incomingTransactions.isEmpty());
     }
 
@@ -63,10 +59,9 @@ public class TransactionRepositoryTest {
     public void getOutgoingTransaction_returnListObject_whenCalledWithValidArgument() {
         TransactionFilter transactionFilter = new TransactionFilter(1,
                 LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 12, 31),
-                true);
+                LocalDate.of(2025, 12, 31));
 
-        List<Object[]> incomingTransactions = subj.getOutgoingTransaction(transactionFilter);
+        Map<String, BigDecimal> incomingTransactions = subj.getMapOutgoingReport(transactionFilter);
         assertNotNull(incomingTransactions);
         assertEquals(transactions.get(0), incomingTransactions.get(0));
         assertEquals(transactions.get(1), incomingTransactions.get(1));
@@ -76,10 +71,9 @@ public class TransactionRepositoryTest {
     public void getOutgoingTransaction_returnEmptyList_whenCalledWithInvalidArgument() {
         TransactionFilter transactionFilter = new TransactionFilter(1,
                 null,
-                LocalDate.of(2025, 12, 31),
-                true);
+                LocalDate.of(2025, 12, 31));
 
-        List<Object[]> incomingTransactions = subj.getOutgoingTransaction(transactionFilter);
+        Map<String, BigDecimal> incomingTransactions = subj.getMapOutgoingReport(transactionFilter);
         assertTrue(incomingTransactions.isEmpty());
     }
 }

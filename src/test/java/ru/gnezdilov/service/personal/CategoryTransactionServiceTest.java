@@ -10,8 +10,8 @@ import ru.gnezdilov.dao.transaction.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -23,102 +23,90 @@ public class CategoryTransactionServiceTest {
     @Mock private TransactionRepository repository;
 
     @Test
-    public void getIncomingTransactions_returnHashMap_whenCalledWithValidArguments() {
-        ArrayList<Object[]> result = new ArrayList<>();
-        Object[] report = {"hobby", new BigDecimal(1)};
-        result.add(report);
-        HashMap<String, BigDecimal> hm = new HashMap<>();
-        hm.put("hobby", new BigDecimal(1));
+    public void getIncomingReport_returnHashMap_whenCalledWithValidArguments() {
+        HashMap<String, BigDecimal> result = new HashMap<>();
+        result.put("hobby", new BigDecimal(1));
         TransactionFilter transactionFilter = new TransactionFilter(1,
                 LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 12, 31),
-                true);
+                LocalDate.of(2025, 12, 31));
 
-        when(repository.getIncomingTransaction(transactionFilter)).thenReturn(result);
+        when(repository.getMapIncomingReport(transactionFilter)).thenReturn(result);
 
-        assertEquals(hm, subj.getIncomingTransactions(1, LocalDate.parse("2025-01-01"),
+        assertEquals(result, subj.getIncomingReport(1, LocalDate.parse("2025-01-01"),
                 LocalDate.parse("2025-12-31")));
 
-        verify(repository, times(1)).getIncomingTransaction(transactionFilter);
+        verify(repository, times(1)).getMapIncomingReport(transactionFilter);
     }
 
     @Test
-    public void getIncomingTransactions_returnEmptyHashMap_whenCalledWithValidArguments() {
-        ArrayList<Object[]> result = new ArrayList<>();
+    public void getIncomingReport_returnEmptyHashMap_whenCalledWithValidArguments() {
+        Map<String, BigDecimal> result = new HashMap<>();
         TransactionFilter transactionFilter = new TransactionFilter(1,
                 LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 12, 31),
-                true);
+                LocalDate.of(2025, 12, 31));
 
-        when(repository.getIncomingTransaction(transactionFilter)).thenReturn(result);
+        when(repository.getMapIncomingReport(transactionFilter)).thenReturn(result);
 
-        assertTrue(subj.getIncomingTransactions(1, LocalDate.parse("2025-01-01"),
+        assertTrue(subj.getIncomingReport(1, LocalDate.parse("2025-01-01"),
                 LocalDate.parse("2025-12-31")).isEmpty());
 
-        verify(repository, times(1)).getIncomingTransaction(transactionFilter);
+        verify(repository, times(1)).getMapIncomingReport(transactionFilter);
     }
 
     @Test
-    public void getIncomingTransactions_throwIllegalArgumentException_whenCalledWithInvalidArguments() {
+    public void getIncomingReport_throwIllegalArgumentException_whenCalledWithInvalidArguments() {
         TransactionFilter transactionFilter = new TransactionFilter(1,
                 null,
-                null,
-                true);
+                null);
 
-        when(repository.getIncomingTransaction(transactionFilter)).thenThrow(IllegalArgumentException.class);
+        when(repository.getMapIncomingReport(transactionFilter)).thenThrow(IllegalArgumentException.class);
 
-        assertThrows(IllegalArgumentException.class, () -> subj.getIncomingTransactions(1, null, null));
+        assertThrows(IllegalArgumentException.class, () -> subj.getIncomingReport(1, null, null));
 
-        verify(repository, times(1)).getIncomingTransaction(transactionFilter);
+        verify(repository, times(1)).getMapIncomingReport(transactionFilter);
     }
 
     @Test
-    public void getOutgoingTransactions_returnHashMap_whenCalledWithValidArguments() {
-        ArrayList<Object[]> result = new ArrayList<>();
-        Object[] report = {"hobby", new BigDecimal(1)};
-        result.add(report);
-        HashMap<String, BigDecimal> hm = new HashMap<>();
-        hm.put("hobby", new BigDecimal(1));
+    public void getOutgoingReport_returnHashMap_whenCalledWithValidArguments() {
+        HashMap<String, BigDecimal> result = new HashMap<>();
+        result.put("hobby", new BigDecimal(1));
         TransactionFilter transactionFilter = new TransactionFilter(1,
                 LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 12, 31),
-                false);
+                LocalDate.of(2025, 12, 31));
 
-        when(repository.getOutgoingTransaction(transactionFilter)).thenReturn(result);
+        when(repository.getMapOutgoingReport(transactionFilter)).thenReturn(result);
 
-        assertEquals(hm, subj.getOutgoingTransactions(1, LocalDate.parse("2025-01-01"),
+        assertEquals(result, subj.getOutgoingReport(1, LocalDate.parse("2025-01-01"),
                 LocalDate.parse("2025-12-31")));
 
-        verify(repository, times(1)).getOutgoingTransaction(transactionFilter);
+        verify(repository, times(1)).getMapOutgoingReport(transactionFilter);
     }
 
     @Test
-    public void getOutgoingTransactions_returnEmptyHashMap_whenCalledWithValidArguments() {
-        ArrayList<Object[]> result = new ArrayList<>();
+    public void getOutgoingReport_returnEmptyHashMap_whenCalledWithValidArguments() {
+        Map<String, BigDecimal> result = new HashMap<>();
         TransactionFilter transactionFilter = new TransactionFilter(1,
                 LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 12, 31),
-                false);
+                LocalDate.of(2025, 12, 31));
 
-        when(repository.getOutgoingTransaction(transactionFilter)).thenReturn(result);
+        when(repository.getMapOutgoingReport(transactionFilter)).thenReturn(result);
 
-        assertTrue(subj.getOutgoingTransactions(1, LocalDate.parse("2025-01-01"),
+        assertTrue(subj.getOutgoingReport(1, LocalDate.parse("2025-01-01"),
                 LocalDate.parse("2025-12-31")).isEmpty());
 
-        verify(repository, times(1)).getOutgoingTransaction(transactionFilter);
+        verify(repository, times(1)).getMapOutgoingReport(transactionFilter);
     }
 
     @Test
-    public void getOutgoingTransactions_throwIllegalArgumentException_whenCalledWithInvalidArguments() {
+    public void getOutgoingReport_throwIllegalArgumentException_whenCalledWithInvalidArguments() {
         TransactionFilter transactionFilter = new TransactionFilter(1,
                 null,
-                null,
-                false);
+                null);
 
-        lenient().when(repository.getOutgoingTransaction(transactionFilter)).thenThrow(IllegalArgumentException.class);
+        lenient().when(repository.getMapOutgoingReport(transactionFilter)).thenThrow(IllegalArgumentException.class);
 
-        assertThrows(IllegalArgumentException.class, () -> subj.getOutgoingTransactions(1, null, null));
+        assertThrows(IllegalArgumentException.class, () -> subj.getOutgoingReport(1, null, null));
 
-        verify(repository, times(1)).getOutgoingTransaction(transactionFilter);
+        verify(repository, times(1)).getMapOutgoingReport(transactionFilter);
     }
 }
