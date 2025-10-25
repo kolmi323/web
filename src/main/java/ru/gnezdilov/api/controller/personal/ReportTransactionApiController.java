@@ -22,7 +22,7 @@ public class ReportTransactionApiController extends ApiController {
     @GetMapping("/incoming")
     public Map<String, BigDecimal> getIncomingTransaction(@RequestBody @Valid CategoryTransactionRequest request) {
         Integer userId = this.currentUser().getId();
-        Map<String, BigDecimal> transactions = categoryTransactionService.getIncomingTransactions(userId,
+        Map<String, BigDecimal> transactions = categoryTransactionService.getIncomingReport(userId,
                 request.getDateAfter(), request.getDateBefore());
         return transactions;
     }
@@ -30,7 +30,7 @@ public class ReportTransactionApiController extends ApiController {
     @GetMapping("/outgoing")
     public Map<String, BigDecimal> getOutgoingTransaction(@RequestBody @Valid CategoryTransactionRequest request) {
         Integer userId = this.currentUser().getId();
-        Map<String, BigDecimal> transactions =  categoryTransactionService.getOutgoingTransactions(userId,
+        Map<String, BigDecimal> transactions =  categoryTransactionService.getOutgoingReport(userId,
                 request.getDateAfter(), request.getDateBefore());
         return transactions;
     }

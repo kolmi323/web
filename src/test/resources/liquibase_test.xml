@@ -8,19 +8,32 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <include file="liquibase.xml"/>
+    <include file="create_tables_test.xml"/>
+
 
     <changeSet id="filling_user" author="gnezdilov">
         <insert tableName="users">
-            <column name="name">John Doe</column>
+            <column name="name">John</column>
             <column name="email">john@mail.ru</column>
-            <column name="password">527bd5b5d689e2c32ae974c6229ff785</column>
+            <column name="password">$2a$10$bN9KZDnhNu3Lu66aCQrH6usaN9giUjIfJE.RI3dCGHCC61vhtUhNO</column>
         </insert>
 
         <insert tableName="users">
-            <column name="name">Mick Ic</column>
+            <column name="name">Mick</column>
             <column name="email">mick@mail.ru</column>
-            <column name="password">2ea7d215f8c4de40d66de19c4a5f07ab</column>
+            <column name="password">$2a$10$uhKMJEyNhamYGxljg6yJAuWOBjFPryaMKTFwOMOtLdyjYvkkEoSaW</column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="filling_user_role" author="anton">
+        <insert tableName="user_role">
+            <column name="user_id">1</column>
+            <column name="role">USER</column>
+        </insert>
+
+        <insert tableName="user_role">
+            <column name="user_id">2</column>
+            <column name="role">USER</column>
         </insert>
     </changeSet>
 

@@ -1,26 +1,24 @@
 package ru.gnezdilov.service;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.gnezdilov.dao.UserRepository;
-import ru.gnezdilov.dao.exception.DAOException;
+import ru.gnezdilov.dao.entities.UserModel;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.dao.exception.NotFoundException;
-import ru.gnezdilov.dao.entities.UserModel;
 import ru.gnezdilov.service.converter.ConverterUserModelToUserDTO;
-import ru.gnezdilov.service.custominterface.DigestService;
 import ru.gnezdilov.service.dto.UserDTO;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
     @InjectMocks private AuthService subj;
 

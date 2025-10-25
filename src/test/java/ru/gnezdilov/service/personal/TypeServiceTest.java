@@ -1,10 +1,10 @@
 package ru.gnezdilov.service.personal;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.gnezdilov.dao.TypeRepository;
 import ru.gnezdilov.dao.entities.TypeModel;
 import ru.gnezdilov.service.converter.ConverterTypeModelToTypeDTO;
@@ -15,9 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TypeServiceTest {
     @InjectMocks private TypeService subj;
 

@@ -3,7 +3,7 @@ package ru.gnezdilov.service.personal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.gnezdilov.dao.TransactionRepository;
+import ru.gnezdilov.dao.transaction.TransactionRepository;
 import ru.gnezdilov.dao.entities.TransactionModel;
 import ru.gnezdilov.dao.exception.IllegalArgumentException;
 import ru.gnezdilov.dao.exception.InsufficientFundsException;

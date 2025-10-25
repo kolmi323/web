@@ -1,0 +1,163 @@
+package ru.gnezdilov.web.controller.personal;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.util.LinkedMultiValueMap;
+import ru.gnezdilov.AbstractControllerTest;
+import ru.gnezdilov.service.dto.TypeDTO;
+import ru.gnezdilov.service.personal.TypeService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+@WebMvcTest(TypeController.class)
+public class TypeControllerTest extends AbstractControllerTest {
+    @MockBean
+    private TypeService typeService;
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        super.setUp();
+
+        List<TypeDTO> typeDTOS = new ArrayList<TypeDTO>();
+        typeDTOS.add(new TypeDTO(1, 1, "work"));
+        typeDTOS.add(new TypeDTO(2, 1, "hobby"));
+
+        when(typeService.getAll(1)).thenReturn(typeDTOS);
+        when(typeService.create(1, "candy")).thenReturn(new TypeDTO(3, 1, "candy"));
+        when(typeService.create(1, "hobby"))
+                .thenThrow(constraintViolationSQLAlreadyExistException);
+        when(typeService.edit(3, 1, "meat")).thenReturn(new TypeDTO(3, 1, "meat"));
+        when(typeService.edit(3, 1, "hobby"))
+                .thenThrow(constraintViolationSQLAlreadyExistException);
+        when(typeService.delete(3, 1)).thenReturn(true);
+        when(typeService.delete(4, 1)).thenReturn(false);
+    }
+
+    @Test
+    public void type_returnMainTypeForm() throws Exception {
+        mockMvc.perform(get("/type"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("personal/type/main"));
+    }
+
+    @Test
+    public void showTypes_returnShowTypeForm() throws Exception {
+        mockMvc.perform(get("/type/show"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("personal/type/show"));
+    }
+
+    @Test
+    public void getAddType_returnTypeAddForm() throws Exception {
+        mockMvc.perform(get("/type/add"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("personal/type/add"));
+    }
+
+    @Test
+    public void postAddType_redirectToMessageForm_whenCalledWithValidArguments() throws Exception {
+        mockMvc.perform(post("/type/add")
+                        .param("name", "candy"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertMessage"));
+    }
+
+    @Test
+    public void postAddType_returnTypeAddForm_whenCalledWithInvalidArguments() throws Exception {
+        mockMvc.perform(post("/type/add")
+                        .param("name", ""))
+                .andExpect(status().isOk())
+                .andExpect(view().name("personal/type/add"));
+    }
+
+    @Test
+    public void postAddType_redirectToErrorForm_whenEntityAlreadyExist() throws Exception {
+        mockMvc.perform(post("/type/add")
+                        .param("name", "hobby"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertError"));
+    }
+
+    @Test
+    public void getUpdateType_returnTypeUpdateForm() throws Exception {
+        mockMvc.perform(get("/type/update"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("personal/type/update"));
+    }
+
+    @Test
+    public void postUpdateType_redirectToMessageForm_whenCalledWithValidArguments() throws Exception {
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("id", "3");
+        params.add("newName", "meat");
+
+        mockMvc.perform(post("/type/update")
+                    .params(params))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertMessage"));
+    }
+
+    @Test
+    public void postUpdateType_returnTypeUpdateForm_whenCalledWithInvalidArguments() throws Exception {
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("id", "3");
+        params.add("newName", "");
+
+        mockMvc.perform(post("/type/update")
+                        .params(params))
+                .andExpect(status().isOk())
+                .andExpect(view().name("personal/type/update"));
+    }
+
+    @Test
+    public void postUpdateType_redirectToErrorForm_whenEntityAlreadyExist() throws Exception {
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("id", "3");
+        params.add("newName", "hobby");
+
+        mockMvc.perform(post("/type/update")
+                        .params(params))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertError"));
+    }
+
+    @Test
+    public void getDeleteType_returnTypeDeleteForm() throws Exception {
+        mockMvc.perform(get("/type/delete"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("personal/type/delete"));
+    }
+
+    @Test
+    public void postDeleteType_redirectToMessageForm_whenTrueAndCalledWithValidArguments() throws Exception {
+        mockMvc.perform(post("/type/delete")
+                    .param("id", "3"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertMessage"));
+    }
+
+    @Test
+    public void postDeleteType_redirectToMessageForm_whenFalseAndCalledWithValidArguments() throws Exception {
+        mockMvc.perform(post("/type/delete")
+                        .param("id", "4"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/alertMessage"));
+    }
+
+    @Test
+    public void postDeleteType_returnTypedDeleteForm_whenCalledWithInvalidArguments() throws Exception {
+        mockMvc.perform(post("/type/delete")
+                        .param("id", ""))
+                .andExpect(status().isOk())
+                .andExpect(view().name("personal/type/delete"));
+    }
+}
